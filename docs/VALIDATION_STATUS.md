@@ -45,6 +45,14 @@ now explicitly attributed to the 14-cell analysis. Result JSON was not rewritten
 
 ## Final validation sequence
 
+The first public CI run exposed an export omission beyond pytest's coverage:
+the small `experiments/predictors/` JSON coefficient files were absent, so the
+standalone count-mapping audit could not load its frozen scorer. The exporter now
+includes those files and requires the two-view checkpoint explicitly. This is a
+packaging correction; source coefficients and result JSON are unchanged. Release
+validation also exercises the CPU example, count audit and raw-record summary
+commands, not only the pytest suite.
+
 Use the pinned Python environment documented in `REPRODUCING_MASKED_LOOP.md`.
 These checks are CPU-only; the tiny random-model tests do not reproduce 8B-model
 experiments or certify production serving performance.
