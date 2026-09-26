@@ -33,10 +33,10 @@ ERRORBAR = {"ecolor": "black", "elinewidth": 0.6, "capsize": 1.4, "capthick": 0.
 COLUMN_WIDTH = 3.45    # IEEEtran \columnwidth in inches
 
 
-MIN_FONT_PT = 7.0
+MIN_FONT_PT = 9.0
 
 
-def use_paper_style(base: float = 8.0) -> None:
+def use_paper_style(base: float = 9.0) -> None:
     plt.rcParams.update({
         "font.family": "serif",
         "font.serif": ["STIXGeneral", "Nimbus Roman", "Liberation Serif", "DejaVu Serif"],
@@ -44,9 +44,9 @@ def use_paper_style(base: float = 8.0) -> None:
         "font.size": base,
         "axes.labelsize": base,
         "axes.titlesize": base,
-        "xtick.labelsize": base - 0.5,
-        "ytick.labelsize": base - 0.5,
-        "legend.fontsize": base - 0.5,
+        "xtick.labelsize": max(MIN_FONT_PT, base - 0.5),
+        "ytick.labelsize": max(MIN_FONT_PT, base - 0.5),
+        "legend.fontsize": max(MIN_FONT_PT, base - 0.5),
         # Full frame and outward ticks, as in the target corpus.
         "axes.spines.top": True,
         "axes.spines.right": True,
@@ -69,7 +69,7 @@ def use_paper_style(base: float = 8.0) -> None:
         "savefig.bbox": "tight",
         # Preserve font descenders at the tight crop (the forest x-label's
         # extracted glyph bounds otherwise extend beyond the PDF MediaBox).
-        "savefig.pad_inches": 0.045,
+        "savefig.pad_inches": 0.05,
         # Embed TrueType (Type 42) outlines instead of Type 3 bitmaps-of-glyphs;
         # IEEE PDF eXpress flags Type 3 fonts.
         "pdf.fonttype": 42,

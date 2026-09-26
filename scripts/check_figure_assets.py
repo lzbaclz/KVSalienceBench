@@ -42,8 +42,9 @@ for name in sorted(ACTIVE):
     # The math subscript i in I(X_i; Z) is intentionally smaller than its label.
     ordinary = [s for s in spans if not (name == "fig_redund_calib.pdf" and s["text"].strip() == "i")]
     minimum = min(s["size"] for s in ordinary)
-    assert minimum >= 6.99, f"Ordinary labels below 7 pt: {name}, {minimum}"
+    printed_minimum = minimum * 252 / p.rect.width  # IEEEtran column = 3.5 in
+    assert printed_minimum >= 8.9, f"Ordinary labels below approximately 9 pt in print: {name}, {printed_minimum}"
     for s in spans:
         assert p.rect.contains(pymupdf.Rect(s["bbox"])), f"Clipped text: {name}: {s['text']}"
-    print(f"PASS {name}: vector PDF, embedded fonts, ordinary labels >= {minimum:.2f} pt")
+    print(f"PASS {name}: vector PDF, embedded fonts, ordinary labels >= {printed_minimum:.2f} pt at column width")
 print("PASS draw.io PDF embeds the exact editable source; all manuscript figures mapped")

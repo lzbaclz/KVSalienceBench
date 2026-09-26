@@ -33,7 +33,7 @@ def main(argv=None):
     d = json.load(open(args.analysis))["contrasts"][args.contrast]
     cells = d["cells"]
     use_paper_style()
-    fig, ax = plt.subplots(figsize=(COLUMN_WIDTH, 2.35))
+    fig, ax = plt.subplots(figsize=(COLUMN_WIDTH, 2.8))
     y = np.arange(len(cells))[::-1] + 1.5
     for yi, c in zip(y, cells):
         col = OURS if c["arch"] == "llama31_8b" else ALT

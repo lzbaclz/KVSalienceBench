@@ -25,30 +25,32 @@ OUT = "paper_icdm/figures"
 d = json.load(open("experiments/results/icdm_v2.json"))
 
 use_paper_style()
-fig, (axA, axB) = plt.subplots(1, 2, figsize=(COLUMN_WIDTH, 1.62))
+fig, (axA, axB) = plt.subplots(1, 2, figsize=(COLUMN_WIDTH, 1.85))
 
 # (a) per-view relevance on the MI sample of the v2 corpus.
 mi = d["pooled_per_view"]["redundancy"]["per_feature_mi"]
 order = ["s_within", "s_cross", "s_query", "s_pos"]
 labels = ["within", "cross", "query", "age"]
 vals = [mi[k] for k in order]
-axA.bar(range(4), vals, color=[OURS, OURS, BASELINE, BASELINE], width=0.66,
+axA.barh(range(4), vals, color=[OURS, OURS, BASELINE, BASELINE], height=0.66,
         edgecolor=EDGE, linewidth=BAR_EDGE_WIDTH)
-axA.set_xticks(range(4)); axA.set_xticklabels(labels)
-axA.set_ylabel("$I(X_i;Z)$")
-axA.set_ylim(0, max(vals) * 1.26)
+axA.set_yticks(range(4)); axA.set_yticklabels(labels)
+axA.invert_yaxis()
+axA.set_xlabel("$I(X_i;Z)$")
+axA.set_xlim(0, 0.18)
+axA.set_xticks([0, 0.1])
 for i, v in enumerate(vals):
     # 0.000 would read as exactly zero; the age proxy is small, not absent.
     text = f"{v:.3f}" if v >= 5e-4 else "<0.001"
-    axA.text(i, v + max(vals) * 0.03, text, ha="center", va="bottom", fontsize=small(1.0))
+    axA.text(v + 0.006, i, text, ha="left", va="center", fontsize=small(1.0))
 
 # (b) reliability of four fits on identical held-out rows.
 cal = d["pooled_request_split"]["calibration"]
 axB.plot([0, 1], [0, 1], ":", color=REF, lw=0.7)
-series = [("within+cross(2)", "two-view logistic", "o", "-", OURS),
-          ("GBDT balanced", "GBDT, balanced", "s", "--", ALT),
-          ("GBDT unweighted", "GBDT, unweighted", "^", "-", "#2a7f62"),
-          ("GBDT balanced+isotonic", "GBDT, isotonic", "v", "-.", "#8a6d1f")]
+series = [("within+cross(2)", "two-view", "o", "-", OURS),
+          ("GBDT balanced", "GBDT balanced", "s", "--", ALT),
+          ("GBDT unweighted", "GBDT unweighted", "^", "-", "#2a7f62"),
+          ("GBDT balanced+isotonic", "GBDT isotonic", "v", "-.", "#8a6d1f")]
 for key, short, marker, style, col in series:
     rc = cal[key]["reliability"]
     conf = np.array([c if c is not None else np.nan for c in rc["confidence"]], float)

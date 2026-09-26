@@ -20,7 +20,9 @@ The draw.io source contains editable text, rectangles and connectors. Its PDF is
 exported by the installed draw.io application with crop and embedded-source options;
 no Matplotlib or LaTeX diagram renderer is used. Open the `.drawio` source in draw.io
 to edit it. The PDF uses embedded Liberation Serif; the Python PDFs use embedded
-STIXGeneral/TrueType outlines. Paper body and captions retain IEEEtran defaults.
+STIXGeneral/TrueType outlines. Ordinary labels appear at approximately 9–9.5 pt at the final column width,
+following the IEEE conference graphics guidance. Paper body and captions retain
+IEEEtran defaults.
 
 The English presentation reuses these PDFs (rasterized at 288 dpi for PPTX), with
 the PDF-source hashes recorded in `../output/asset_manifest.md`. Old schematic

@@ -8,7 +8,7 @@ email `jwguo@buaa.edu.cn`. No funding acknowledgment was requested. The standard
 IEEEtran body font, margins and line spacing were retained. The final PDF SHA256 is:
 
 ```
-45e646ca9b1be46b802e531818f55c3d66bb1466c865d3fb176f6252041e025b
+ba446c823235dc8b0eb6cb7f5b1219ee351a411832d2a88287228ed50010ba50
 ```
 
 This identifies the locally validated upload candidate, not a CPS upload receipt.
@@ -27,8 +27,8 @@ and replace this hash with the exact PDF submitted to the workshop.
   references, font embedding and encryption. No overfull boxes or Type 3 fonts.
 - `check_figure_assets.py` passes: exact draw.io source embedded in its exported
   PDF, complete figure inventory, vector artwork, embedded fonts and unclipped text.
-- All eight rendered paper pages were visually inspected. Rebuilding after the
-  final test run produced identical page pixels to the inspected render.
+- All eight rendered paper pages were visually inspected. The inspected render is from the final
+  rebuild after the test run, including approximately 9 pt figure labels.
 - The English presentation is **13 slides**, with notes on all slides, exported
   through LibreOffice to PDF. All slides were visually inspected; no out-of-bounds
   shapes or substantial text-span collisions were found. The clean reviewer-change

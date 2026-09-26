@@ -6,19 +6,25 @@ single-paragraph abstract. All eight rendered pages were inspected at 108 dpi;
 figure details were also viewed enlarged. Tables, equations, captions, author
 blocks and references are legible, without observed text collisions or clipping.
 
+The [IEEE conference graphics guide](https://conferences.ieeeauthorcenter.ieee.org/write-your-paper/improve-your-graphics/)
+recommends approximately 9–10 pt lettering at final size. All ordinary labels in
+the three paper figures are now 9.00–9.46 pt at the 3.5-inch column width. The
+relevance panel uses horizontal bars to keep full category names and numerical
+annotations apart at that size.
+
 ## Figure source and export checks
 
 | Figure | Source / renderer | Font and artwork checks |
 |---|---|---|
-| Evaluation paths, Fig. 1 | Editable `paper_icdm/figures/evaluation_paths.drawio`; draw.io Desktop 31.4.5 CLI export | Embedded Liberation Serif; ordinary labels 9.20 pt in the source PDF; vector paths and text, no raster image |
-| Relevance / reliability, Fig. 2 | `experiments/fig_redund_calib.py`, frozen `icdm_v2.json` | Embedded STIXGeneral, ordinary labels at least 7 pt; the mathematical subscript is smaller; vector PDF |
-| Per-cell forest, Fig. 3 | `experiments/fig_cell_forest.py`, frozen `expand_v2_sensitivity.json` | Embedded STIXGeneral, ordinary labels at least 7 pt; vector PDF |
+| Evaluation paths, Fig. 1 | Editable `paper_icdm/figures/evaluation_paths.drawio`; draw.io Desktop 31.4.5 CLI export | Embedded Liberation Serif; ordinary labels 9.46 pt at final column width; vector paths and text, no raster image |
+| Relevance / reliability, Fig. 2 | `experiments/fig_redund_calib.py`, frozen `icdm_v2.json` | Embedded STIXGeneral, ordinary labels approximately 9 pt at final column width; the mathematical subscript is smaller; vector PDF |
+| Per-cell forest, Fig. 3 | `experiments/fig_cell_forest.py`, frozen `expand_v2_sensitivity.json` | Embedded STIXGeneral, ordinary labels approximately 9 pt at final column width; vector PDF |
 
 `python scripts/check_figure_assets.py` proves that the draw.io PDF's embedded
 editable XML equals the saved `.drawio` source, the exported labels are present,
 all three manuscript figure paths are accounted for, fonts are embedded, and text
 bounds lie inside each PDF. It also rejects Type 3 fonts and raster artwork.
-The shared Python crop padding was increased to 0.045 inches after bounding-box
+The shared Python crop padding was increased to 0.05 inches after bounding-box
 checks exposed a forest-axis descender and a rotated math-label boundary too close
 to the old crop. Both figures were rebuilt and the corrected bounds pass.
 
