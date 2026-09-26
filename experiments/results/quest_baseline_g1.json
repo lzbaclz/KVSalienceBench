@@ -1,0 +1,66 @@
+{
+  "config": {
+    "n": 32,
+    "max_new_tokens": 64
+  },
+  "per_model": {
+    "Qwen3-8B": {
+      "n_rows": 8792424,
+      "n_requests": 32,
+      "pos_rate": 0.10075173527002335,
+      "single_view_auc": {
+        "f_within": 0.9094482025996826,
+        "f_cross": 0.82144006475195,
+        "f_query": 0.5608674647462071,
+        "f_query_dotmean": 0.5565152400922531,
+        "f_query_dotmax": 0.5290004684945563
+      },
+      "marginal": {
+        "f_query": {
+          "within_cross": 0.9275571116527556,
+          "plus_query": 0.9260176319280686,
+          "delta": -0.0015394797246869318
+        },
+        "f_query_dotmean": {
+          "within_cross": 0.9275571116527556,
+          "plus_query": 0.9222266271425126,
+          "delta": -0.005330484510242983
+        },
+        "f_query_dotmax": {
+          "within_cross": 0.9275571116527556,
+          "plus_query": 0.9243570576123258,
+          "delta": -0.0032000540404297784
+        }
+      }
+    },
+    "Mistral-7B-Instruct-v0.3": {
+      "n_rows": 7948608,
+      "n_requests": 32,
+      "pos_rate": 0.1007874608039856,
+      "single_view_auc": {
+        "f_within": 0.9023282226653809,
+        "f_cross": 0.813859309962842,
+        "f_query": 0.5795591359329327,
+        "f_query_dotmean": 0.6405092745968831,
+        "f_query_dotmax": 0.6618557262936668
+      },
+      "marginal": {
+        "f_query": {
+          "within_cross": 0.9261649764014102,
+          "plus_query": 0.917507278339703,
+          "delta": -0.00865769806170713
+        },
+        "f_query_dotmean": {
+          "within_cross": 0.9261649764014102,
+          "plus_query": 0.9163810965651508,
+          "delta": -0.00978387983625939
+        },
+        "f_query_dotmax": {
+          "within_cross": 0.9261649764014102,
+          "plus_query": 0.9119422234294733,
+          "delta": -0.01422275297193687
+        }
+      }
+    }
+  }
+}

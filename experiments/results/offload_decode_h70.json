@@ -1,0 +1,24 @@
+{
+  "h": 0.7,
+  "recall": 0.875,
+  "by_ctx": {
+    "16384": {
+      "gpu_resident": 50.58,
+      "fetch_all": 90.49,
+      "reactive_hot": 87.36,
+      "prefetch_hot": 73.3
+    },
+    "32768": {
+      "gpu_resident": 55.26,
+      "fetch_all": 183.43,
+      "reactive_hot": 162.67,
+      "prefetch_hot": 137.27
+    },
+    "65536": {
+      "gpu_resident": 109.53,
+      "fetch_all": 367.05,
+      "reactive_hot": 316.63,
+      "prefetch_hot": 266.98
+    }
+  }
+}

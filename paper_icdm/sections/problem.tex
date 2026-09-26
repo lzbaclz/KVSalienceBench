@@ -1,0 +1,58 @@
+\section{Problem and evidence levels}
+\label{sec:problem}
+
+\subsection{Attention-defined saliency}
+At layer $\ell$ and decode step $t$, let $\mathcal B_{\ell,t}$ contain the logical
+KV blocks currently under consideration. A block groups contiguous original token
+positions. We aggregate attention by averaging over heads and over a block's token
+positions; denote the resulting statistic by $a_{\ell,b,t}$. It is a block-mean
+attention statistic, not necessarily a mass normalized to sum to one over blocks.
+For a horizon $h$ and a fraction $r$, the target is
+$z_{\ell,b,t}^{(h)}=\mathbf 1[b\in\operatorname{Top}_{\lceil r|\mathcal B_{\ell,t}|\rceil}\{a_{\ell,b',t+h}:b'\in\mathcal B_{\ell,t}\}]$:
+ranking is restricted to blocks present at $t$. We use $r=0.1$ and horizons
+$h\in\{1,4,16,64\}$ (the archived collector's terminal-horizon caveat is in
+\S\ref{sec:limits}).
+
+A scorer $f(\mathbf x_{\ell,b,t})$ estimates the label probability from recorded
+features; examples arrive in decode order, positives are a small fraction of blocks,
+drift is a hypothesis to test, and serial dependence means millions of block rows are
+not millions of independent observations.
+
+\subsection{Three different evaluation targets}
+Fig.~\ref{fig:paths} locates the evaluation paths.
+Offline prediction scores future-attention labels on fixed full-cache traces;
+served-oracle diagnostics score a current-attention target along the evaluated
+trajectory, and attention importance is not answer correctness; closed-loop task
+quality scores answers the selector's own decisions helped produce, here through
+masking rather than a cache manager. A fraction of blocks allowed to attend is a
+\emph{logical retention budget}, not a fraction of device memory released.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{evaluation_paths.pdf}
+\caption{Evaluation paths. Runtime features and selector semantics differ
+across paths (Table~\ref{tab:protocol}); physical-reference parity is tested separately.}
+\label{fig:paths}
+\end{figure}
+
+\subsection{Statistical protocol}
+Offline ranking uses AUC, threshold-based AUPRC (tied scores form one group, so
+the value cannot depend on row order), precision/recall at $k=r$, Brier score and
+expected calibration error (ECE). Top-$k$ metrics are reported pooled over test
+rows \emph{and} per cache decision (request, layer, step) at the label's own
+$\lceil r\,n\rceil$. Training and testing use disjoint requests and paired
+bootstrap intervals resample requests, not block rows. Unless marked otherwise,
+intervals are 95\%; equivalence intervals are 90\%. A 10,000-draw sensitivity
+analysis jointly resamples all held-out model-requests sharing a source prompt,
+on both the original request split and the source-disjoint split.
+Top-$k$ score ties use a stable descending sort: pooled ties follow seeded sample
+row order, and within-decision ties follow increasing block index. V2 label and
+cross-layer indicator boundaries retain the collector's NumPy
+\texttt{argpartition} tie rule (implementation-dependent on the original block
+order), with exactly $\lceil rn\rceil$ positives; these are not randomized ties.
+The main downstream
+comparison aggregates paired request scores into architecture--dataset cells and a
+TOST analysis~\cite{schuirmann1987tost,lakens2017equivalence} asks whether their
+mean difference lies inside a pre-specified margin. Failure to detect a difference
+is not equivalence, and equivalence of two comparisons with the same baseline does
+not imply equivalence of the remaining pair.

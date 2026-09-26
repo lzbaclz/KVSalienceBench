@@ -1,0 +1,76 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+assets/
+.eggs/
+*.egg
+*.whl
+
+# Virtual environments
+.venv/
+venv/
+env/
+.env
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# LaTeX build artifacts
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.synctex.gz
+*.toc
+*.lot
+*.lof
+*.bcf
+*.run.xml
+*.pdf
+# but DO track the generated paper figures the manuscript compiles against
+!paper_icdm/figures/*.pdf
+!paper_icdm/main.pdf
+!paper_icdm/response.pdf
+!paper_icdm/output/final_presentation_en.pdf
+!docs/internal/**/*.pdf
+
+# Large, regenerable raw attention traces (regenerate via
+# scripts/run_collect_4models.sh; see experiments/traces/README.md).
+# The small, load-bearing analysis JSON in experiments/results/ IS tracked.
+experiments/traces/*.jsonl
+experiments/results/deploy/*.log
+experiments/results/physical_kv/query-v2/*.jsonl
+experiments/results/physical_kv/query-v2/*.jsonl.tmp.*
+# Two-request smoke probes used to warm the GPU matrix; not reported evidence.
+experiments/results/physical_kv/*-probe2.jsonl
+experiments/results/physical_kv/*/probe2.*.json
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Claude Code local data (tool-specific, not part of the project)
+.claude/

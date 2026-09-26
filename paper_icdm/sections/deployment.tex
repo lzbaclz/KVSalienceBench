@@ -1,0 +1,62 @@
+\section{Runtime scope and scoring cost}
+\label{sec:deploy}
+
+\textbf{Masking is not physical eviction.} The closed-loop experiments exclude
+selected blocks from attention and score generated answers; equal outputs under
+physical eviction would need matched token histories, kept sets, position
+semantics, feature availability and re-admission rules, none of which the simulator
+establishes, so its task-quality result is scoped to the masked loop and is not a
+serving claim (\S\ref{sec:limits}). \textbf{Exp\#5: Scoring-only cost.} The archived microbenchmark times 28.7\,$\mu$s
+at P99.9 for one 4096-vector batch of the four-weight kernel; it excludes feature
+extraction, selection and compaction and is not a serving TPOT.
+
+\textbf{Exp\#6: Physical-KV implementation check.} We evaluate an eager,
+single-request reference backend with original token positions, irreversible block
+eligibility and independent compact K/V storage, against a dense masked reference
+under the same eligibility rule (Table~\ref{tab:protocol}). Gates compare native
+full-cache logits with the no-eviction path and replay a frozen teacher schedule
+between mask and compact storage. \texttt{h2o\_block} is a shared-head block
+accumulator, not a reproduction of H2O or Ada-KV, and the runner implements no
+paging, offload, batching or production throughput.
+
+Table~\ref{tab:physical} reports both models on one A100-80GB, Transformers 4.51.3,
+greedy decoding, the same 128 English QA prompts (64 Qasper, 64 NarrativeQA), input
+cap 4096, at most 128 new tokens and middle truncation on 104/128 prompts.
+Llama-3.1-8B-Instruct runs in bfloat16; Qwen2.5-7B bfloat16 parity exceeded the
+preset tolerance (maximum absolute error 0.25 versus 0.15) while argmax agreed, so
+Qwen is reported in float32. At 20\% budget compact storage equals the live payload
+whereas the mask keeps full-size tensors, a $5.3\times$ ratio for both. Greedy
+sequences match between the two paths on 98/128 and 100/128 Llama requests (mean
+absolute F1 differences 0.014 and 0.007) and 128/128 Qwen requests. Allocator decode
+peaks fall only from 15.51 to 15.10\,GiB (Llama) and 29.05 to 28.63\,GiB (Qwen)
+because weights dominate, with prefill-plus-first-compaction peaks at 15.77 and
+29.23\,GiB. Two task clusters are too few for reliable cross-task equivalence
+inference; the 30\% cells
+are in the artifact, and gates at the full input with 40 decode steps are in
+\S\ref{sec:limits}.
+
+\begin{table}[t]
+\centering
+\caption{Exp\#6 (Physical-KV check) at 20\% block budget. Stored KV is mean unique
+K/V tensor storage (MiB) after the last step, live KV the mean retained payload,
+ITL (ms) the median local inter-token latency, not a request-level serving TPOT.
+Llama bfloat16, Qwen float32.}
+\label{tab:physical}
+\begin{tabular*}{\columnwidth}{@{\extracolsep{\fill}}llcccc@{}}
+\toprule
+model & realization & F1 & stored & live & ITL \\
+\midrule
+Llama & full physical & .223 & 496 & 496 & 76.1 \\
+ & H2O-style mask & .183 & 496 & 94 & 61.0 \\
+ & H2O-style physical & .181 & 94 & 94 & 56.9 \\
+ & reconstructed mask & .177 & 496 & 94 & 60.0 \\
+ & reconstructed physical & .178 & 94 & 94 & 57.9 \\
+\midrule
+Qwen & full physical & .246 & 434 & 434 & 71.4 \\
+ & H2O-style mask & .233 & 434 & 82 & 58.2 \\
+ & H2O-style physical & .233 & 82 & 82 & 54.4 \\
+ & reconstructed mask & .232 & 434 & 82 & 58.1 \\
+ & reconstructed physical & .232 & 82 & 82 & 54.4 \\
+\bottomrule
+\end{tabular*}
+\end{table}

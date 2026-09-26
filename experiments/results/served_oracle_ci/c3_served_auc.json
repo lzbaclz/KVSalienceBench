@@ -1,0 +1,331 @@
+{
+  "task": "C3_served_oracle_auc_with_ci",
+  "data_file": "/home/lzq/codes/csp-llm/experiments/results/serving_calib/calib_llama.json",
+  "n_rows": 255776,
+  "n_prompts": 24,
+  "n_layers": 32,
+  "scorer": "2-view scorer probability (col 'score')",
+  "target": "served-oracle binary label (col 'label')",
+  "paper_claim_point": 0.643,
+  "paper_ref": "transfer_gap.tex:20-22",
+  "seed": 1234,
+  "n_bootstrap": 1000,
+  "cluster_unit": "prompt_id (24 prompts)",
+  "overall": {
+    "auc_point": 0.6426670851389371,
+    "cluster_bootstrap_prompt": {
+      "ci95_lo": 0.6317240731701124,
+      "ci95_hi": 0.6546370610993355,
+      "n_valid_resamples": 1000,
+      "boot_mean": 0.6427356285989115,
+      "boot_std": 0.00599259218716465
+    },
+    "naive_row_bootstrap_FOR_CONTRAST_ONLY": {
+      "ci95_lo": 0.6404669807146358,
+      "ci95_hi": 0.6446821097631619,
+      "note": "i.i.d. row resampling IGNORES within-prompt correlation; understates uncertainty; reported only to show the cluster CI is the honest one"
+    }
+  },
+  "per_layer": [
+    {
+      "layer_pos": 0.0,
+      "n_rows": 7993,
+      "n_prompts": 24,
+      "pos_rate": 0.287126235456024,
+      "auc_point": 0.5415172238701651,
+      "auc_ci95_lo": 0.5327813832860753,
+      "auc_ci95_hi": 0.5516323108365758
+    },
+    {
+      "layer_pos": 0.0323,
+      "n_rows": 7993,
+      "n_prompts": 24,
+      "pos_rate": 0.287126235456024,
+      "auc_point": 0.5639315021667963,
+      "auc_ci95_lo": 0.5555130190080325,
+      "auc_ci95_hi": 0.5739580988675445
+    },
+    {
+      "layer_pos": 0.0645,
+      "n_rows": 7993,
+      "n_prompts": 24,
+      "pos_rate": 0.287126235456024,
+      "auc_point": 0.6012180247474365,
+      "auc_ci95_lo": 0.5836239376461444,
+      "auc_ci95_hi": 0.6214113537521608
+    },
+    {
+      "layer_pos": 0.0968,
+      "n_rows": 7993,
+      "n_prompts": 24,
+      "pos_rate": 0.287126235456024,
+      "auc_point": 0.6391906038964864,
+      "auc_ci95_lo": 0.627276055444173,
+      "auc_ci95_hi": 0.6524975359621532
+    },
+    {
+      "layer_pos": 0.129,
+      "n_rows": 7993,
+      "n_prompts": 24,
+      "pos_rate": 0.287126235456024,
+      "auc_point": 0.669159725042078,
+      "auc_ci95_lo": 0.6579279464552444,
+      "auc_ci95_hi": 0.6804396678990476
+    },
+    {
+      "layer_pos": 0.1613,
+      "n_rows": 7993,
+      "n_prompts": 24,
+      "pos_rate": 0.287126235456024,
+      "auc_point": 0.7580985492750199,
+      "auc_ci95_lo": 0.7403692277666815,
+      "auc_ci95_hi": 0.7743547470267435
+    },
+    {
+      "layer_pos": 0.1935,
+      "n_rows": 7993,
+      "n_prompts": 24,
+      "pos_rate": 0.287126235456024,
+      "auc_point": 0.743643452466982,
+      "auc_ci95_lo": 0.727834256808467,
+      "auc_ci95_hi": 0.7584065783613517
+    },
+    {
+      "layer_pos": 0.2258,
+      "n_rows": 7993,
+      "n_prompts": 24,
+      "pos_rate": 0.287126235456024,
+      "auc_point": 0.7155696949814597,
+      "auc_ci95_lo": 0.6989983399519234,
+      "auc_ci95_hi": 0.7335504276654499
+    },
+    {
+      "layer_pos": 0.2581,
+      "n_rows": 7993,
+      "n_prompts": 24,
+      "pos_rate": 0.287126235456024,
+      "auc_point": 0.6752462546580194,
+      "auc_ci95_lo": 0.6579408022565344,
+      "auc_ci95_hi": 0.6955224885475126
+    },
+    {
+      "layer_pos": 0.2903,
+      "n_rows": 7993,
+      "n_prompts": 24,
+      "pos_rate": 0.287126235456024,
+      "auc_point": 0.631468328527152,
+      "auc_ci95_lo": 0.609115499471373,
+      "auc_ci95_hi": 0.654510787456864
+    },
+    {
+      "layer_pos": 0.3226,
+      "n_rows": 7993,
+      "n_prompts": 24,
+      "pos_rate": 0.287126235456024,
+      "auc_point": 0.643782552606082,
+      "auc_ci95_lo": 0.6259200694587046,
+      "auc_ci95_hi": 0.662889682310939
+    },
+    {
+      "layer_pos": 0.3548,
+      "n_rows": 7993,
+      "n_prompts": 24,
+      "pos_rate": 0.287126235456024,
+      "auc_point": 0.5878472437295967,
+      "auc_ci95_lo": 0.5637551991719327,
+      "auc_ci95_hi": 0.6152147824979561
+    },
+    {
+      "layer_pos": 0.3871,
+      "n_rows": 7993,
+      "n_prompts": 24,
+      "pos_rate": 0.287126235456024,
+      "auc_point": 0.6128960128960128,
+      "auc_ci95_lo": 0.5939739529653842,
+      "auc_ci95_hi": 0.6340986570246283
+    },
+    {
+      "layer_pos": 0.4194,
+      "n_rows": 7993,
+      "n_prompts": 24,
+      "pos_rate": 0.287126235456024,
+      "auc_point": 0.6237546178722649,
+      "auc_ci95_lo": 0.6045412172037441,
+      "auc_ci95_hi": 0.6433962316743723
+    },
+    {
+      "layer_pos": 0.4516,
+      "n_rows": 7993,
+      "n_prompts": 24,
+      "pos_rate": 0.287126235456024,
+      "auc_point": 0.6203603909486262,
+      "auc_ci95_lo": 0.6011782900241573,
+      "auc_ci95_hi": 0.6405617762318199
+    },
+    {
+      "layer_pos": 0.4839,
+      "n_rows": 7993,
+      "n_prompts": 24,
+      "pos_rate": 0.287126235456024,
+      "auc_point": 0.6041144658791717,
+      "auc_ci95_lo": 0.5817018843479658,
+      "auc_ci95_hi": 0.6277978857353911
+    },
+    {
+      "layer_pos": 0.5161,
+      "n_rows": 7993,
+      "n_prompts": 24,
+      "pos_rate": 0.287126235456024,
+      "auc_point": 0.6373611961847256,
+      "auc_ci95_lo": 0.6187315936337642,
+      "auc_ci95_hi": 0.6568500567593988
+    },
+    {
+      "layer_pos": 0.5484,
+      "n_rows": 7993,
+      "n_prompts": 24,
+      "pos_rate": 0.287126235456024,
+      "auc_point": 0.6530080883022059,
+      "auc_ci95_lo": 0.6313242896223756,
+      "auc_ci95_hi": 0.6776990441668196
+    },
+    {
+      "layer_pos": 0.5806,
+      "n_rows": 7993,
+      "n_prompts": 24,
+      "pos_rate": 0.287126235456024,
+      "auc_point": 0.6790533084650732,
+      "auc_ci95_lo": 0.6651006466767846,
+      "auc_ci95_hi": 0.6938525769839303
+    },
+    {
+      "layer_pos": 0.6129,
+      "n_rows": 7993,
+      "n_prompts": 24,
+      "pos_rate": 0.287126235456024,
+      "auc_point": 0.6805825688178629,
+      "auc_ci95_lo": 0.6655137824028593,
+      "auc_ci95_hi": 0.6963614856067838
+    },
+    {
+      "layer_pos": 0.6452,
+      "n_rows": 7993,
+      "n_prompts": 24,
+      "pos_rate": 0.287126235456024,
+      "auc_point": 0.6560050118873648,
+      "auc_ci95_lo": 0.6379251507212488,
+      "auc_ci95_hi": 0.6737397989127356
+    },
+    {
+      "layer_pos": 0.6774,
+      "n_rows": 7993,
+      "n_prompts": 24,
+      "pos_rate": 0.287126235456024,
+      "auc_point": 0.7054884143119438,
+      "auc_ci95_lo": 0.6924822884444175,
+      "auc_ci95_hi": 0.719526142721346
+    },
+    {
+      "layer_pos": 0.7097,
+      "n_rows": 7993,
+      "n_prompts": 24,
+      "pos_rate": 0.287126235456024,
+      "auc_point": 0.6552385081796845,
+      "auc_ci95_lo": 0.6369391965082235,
+      "auc_ci95_hi": 0.6761568577179577
+    },
+    {
+      "layer_pos": 0.7419,
+      "n_rows": 7993,
+      "n_prompts": 24,
+      "pos_rate": 0.287126235456024,
+      "auc_point": 0.6803504421151481,
+      "auc_ci95_lo": 0.6699267007976608,
+      "auc_ci95_hi": 0.6928753186498119
+    },
+    {
+      "layer_pos": 0.7742,
+      "n_rows": 7993,
+      "n_prompts": 24,
+      "pos_rate": 0.287126235456024,
+      "auc_point": 0.6609874962816138,
+      "auc_ci95_lo": 0.6497071900265317,
+      "auc_ci95_hi": 0.6751410177884596
+    },
+    {
+      "layer_pos": 0.8065,
+      "n_rows": 7993,
+      "n_prompts": 24,
+      "pos_rate": 0.287126235456024,
+      "auc_point": 0.6720358632123339,
+      "auc_ci95_lo": 0.6573418424357161,
+      "auc_ci95_hi": 0.687031593219533
+    },
+    {
+      "layer_pos": 0.8387,
+      "n_rows": 7993,
+      "n_prompts": 24,
+      "pos_rate": 0.287126235456024,
+      "auc_point": 0.6334814187755364,
+      "auc_ci95_lo": 0.6152764059719467,
+      "auc_ci95_hi": 0.6519335025314814
+    },
+    {
+      "layer_pos": 0.871,
+      "n_rows": 7993,
+      "n_prompts": 24,
+      "pos_rate": 0.287126235456024,
+      "auc_point": 0.6499149646208469,
+      "auc_ci95_lo": 0.6348771519339707,
+      "auc_ci95_hi": 0.6654525299147268
+    },
+    {
+      "layer_pos": 0.9032,
+      "n_rows": 7993,
+      "n_prompts": 24,
+      "pos_rate": 0.287126235456024,
+      "auc_point": 0.6064750005926476,
+      "auc_ci95_lo": 0.5901462557859694,
+      "auc_ci95_hi": 0.6264878721211441
+    },
+    {
+      "layer_pos": 0.9355,
+      "n_rows": 7993,
+      "n_prompts": 24,
+      "pos_rate": 0.287126235456024,
+      "auc_point": 0.6961213696507813,
+      "auc_ci95_lo": 0.6891070302429406,
+      "auc_ci95_hi": 0.7038420788007067
+    },
+    {
+      "layer_pos": 0.9677,
+      "n_rows": 7993,
+      "n_prompts": 24,
+      "pos_rate": 0.287126235456024,
+      "auc_point": 0.67824986942634,
+      "auc_ci95_lo": 0.6651823694616987,
+      "auc_ci95_hi": 0.6929675940944895
+    },
+    {
+      "layer_pos": 1.0,
+      "n_rows": 7993,
+      "n_prompts": 24,
+      "pos_rate": 0.287126235456024,
+      "auc_point": 0.6251383163147869,
+      "auc_ci95_lo": 0.6111847761750926,
+      "auc_ci95_hi": 0.6390945474310539
+    }
+  ],
+  "per_layer_summary": {
+    "min_auc": 0.5415172238701651,
+    "max_auc": 0.7580985492750199,
+    "mean_auc": 0.6500403275219452,
+    "std_auc": 0.046453709452426585
+  },
+  "notes": [
+    "No explicit workload/dataset field exists; columns are [prompt_id, layer_pos, score, label]. The only available group dimension besides prompt is layer_pos (normalized layer index, 32 layers), decomposed above.",
+    "Both score and label vary across layers within a prompt, so each (prompt,layer) is a distinct served-oracle prediction problem.",
+    "Cluster unit = prompt_id (24 independent prompts). Within a prompt, blocks are highly correlated, so the i.i.d. row bootstrap understates uncertainty; the prompt-cluster CI is the honest interval and is what we report.",
+    "Only 24 clusters -> the cluster CI is itself estimated from few independent units; treat the interval as approximate."
+  ]
+}

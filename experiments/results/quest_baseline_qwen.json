@@ -1,0 +1,37 @@
+{
+  "config": {
+    "n": 12,
+    "max_new_tokens": 64
+  },
+  "per_model": {
+    "Qwen2.5-7B-Instruct": {
+      "n_rows": 2784768,
+      "n_requests": 12,
+      "pos_rate": 0.10038609802722931,
+      "single_view_auc": {
+        "f_within": NaN,
+        "f_cross": 0.8069377742585562,
+        "f_query": 0.5374476926402567,
+        "f_query_dotmean": 0.5644264724576812,
+        "f_query_dotmax": 0.5416013733495142
+      },
+      "marginal": {
+        "f_query": {
+          "within_cross": NaN,
+          "plus_query": NaN,
+          "delta": NaN
+        },
+        "f_query_dotmean": {
+          "within_cross": NaN,
+          "plus_query": NaN,
+          "delta": NaN
+        },
+        "f_query_dotmax": {
+          "within_cross": NaN,
+          "plus_query": NaN,
+          "delta": NaN
+        }
+      }
+    }
+  }
+}

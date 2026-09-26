@@ -1,0 +1,69 @@
+% ===========================================================================
+% DRAFT — regime-gated selective cascade. NOT \input into main.tex yet.
+% Decision rule: include this section ONLY if the FAITHFUL per-token/per-head-max
+% Quest signal warrants it (a positive query marginal in the magnitude-blind
+% regime). With the cheap mean-pooled proxy the warrant FAILS (numbers below), so
+% as of this draft the section's empirical core is pending the GPU re-extraction.
+% If the faithful signal is also flat, fold the negative result into the
+% refutation (\S\ref{sec:exp-relevance}) and drop this section.
+% ===========================================================================
+\section{Selective query computation: a regime-gated cascade}
+\label{sec:gated}
+
+\subsection{Construction}
+The relevance analysis (\S\ref{sec:redundancy}) leaves the query view on the
+floor \emph{on average}. A natural question is whether that is a regime average:
+the attention-magnitude views are \emph{lagging} indicators---strong for blocks
+with realized-attention history, blind for cold blocks with none---whereas
+query--key is a \emph{leading} indicator that could matter precisely where
+magnitude is blind (cold blocks, long horizons). If so, the right use of query is
+not to fuse it everywhere but to compute it \emph{selectively}, only where the
+cheap model is unsure, under a per-step compute budget.
+
+Concretely, a two-stage cascade. Stage~1 scores every block with the cheap
+two-view model $p_1=\sigma(\mathbf{w}^\top[x_{\text{wl}},x_{\text{cl}}]+b)$ at no
+query cost. A budget $\beta$ defers the least-confident fraction (or, in the
+\emph{cold} variant, the lowest-$x_{\text{wl}}$ fraction) to Stage~2, which adds
+the query view: $p_2=\sigma(\mathbf{w}'^\top[x_{\text{wl}},x_{\text{cl}},
+x_{\text{q}}]+b')$. The emitted score is $p_2$ on deferred blocks and $p_1$
+elsewhere, so the added cost is $\beta$ query evaluations per step; the adaptive
+conformal layer (\S\ref{sec:conformal}) composes on top to bound the missed
+saliency rate (\texttt{xqp/gated\_predictor.py}). Two certificates would justify
+keeping the query parameter: \emph{regime ownership}---query lifts AUC inside the
+deferred set even though it is flat overall---and \emph{unique information}, a
+positive $I(x_{\text{q}};Z\mid x_{\text{wl}},x_{\text{cl}},x_{\text{rec}})$.
+
+\subsection{Does selective query help? A regime-stratified test}
+We test the warrant directly: the marginal AUC the query view adds over
+within$+$cross, stratified by within-EMA tercile (low $=$ magnitude-blind), by
+recency, and by horizon (\texttt{run\_quest\_stratified.py}); and the
+budget--accuracy curve of the cascade (\texttt{run\_gated\_eval.py}).
+
+\paragraph{With the mean-pooled query proxy, the warrant fails.}
+On the headline corpus the query marginal is \emph{negative in every stratum} and
+\emph{most negative exactly where the design hoped it would help}: $\Delta_{\text{AUC}}
+=-0.13$ in the low-within tercile (vs.\ $-0.01$ in the high tercile), and it grows
+more negative with horizon ($-0.008,-0.011,-0.018,-0.043$ at $h{=}1,4,16,64$). The
+query view's unique information is $0.003$ (vs.\ within $0.147$, cross $0.084$),
+i.e.\ essentially nothing the magnitude views do not already carry. Accordingly
+the cascade's best operating point is $\beta{=}0$: deferring more blocks to the
+query expert \emph{lowers} AUC ($0.950\!\to\!0.939$ as $\beta:0\!\to\!1$). The
+mean-pooled query is thus not merely useless on average---it is unhelpful even in
+the magnitude-blind regime, so the cheap-proxy cascade correctly degenerates to
+the two-view model.
+
+\paragraph{The deciding experiment (resolved: cut).}
+The mean pool discards Quest's per-token, per-head \emph{maximum}, so we
+re-extracted the faithful raw-dot per-token/per-head-max query
+(\texttt{query\_variants}) and reran the warrant test. The faithful signal is
+\emph{individually informative} (single-view AUC $0.70$ on Llama-3.1 vs.\ $0.59$
+for the mean pool), confirming the proxy understated it---but its marginal over
+within$+$cross is still $-0.003$, and in the low-within (magnitude-blind) regime
+$\Delta\approx-0.004$, i.e.\ flat, not positive. The warrant therefore fails even
+faithfully: there is no regime where query earns its place over attention
+magnitude. \textbf{We consequently DROP this section} and fold the result into the
+refutation (\S\ref{sec:exp-relevance},~\S\ref{sec:limits}), where it is the
+stronger claim---query--key carries real signal but is \emph{redundant} with
+attention magnitude at block granularity, not merely weak. (Retained as a draft +
+released code so the negative result, and the reusable selective-cascade
+machinery, are reproducible.)

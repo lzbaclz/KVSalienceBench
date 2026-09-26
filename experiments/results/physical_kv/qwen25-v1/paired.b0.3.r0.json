@@ -1,0 +1,1092 @@
+{
+  "schema_version": 1,
+  "paired_requests": 128,
+  "quality": {
+    "dataset_mean_deltas": {
+      "narrativeqa": -0.0005873755922195477,
+      "qasper": 0.0004385453747184697
+    },
+    "number_of_dataset_clusters": 2,
+    "equal_dataset_mean_delta": -7.4415108750539e-05,
+    "margin": 0.02,
+    "tost_p": null,
+    "equivalent": null,
+    "note": "With fewer than five dataset clusters, report descriptive validation only; no equivalence conclusion."
+  },
+  "baseline": {
+    "requests": 128,
+    "local_ttft_ms": {
+      "n": 128,
+      "median": 4037.5855434685946,
+      "p95": 4045.4138533212245,
+      "p99": 4048.52287562564,
+      "p99.9": null
+    },
+    "local_tpot_ms": {
+      "n": 128,
+      "median": 58.61350873019546,
+      "p95": 64.48092987494809,
+      "p99": 64.84595080837607,
+      "p99.9": null
+    },
+    "local_generation_ms": {
+      "n": 128,
+      "median": 5237.250842154026,
+      "p95": 8179.509920533745,
+      "p99": 10701.531845182186,
+      "p99.9": null
+    }
+  },
+  "candidate": {
+    "requests": 128,
+    "local_ttft_ms": {
+      "n": 128,
+      "median": 4042.4835179001093,
+      "p95": 8998.34228809923,
+      "p99": 9015.86756054312,
+      "p99.9": null
+    },
+    "local_tpot_ms": {
+      "n": 128,
+      "median": 59.87677640993806,
+      "p95": 215.90422028675673,
+      "p99": 217.31653384119272,
+      "p99.9": null
+    },
+    "local_generation_ms": {
+      "n": 128,
+      "median": 5804.425206035376,
+      "p95": 16061.292053665962,
+      "p99": 23497.06555275248,
+      "p99.9": null
+    }
+  },
+  "pairs": [
+    {
+      "dataset": "narrativeqa",
+      "id": "00e523b3da92cec012d5262c1d0c98507f6c4b67e3c8aaf4",
+      "baseline_output_tokens": 30,
+      "candidate_output_tokens": 30,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "narrativeqa",
+      "id": "077293776804b7d32e78db5ef172d5c960716006e8b446da",
+      "baseline_output_tokens": 20,
+      "candidate_output_tokens": 20,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "narrativeqa",
+      "id": "1309d6cce29b59587533ab35e031789c33f1186e988ebc91",
+      "baseline_output_tokens": 34,
+      "candidate_output_tokens": 34,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "narrativeqa",
+      "id": "141a3f0713e008f2b19cb78757c28d61c8f71427d4613c44",
+      "baseline_output_tokens": 29,
+      "candidate_output_tokens": 29,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "narrativeqa",
+      "id": "16cbcc8b763a701d2c65eb13cb180e3195868e65de706ea5",
+      "baseline_output_tokens": 31,
+      "candidate_output_tokens": 31,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "narrativeqa",
+      "id": "19ec182d75e69f6f85cc7a4fa8f9ca22b124800bc8736b1d",
+      "baseline_output_tokens": 18,
+      "candidate_output_tokens": 18,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "narrativeqa",
+      "id": "1c4fffbc6acfb659de69246ce9d1e1a47a7e0df4f07c467e",
+      "baseline_output_tokens": 69,
+      "candidate_output_tokens": 46,
+      "f1_delta": 0.01616161616161617,
+      "final_kv_storage_delta_bytes": 1032192
+    },
+    {
+      "dataset": "narrativeqa",
+      "id": "2647b0dec2c7dcf97dede643e97d1e4235093b77165c692d",
+      "baseline_output_tokens": 19,
+      "candidate_output_tokens": 19,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "narrativeqa",
+      "id": "287326088a17e7eb46973099e2a58e3374d50280f6cb1e27",
+      "baseline_output_tokens": 28,
+      "candidate_output_tokens": 28,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "narrativeqa",
+      "id": "31a2673d857b4ae705288436804dd94343b7f7d9bfdd1298",
+      "baseline_output_tokens": 37,
+      "candidate_output_tokens": 37,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "narrativeqa",
+      "id": "327947f2fade3b7bda5cfa6d24919d42d2afe66dc15d98d4",
+      "baseline_output_tokens": 34,
+      "candidate_output_tokens": 34,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "narrativeqa",
+      "id": "341d214a2c377691bf20e5a30b8f7979696bd19141ad9c9f",
+      "baseline_output_tokens": 46,
+      "candidate_output_tokens": 46,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "narrativeqa",
+      "id": "3ab2add236bd7cba3c5f398e53ab0b6581fa82dae827c871",
+      "baseline_output_tokens": 8,
+      "candidate_output_tokens": 8,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "narrativeqa",
+      "id": "3aeebc5be470ddd2eafefee76cf25d8e6b08cbd669adc9e4",
+      "baseline_output_tokens": 45,
+      "candidate_output_tokens": 45,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "narrativeqa",
+      "id": "42a2c14632d52bae9db7d4ba4ee0e76a033d95762dc7b88b",
+      "baseline_output_tokens": 38,
+      "candidate_output_tokens": 38,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "narrativeqa",
+      "id": "43867169c16323f8898535ee903c8541238c249da965d6f8",
+      "baseline_output_tokens": 4,
+      "candidate_output_tokens": 4,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "narrativeqa",
+      "id": "52c910fb919a865d201b4d6a723f624290e2c663d282315a",
+      "baseline_output_tokens": 12,
+      "candidate_output_tokens": 12,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "narrativeqa",
+      "id": "563e90502f5614d7c6767f0d1c54677e8ad7523dd9627bc6",
+      "baseline_output_tokens": 41,
+      "candidate_output_tokens": 41,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "narrativeqa",
+      "id": "5eaa334fa7a1d55b36d65745662a6d44a0b13c32a8a773a8",
+      "baseline_output_tokens": 10,
+      "candidate_output_tokens": 10,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "narrativeqa",
+      "id": "60cacef36b194be88d2a8a4fa816324ffcb672f336197584",
+      "baseline_output_tokens": 3,
+      "candidate_output_tokens": 3,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "narrativeqa",
+      "id": "616db78bbe044951aa6dd2cf7694fa9cb2679093fa94bb25",
+      "baseline_output_tokens": 8,
+      "candidate_output_tokens": 8,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "narrativeqa",
+      "id": "627d4b1bf8c78ab08d4da01abc81be9e724d1e8bcb2d2e6b",
+      "baseline_output_tokens": 33,
+      "candidate_output_tokens": 33,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "narrativeqa",
+      "id": "6400c535cd592c9e7e30d15803baa5c7f98e2c06e7ea1da6",
+      "baseline_output_tokens": 92,
+      "candidate_output_tokens": 77,
+      "f1_delta": 0.0042154566744730705,
+      "final_kv_storage_delta_bytes": -1720320
+    },
+    {
+      "dataset": "narrativeqa",
+      "id": "677af5490eddd9e1d2ecd66ab0d1e038d1f7e7c5e985accf",
+      "baseline_output_tokens": 46,
+      "candidate_output_tokens": 46,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "narrativeqa",
+      "id": "67933dc11fce5ce5b80acc04541f0442117aca5eccc06b6f",
+      "baseline_output_tokens": 52,
+      "candidate_output_tokens": 53,
+      "f1_delta": -0.0020202020202020193,
+      "final_kv_storage_delta_bytes": 114688
+    },
+    {
+      "dataset": "narrativeqa",
+      "id": "68fc4dee839213b5259d41718909195c2f5274665bc18036",
+      "baseline_output_tokens": 25,
+      "candidate_output_tokens": 39,
+      "f1_delta": -0.0357142857142857,
+      "final_kv_storage_delta_bytes": -2064384
+    },
+    {
+      "dataset": "narrativeqa",
+      "id": "7098b345b24738b291638f32aa4638357c96f0298ae4a1a0",
+      "baseline_output_tokens": 10,
+      "candidate_output_tokens": 10,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "narrativeqa",
+      "id": "7570a52d69ab93c5f54eba4c45d44a3411650c1e4694760a",
+      "baseline_output_tokens": 33,
+      "candidate_output_tokens": 33,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "narrativeqa",
+      "id": "78e1602679a5ca1b22f32e665e8c31039b1a0c16a099efe5",
+      "baseline_output_tokens": 38,
+      "candidate_output_tokens": 38,
+      "f1_delta": 0.0022988505747126436,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "narrativeqa",
+      "id": "7b71f8fab58b267e1a174412725a0d0df25f260d596d9c70",
+      "baseline_output_tokens": 5,
+      "candidate_output_tokens": 5,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "narrativeqa",
+      "id": "7e1df407b7018ef82e2ade488c601066798bbe67a39a6da4",
+      "baseline_output_tokens": 33,
+      "candidate_output_tokens": 33,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "narrativeqa",
+      "id": "82c3336e4f0ee4fc778e163032ecdfcd091dd8c91f50929c",
+      "baseline_output_tokens": 16,
+      "candidate_output_tokens": 16,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "narrativeqa",
+      "id": "8341f7a6590de673c41b1847546ba9a2b7bef46906443a29",
+      "baseline_output_tokens": 60,
+      "candidate_output_tokens": 60,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "narrativeqa",
+      "id": "86ee167f1c1b90775808f5d595a56d8c0fe1b2ff3cc46197",
+      "baseline_output_tokens": 17,
+      "candidate_output_tokens": 17,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "narrativeqa",
+      "id": "90cd90dd2b5ecaa57b899f172cabca1baa2db41646acedd2",
+      "baseline_output_tokens": 2,
+      "candidate_output_tokens": 2,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "narrativeqa",
+      "id": "923329f49e6ae0c9f11914e9b90d01a64bc74f6c0dd663bd",
+      "baseline_output_tokens": 4,
+      "candidate_output_tokens": 4,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "narrativeqa",
+      "id": "973ac7fc4eb400348ec30dae56ba4d177d0ade45a3529d3e",
+      "baseline_output_tokens": 31,
+      "candidate_output_tokens": 31,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "narrativeqa",
+      "id": "9b7e93c37eda3b907a9caa5eba250f8b25484613a10f8d95",
+      "baseline_output_tokens": 41,
+      "candidate_output_tokens": 41,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "narrativeqa",
+      "id": "9faec974fe4711c5b929ebc90f89336aeafe4ad8c5801872",
+      "baseline_output_tokens": 6,
+      "candidate_output_tokens": 6,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "narrativeqa",
+      "id": "a24cee35ff6ec6914bf94c1ef8b6cd4f9730a77d4caaa8b2",
+      "baseline_output_tokens": 40,
+      "candidate_output_tokens": 63,
+      "f1_delta": -0.02036199095022624,
+      "final_kv_storage_delta_bytes": 2637824
+    },
+    {
+      "dataset": "narrativeqa",
+      "id": "a3bfcf39ca219cf1af8a91c3f3e30bdcf3f16f7f8f0f1adb",
+      "baseline_output_tokens": 3,
+      "candidate_output_tokens": 3,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "narrativeqa",
+      "id": "a5a146aef10058746200bd69eda1c3dc093261cc97ec32ce",
+      "baseline_output_tokens": 23,
+      "candidate_output_tokens": 23,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "narrativeqa",
+      "id": "a8c929d6037b84d914b05d984865cbd3651b578544f0e3bf",
+      "baseline_output_tokens": 18,
+      "candidate_output_tokens": 18,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "narrativeqa",
+      "id": "ac44a02780985754f0c439cdc0fa9b0ed3a9f80e76da0304",
+      "baseline_output_tokens": 10,
+      "candidate_output_tokens": 10,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "narrativeqa",
+      "id": "acc4bde34060bc451a73e0e1e0d0bc7e1ca93695bc8112a1",
+      "baseline_output_tokens": 36,
+      "candidate_output_tokens": 36,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "narrativeqa",
+      "id": "af8f267654c2ca703d2044593d63c658c8716e66306dd65a",
+      "baseline_output_tokens": 17,
+      "candidate_output_tokens": 17,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "narrativeqa",
+      "id": "b4fc3cd3603720687018d2b4ec677a948aa3555ed8b218f9",
+      "baseline_output_tokens": 14,
+      "candidate_output_tokens": 14,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "narrativeqa",
+      "id": "b7b3b83227d5bd105ada694c356855ffe9e2a5e09dd613ab",
+      "baseline_output_tokens": 3,
+      "candidate_output_tokens": 3,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "narrativeqa",
+      "id": "b91ede2d2d08ea6f5f3b894c932b70e141665dd59d334dc8",
+      "baseline_output_tokens": 35,
+      "candidate_output_tokens": 32,
+      "f1_delta": 0.003676470588235295,
+      "final_kv_storage_delta_bytes": 3325952
+    },
+    {
+      "dataset": "narrativeqa",
+      "id": "cb00113ac346ae33f58e2d4729f7c2bc5ef5a6e32adc193b",
+      "baseline_output_tokens": 42,
+      "candidate_output_tokens": 42,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "narrativeqa",
+      "id": "cb76250ae8598592d1baa7ca35e914646a3d5dcbf8220896",
+      "baseline_output_tokens": 10,
+      "candidate_output_tokens": 10,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "narrativeqa",
+      "id": "d22828536f4d6bee11bd1f15f636bddd18fa8f246ef1be6c",
+      "baseline_output_tokens": 17,
+      "candidate_output_tokens": 17,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "narrativeqa",
+      "id": "d298b30eedffe37aa3082a45a8be4cc7dfe4f2b9cba5dc96",
+      "baseline_output_tokens": 16,
+      "candidate_output_tokens": 16,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "narrativeqa",
+      "id": "d41198bdebd7b9472ae77beecbe8b7e1b7a46dca92d2d8f2",
+      "baseline_output_tokens": 10,
+      "candidate_output_tokens": 10,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "narrativeqa",
+      "id": "d4bc46084679d5f1301df1a824097be4c5c47203e0ca2682",
+      "baseline_output_tokens": 16,
+      "candidate_output_tokens": 16,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "narrativeqa",
+      "id": "d660c82758a6d8d265d8214e779593755f968c1f75acfb87",
+      "baseline_output_tokens": 22,
+      "candidate_output_tokens": 22,
+      "f1_delta": -0.005847953216374269,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "narrativeqa",
+      "id": "d844057a13c2cc7018e8328dfe10767938b3e28689e359ff",
+      "baseline_output_tokens": 5,
+      "candidate_output_tokens": 5,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "narrativeqa",
+      "id": "d99cd0d28d5737d137c97f32cd4f4938884b389d7a382687",
+      "baseline_output_tokens": 8,
+      "candidate_output_tokens": 8,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "narrativeqa",
+      "id": "dd97ebb3408847191356780310676099e897a13ba1b1b4d0",
+      "baseline_output_tokens": 55,
+      "candidate_output_tokens": 55,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "narrativeqa",
+      "id": "de8d64e55be4e4abc78ab3c27e7f28ebd28c7484c111b435",
+      "baseline_output_tokens": 51,
+      "candidate_output_tokens": 51,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "narrativeqa",
+      "id": "deaf226b06424a0b0603f5aba885cb4420774c9df944bbf1",
+      "baseline_output_tokens": 5,
+      "candidate_output_tokens": 5,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "narrativeqa",
+      "id": "e39f9c371b47fb74a202d1f30bc46e806791d0ee81b1b2d4",
+      "baseline_output_tokens": 17,
+      "candidate_output_tokens": 17,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "narrativeqa",
+      "id": "ef34f858c45b105916d82027347c397ca58151b0a6bd37aa",
+      "baseline_output_tokens": 2,
+      "candidate_output_tokens": 2,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "narrativeqa",
+      "id": "fd7551a90b78405f6b71079bb8565a2c9f60db1b7e4179c8",
+      "baseline_output_tokens": 12,
+      "candidate_output_tokens": 12,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "qasper",
+      "id": "036bfbdbfff8294f59afd5860663bbb4349924c9853b2151",
+      "baseline_output_tokens": 27,
+      "candidate_output_tokens": 14,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": -1490944
+    },
+    {
+      "dataset": "qasper",
+      "id": "04174ea6c9849bfa946452cdbc20fc0c4ff9d27596099dcc",
+      "baseline_output_tokens": 2,
+      "candidate_output_tokens": 2,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "qasper",
+      "id": "06feabc1e5ca23dbfd79cbb2ea42b436c85bf6ac6a8d4b14",
+      "baseline_output_tokens": 14,
+      "candidate_output_tokens": 14,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "qasper",
+      "id": "07484380079dcec47eb573ab62eaff39a1a44b32006ec74e",
+      "baseline_output_tokens": 21,
+      "candidate_output_tokens": 21,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "qasper",
+      "id": "08034d93200eb0b2207fc07921f81e95f4a801c0961f3724",
+      "baseline_output_tokens": 2,
+      "candidate_output_tokens": 2,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "qasper",
+      "id": "091b4028a3b5e9d8248c58f17a62fd16c878da69693cfbfb",
+      "baseline_output_tokens": 2,
+      "candidate_output_tokens": 2,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "qasper",
+      "id": "10f50fd914b227d12f503b3ef4ac5fe772e70f44557c17b5",
+      "baseline_output_tokens": 5,
+      "candidate_output_tokens": 5,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "qasper",
+      "id": "159a474e0a7155a2d0b984cbb5215cdc853d721605b90154",
+      "baseline_output_tokens": 39,
+      "candidate_output_tokens": 39,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "qasper",
+      "id": "17a2b96e126ab914e1179b4794d18513627ade82d5c35554",
+      "baseline_output_tokens": 6,
+      "candidate_output_tokens": 6,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "qasper",
+      "id": "2f457d7ab54cb1afc5be7e5171425354617f49b8f75d90fa",
+      "baseline_output_tokens": 2,
+      "candidate_output_tokens": 2,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "qasper",
+      "id": "32e71ab83380bf828bc42ff6e76f4e8ae42d356a6988a79c",
+      "baseline_output_tokens": 44,
+      "candidate_output_tokens": 44,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "qasper",
+      "id": "37f06d3a413beef1661730ae1049e7adccd6308032ae1fc5",
+      "baseline_output_tokens": 39,
+      "candidate_output_tokens": 39,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "qasper",
+      "id": "3ac3eef636db11635a21a61804cb28e92c546a5686dd1e12",
+      "baseline_output_tokens": 75,
+      "candidate_output_tokens": 75,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "qasper",
+      "id": "3b069a546d5417be546f57d02981cf5ac68b4d3d6c55624a",
+      "baseline_output_tokens": 27,
+      "candidate_output_tokens": 27,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "qasper",
+      "id": "3b83a9c5c4dc7fa170724ce8378a276b8cbef90a62b13603",
+      "baseline_output_tokens": 64,
+      "candidate_output_tokens": 64,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "qasper",
+      "id": "3bb91d7f22ae15ff9fc6475233052ad0981ad7e812f7eaa7",
+      "baseline_output_tokens": 42,
+      "candidate_output_tokens": 42,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "qasper",
+      "id": "3f3d64d45cd4761fa7a9da94fbc4c41b27f3a7b856117638",
+      "baseline_output_tokens": 128,
+      "candidate_output_tokens": 128,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "qasper",
+      "id": "4b9e15e7e39589f3a953e9e6637e00c28269be034f93c00b",
+      "baseline_output_tokens": 28,
+      "candidate_output_tokens": 28,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "qasper",
+      "id": "51cd01004f7bc29798a9671b991c5223ada1d40ccb8141e0",
+      "baseline_output_tokens": 31,
+      "candidate_output_tokens": 31,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "qasper",
+      "id": "5f7af98db66df4388108e26cde4781423ca2580bb48de4fa",
+      "baseline_output_tokens": 4,
+      "candidate_output_tokens": 4,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "qasper",
+      "id": "65f7bdb541fd6f01fe866dcf694891f92533186085fcba20",
+      "baseline_output_tokens": 9,
+      "candidate_output_tokens": 9,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "qasper",
+      "id": "680ef767fe2a990615d0bc1cb1bf5f7d23c8766209138826",
+      "baseline_output_tokens": 85,
+      "candidate_output_tokens": 85,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "qasper",
+      "id": "6b9d0c1e63714067fc0b54c024dc065e63f64cbaf44ab4d0",
+      "baseline_output_tokens": 35,
+      "candidate_output_tokens": 35,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "qasper",
+      "id": "715229da03cdd7077f0ea02c5b4f67489abe24d42e4ece22",
+      "baseline_output_tokens": 40,
+      "candidate_output_tokens": 40,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "qasper",
+      "id": "757c3e92861be1ad45a06d157bb10fe162bd2163bc3baa6c",
+      "baseline_output_tokens": 2,
+      "candidate_output_tokens": 2,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "qasper",
+      "id": "76f663a13234c9da9f1d78c72b52d73ab37da0977e0001d8",
+      "baseline_output_tokens": 66,
+      "candidate_output_tokens": 66,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "qasper",
+      "id": "78ec3790de7582388e6f9f2e428ddd2f6cccef851a8fcd57",
+      "baseline_output_tokens": 61,
+      "candidate_output_tokens": 61,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "qasper",
+      "id": "7e2663bb13493e18205f6aab469fee8b2a9df281a0ba0e2a",
+      "baseline_output_tokens": 55,
+      "candidate_output_tokens": 55,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "qasper",
+      "id": "7e339da53449dbd58a1e815d55e440e712af6a1950f342b7",
+      "baseline_output_tokens": 67,
+      "candidate_output_tokens": 45,
+      "f1_delta": 0.013720742534301854,
+      "final_kv_storage_delta_bytes": 1146880
+    },
+    {
+      "dataset": "qasper",
+      "id": "7fc2e4d78ed71fd9cb767560f9f8f69124754bf212e2e3dc",
+      "baseline_output_tokens": 59,
+      "candidate_output_tokens": 112,
+      "f1_delta": -0.023188405797101463,
+      "final_kv_storage_delta_bytes": -1261568
+    },
+    {
+      "dataset": "qasper",
+      "id": "8861331a4438449d0fd62132eff72f24413fab1daf990780",
+      "baseline_output_tokens": 19,
+      "candidate_output_tokens": 19,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "qasper",
+      "id": "894a0e08b526f2093c854d91c680190c898ae6acbc1ba131",
+      "baseline_output_tokens": 89,
+      "candidate_output_tokens": 98,
+      "f1_delta": -0.0030864197530864196,
+      "final_kv_storage_delta_bytes": -2637824
+    },
+    {
+      "dataset": "qasper",
+      "id": "8f650cd8021e553a4106d292af9908f29595f88fc39385b2",
+      "baseline_output_tokens": 74,
+      "candidate_output_tokens": 74,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "qasper",
+      "id": "93004cdb0e6d24f5de0568ed952fd50655e42900dc9dbfdb",
+      "baseline_output_tokens": 49,
+      "candidate_output_tokens": 49,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "qasper",
+      "id": "9c415874c0c9fba5d1111bf3d9cb379fcbeff17fcccb560a",
+      "baseline_output_tokens": 37,
+      "candidate_output_tokens": 37,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "qasper",
+      "id": "9fb085a1f47673d1907f2378c90843b4b6e8622a14fe1fa9",
+      "baseline_output_tokens": 47,
+      "candidate_output_tokens": 47,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "qasper",
+      "id": "a3aadf47eb153a70559416ba375c57883aec1538a2b17fb5",
+      "baseline_output_tokens": 14,
+      "candidate_output_tokens": 14,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "qasper",
+      "id": "a80067307d72e349f14a1f6765d914acf0b43764afe77ab7",
+      "baseline_output_tokens": 69,
+      "candidate_output_tokens": 69,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "qasper",
+      "id": "a8f155f6d0b86040e21fdb913b07c5fa675b82dbacc0674e",
+      "baseline_output_tokens": 34,
+      "candidate_output_tokens": 36,
+      "f1_delta": 0.022627093740816923,
+      "final_kv_storage_delta_bytes": 229376
+    },
+    {
+      "dataset": "qasper",
+      "id": "ac6538e9c173ba7b453d6bf62480d56eb3761b5f6f73c328",
+      "baseline_output_tokens": 2,
+      "candidate_output_tokens": 2,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "qasper",
+      "id": "b3d9af44008c13b316e929ad00b8eeea477fdbf5aa50eab7",
+      "baseline_output_tokens": 2,
+      "candidate_output_tokens": 2,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "qasper",
+      "id": "b5481f9dfee2d9dd2154b3396a702c72f00b86508b001651",
+      "baseline_output_tokens": 20,
+      "candidate_output_tokens": 25,
+      "f1_delta": -0.03947368421052633,
+      "final_kv_storage_delta_bytes": 573440
+    },
+    {
+      "dataset": "qasper",
+      "id": "b69e327bf637183397c7d975df8e1c45fa1ad9866b71e6d1",
+      "baseline_output_tokens": 2,
+      "candidate_output_tokens": 2,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "qasper",
+      "id": "b805e336d2e8cce895100cfde3a536e632ddd5296ddece21",
+      "baseline_output_tokens": 18,
+      "candidate_output_tokens": 18,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "qasper",
+      "id": "b96a5e2e8d4b32aff5401e97c66942bf33f6c3c62a43609d",
+      "baseline_output_tokens": 128,
+      "candidate_output_tokens": 128,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "qasper",
+      "id": "bd9de91e4f20f4d0e8cbd1d442c97022e5410cc9a814aa0e",
+      "baseline_output_tokens": 19,
+      "candidate_output_tokens": 19,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "qasper",
+      "id": "c3dc6e575eeee19145547b339ae1c7af914dfde59a652000",
+      "baseline_output_tokens": 36,
+      "candidate_output_tokens": 36,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "qasper",
+      "id": "c47ca982b6c4681c4741d4708801fa79a3e1cab17d0a2c4a",
+      "baseline_output_tokens": 3,
+      "candidate_output_tokens": 3,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "qasper",
+      "id": "c509e3bda123ac08967781ad78a55a157b876e9d0aa97adc",
+      "baseline_output_tokens": 13,
+      "candidate_output_tokens": 12,
+      "f1_delta": 0.05494505494505497,
+      "final_kv_storage_delta_bytes": -114688
+    },
+    {
+      "dataset": "qasper",
+      "id": "c624b6d8a5c2cbf6ad3c24de6e42d7b1b6504fe608ee3733",
+      "baseline_output_tokens": 29,
+      "candidate_output_tokens": 29,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "qasper",
+      "id": "c6464e3b2dbf1c8412496fdef56cafcccd0ccb9dd1937886",
+      "baseline_output_tokens": 79,
+      "candidate_output_tokens": 79,
+      "f1_delta": 0.0025225225225225245,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "qasper",
+      "id": "c6bf18dbbe6ad2c777f3b2db9f35a1b23c9e3ec2d138b186",
+      "baseline_output_tokens": 26,
+      "candidate_output_tokens": 26,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "qasper",
+      "id": "c9d48df129798d2aed0161fa805a289e5f75306af3e22336",
+      "baseline_output_tokens": 58,
+      "candidate_output_tokens": 58,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "qasper",
+      "id": "d230ce079b2e4ecf5d9a987fb750dcbc319a537bdcfcc3d4",
+      "baseline_output_tokens": 21,
+      "candidate_output_tokens": 21,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "qasper",
+      "id": "d696cd0b146419d53d72071d8b8949fc562ea4addb87eb96",
+      "baseline_output_tokens": 29,
+      "candidate_output_tokens": 29,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "qasper",
+      "id": "e48405471fa8e3af3ddf67e7e9deb109523dfab05dc9d659",
+      "baseline_output_tokens": 15,
+      "candidate_output_tokens": 15,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "qasper",
+      "id": "e57ea6390f796b88ab34da666c6576609db900eb9d0d9b24",
+      "baseline_output_tokens": 58,
+      "candidate_output_tokens": 58,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "qasper",
+      "id": "ebd4ae480fe1596841b2132e96f40eac8437c800db8ef59e",
+      "baseline_output_tokens": 12,
+      "candidate_output_tokens": 12,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "qasper",
+      "id": "f0f715a6867aa0e4b6ef1eab6827162fba00296faa55114e",
+      "baseline_output_tokens": 42,
+      "candidate_output_tokens": 42,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "qasper",
+      "id": "f27a64d129091a6c8973c001ff789b8f68955b8ff0ae70af",
+      "baseline_output_tokens": 12,
+      "candidate_output_tokens": 12,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "qasper",
+      "id": "f4aa62dcbb2bac20bc9ef1361ad811d6822f66df83f0930d",
+      "baseline_output_tokens": 44,
+      "candidate_output_tokens": 44,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "qasper",
+      "id": "f545e80cf01375e891406755e35019032cb4b7621338b707",
+      "baseline_output_tokens": 14,
+      "candidate_output_tokens": 14,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "qasper",
+      "id": "f55efaaee938369fc4be8a430e531c164168be643b3cfe57",
+      "baseline_output_tokens": 15,
+      "candidate_output_tokens": 15,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    },
+    {
+      "dataset": "qasper",
+      "id": "fe6e5087f91071369646d9d868d784a290d0d13013292b61",
+      "baseline_output_tokens": 33,
+      "candidate_output_tokens": 33,
+      "f1_delta": 0.0,
+      "final_kv_storage_delta_bytes": 0
+    }
+  ],
+  "weights_fully_hashed": true,
+  "claim_boundary": "No production throughput, HBM-pool capacity, paging or DMA conclusion. Nonsignificance does not prove equivalence. Different output lengths confound latency comparisons."
+}

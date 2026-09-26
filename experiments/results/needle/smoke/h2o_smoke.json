@@ -1,0 +1,180 @@
+{
+  "model": "/public/model_zoo/Llama-3.1-8B-Instruct",
+  "policy": "h2o",
+  "fallback": null,
+  "hbm_budget": 0.1,
+  "workload": "ruler",
+  "prompts_file": null,
+  "family": null,
+  "sigma": null,
+  "slo": {
+    "name": "tpot-P99-4000ms",
+    "kind": "TPOT",
+    "percentile": 99.0,
+    "threshold_ms": 4000.0,
+    "miss_target": 0.010000000000000009
+  },
+  "context_length": 16384,
+  "num_requests": 2,
+  "wall_time_s": 21.839157581329346,
+  "f1_mean": 0.7,
+  "em_mean": 0.5,
+  "substring_mean": 1.0,
+  "tokens_per_second": 0.5494717438304029,
+  "tpot_p50_us": 118261.97130217627,
+  "tpot_p90_us": 124704.50182583608,
+  "tpot_p99_us": 126165.62646396656,
+  "tpot_p999_us": 126311.7389277796,
+  "tpot_max_us": 126327.97364598105,
+  "miss_ratio": 0.0,
+  "miss_count": 0,
+  "deadline_us": 4000000.0,
+  "bound_lemma2_miss": null,
+  "pessimism": null,
+  "bound_inputs": {
+    "base_cost_us": null,
+    "base_cost_source": null,
+    "B_t_avg": null,
+    "B_t_source": null,
+    "ell_bar_us": 200.0,
+    "sigma_residual_us": 100.0,
+    "epsilon": null,
+    "eps_source": "n/a (non-seer)"
+  },
+  "io_mode": "measured-dma",
+  "policy_stats": null,
+  "results": [
+    {
+      "pred": "7919",
+      "ref": "7919",
+      "n_gen_tokens": 3,
+      "policy": "h2o",
+      "budget_frac": 0.1,
+      "decision_period": 8,
+      "prefill_us": 9962460.302998807,
+      "per_step_us": [
+        123621.03424947092,
+        112325.44302762761
+      ],
+      "per_step_base_us": [
+        123574.68499976676,
+        112287.3719996278
+      ],
+      "per_step_io_us": [
+        46.349249704158815,
+        38.07102799981976
+      ],
+      "per_step_block_count": [
+        51,
+        51
+      ],
+      "per_step_B_t_oracle": [
+        51,
+        51
+      ],
+      "per_step_eps_measured": [
+        0.5729166666666665,
+        0.4810049019607843
+      ],
+      "id": 0,
+      "f1": 1.0,
+      "em": 1.0,
+      "substring": 1.0,
+      "latency_stats": {
+        "n": 2,
+        "mean_us": 117973.23863854926,
+        "p50_us": 117973.23863854926,
+        "p90_us": 122491.4751272866,
+        "p99_us": 123508.07833725249,
+        "p999_us": 123609.73865824907,
+        "max_us": 123621.03424947092,
+        "miss_count": 0,
+        "miss_ratio": 0.0
+      }
+    },
+    {
+      "pred": "The secret password is 15838.",
+      "ref": "15838",
+      "n_gen_tokens": 9,
+      "policy": "h2o",
+      "budget_frac": 0.1,
+      "decision_period": 8,
+      "prefill_us": 9173369.469001045,
+      "per_step_us": [
+        116564.57638564413,
+        112793.10185982478,
+        124524.11606804219,
+        115564.56580035272,
+        119959.3662187084,
+        122350.27882875243,
+        115514.18384348069,
+        126327.97364598105
+      ],
+      "per_step_base_us": [
+        116525.00099989993,
+        112746.08600069769,
+        124477.08999934548,
+        115518.78499994928,
+        119914.8099985905,
+        122307.24199980614,
+        115474.69600009208,
+        126290.0929996249
+      ],
+      "per_step_io_us": [
+        39.575385744209754,
+        47.015859127084475,
+        47.026068696709444,
+        45.78080040344488,
+        44.55622011789728,
+        43.03682894628886,
+        39.48784338859923,
+        37.88064635614319
+      ],
+      "per_step_block_count": [
+        51,
+        51,
+        51,
+        51,
+        51,
+        51,
+        51,
+        51
+      ],
+      "per_step_B_t_oracle": [
+        51,
+        51,
+        51,
+        51,
+        51,
+        51,
+        51,
+        51
+      ],
+      "per_step_eps_measured": [
+        0.47916666666666663,
+        0.5692401960784312,
+        0.5955882352941176,
+        0.6017156862745097,
+        0.5594362745098038,
+        0.5422794117647058,
+        0.4969362745098039,
+        0.48223039215686275
+      ],
+      "id": 1,
+      "f1": 0.4,
+      "em": 0.0,
+      "substring": 1.0,
+      "latency_stats": {
+        "n": 8,
+        "mean_us": 119199.7703313483,
+        "p50_us": 118261.97130217627,
+        "p90_us": 125065.27334142386,
+        "p99_us": 126201.70361552533,
+        "p999_us": 126315.34664293549,
+        "max_us": 126327.97364598105,
+        "miss_count": 0,
+        "miss_ratio": 0.0
+      }
+    }
+  ]
+}

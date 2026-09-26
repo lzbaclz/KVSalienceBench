@@ -1,0 +1,86 @@
+name: Validate camera-ready artifact
+on:
+  push:
+    branches: [main, fix/d2ai-camera-ready-validation, fix/camera-ready-number-audit]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  cpu-and-paper:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      TOKENIZERS_PARALLELISM: 'false'
+      HF_HUB_OFFLINE: '1'
+      TRANSFORMERS_OFFLINE: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install pinned CPU validation runtime
+        run: |
+          python -m pip install torch==2.6.0 --index-url https://download.pytorch.org/whl/cpu
+          python -m pip install -e '.[test,validation,paper]'
+          python -c 'import torch, transformers; assert torch.__version__.startswith("2.6.0"); assert transformers.__version__ == "4.51.3"'
+      - name: Run CPU tests and entrypoint checks
+        run: |
+          set -o pipefail
+          mkdir -p /tmp/kv-validation
+          python scripts/prepare_seer.py
+          export KVSALIENCE_SEER_ROOT="$PWD/build/seer-5a7fbee19045"
+          python experiments/seer_pinned/smoke_cpu.py
+          python experiments/audit_oracle_count_mapping.py --out /tmp/kv-validation/oracle-count-audit.json
+          cmp experiments/results/served_oracle_ci/count_mapping_audit.json /tmp/kv-validation/oracle-count-audit.json
+          pytest -q | tee /tmp/kv-validation/pytest.txt
+          bash -n scripts/run_physical_kv_matrix.sh
+          python -m compileall -q xqp experiments/analyze_oracle_budget.py experiments/analyze_decision_operating_point.py experiments/run_physical_kv.py experiments/analyze_physical_kv.py experiments/prepare_physical_qa.py experiments/run_query_control_v2.py experiments/summarize_physical_kv.py scripts/check_camera_ready.py
+      - name: Re-derive the oracle-budget decomposition from the archived cells
+        run: |
+          set -o pipefail
+          for R in e2e_confirm budget_sweep/b0.10 budget_sweep/b0.30 budget_sweep/b0.50 longctx/c16384_n64; do
+            python experiments/analyze_oracle_budget.py --root "experiments/results/$R" > /dev/null
+          done
+      - name: Re-derive the committed GPU summaries from their raw cells
+        run: |
+          set -o pipefail
+          P=experiments/results/physical_kv
+          python experiments/summarize_physical_kv.py --run-dir $P/llama3.1-v1 \
+            --qa-meta $P/physical-qa-llama-v1.jsonl.meta.json \
+            --query-analysis $P/query-v2/query-v2.llama.bs32.analysis.json \
+            --query-meta $P/query-v2/query-v2.llama.bs32.jsonl.meta.json \
+            --model Llama-3.1-8B-Instruct --check
+          python experiments/summarize_physical_kv.py --run-dir $P/qwen25-v1 \
+            --qa-meta $P/physical-qa-qwen-v1.jsonl.meta.json \
+            --query-analysis $P/query-v2/query-v2.qwen.bs32.analysis.json \
+            --query-meta $P/query-v2/query-v2.qwen.bs32.jsonl.meta.json \
+            --model Qwen2.5-7B-Instruct \
+            --note "$(python -c 'import json;print(json.load(open("'"$P"'/qwen25-v1/summary.json"))["note"])')" --check
+      - name: Install LaTeX and PDF inspection tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends latexmk texlive-latex-extra texlive-fonts-recommended texlive-science poppler-utils
+      - name: Rebuild figure labels and manuscript
+        run: |
+          python experiments/fig_redund_calib.py
+          python experiments/fig_cell_forest.py
+          (cd paper_icdm && latexmk -g -pdf -interaction=nonstopmode -halt-on-error main.tex)
+          python scripts/check_camera_ready.py
+          python scripts/check_figure_assets.py
+          # IEEE PDF eXpress rejects Type 3 fonts; figures must embed Type 42/Type 1 only.
+          ! pdffonts paper_icdm/main.pdf | awk '$2=="Type" && $3=="3"' | grep -q .
+          cp paper_icdm/main.pdf /tmp/kv-validation/DM2158_D2AI_camera_ready.pdf
+          cp paper_icdm/main.log /tmp/kv-validation/latex.log
+          git rev-parse HEAD > /tmp/kv-validation/REVISION.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: validated-paper-and-logs
+          path: /tmp/kv-validation/
+          retention-days: 14
+          if-no-files-found: warn

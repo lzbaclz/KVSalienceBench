@@ -1,0 +1,48 @@
+{
+  "experiment": "Native cross-layer + accumulated-within design test in deployment (refuted)",
+  "date": "2026-06-02",
+  "setup": "SEER serving sim, Llama-3.1-8B, mooncake, ctx4096, N16, new48, measured-DMA",
+  "eps_oracle_FN": {
+    "h2o": {
+      "b0.10": 0.685,
+      "b0.20": 0.5,
+      "b0.30": 0.368
+    },
+    "xqp": {
+      "b0.10": 0.719,
+      "b0.20": 0.609,
+      "b0.30": 0.547
+    },
+    "xqpnative": {
+      "b0.10": 0.719,
+      "b0.20": 0.609,
+      "b0.30": 0.546
+    },
+    "xqpfull": {
+      "b0.10": 0.719,
+      "b0.20": 0.609,
+      "b0.30": 0.546
+    }
+  },
+  "cross_dominant_probe": {
+    "native_off": 0.6469,
+    "native_on": 0.647,
+    "note": "cross-dominant scorer (w=[5,40,0,0]) keeping prev-layer top-r gets eps 0.647 >> H2O 0.500; the cross signal is a WORSE predictor of the current masked oracle than H2O accumulation"
+  },
+  "findings": [
+    "Native cross-layer indicator (true prev-layer top-r, free at decode) gives NO deployment improvement (xqpnative==xqp); plumbing verified active (native ON/OFF differ 0.0001).",
+    "H2O-style accumulated within feature gives NO improvement either (xqpfull==xqp).",
+    "H2O beats every learned variant at every budget.",
+    "ROOT CAUSE: the offline label (future top-r by FULL attention, h4) and the deployment oracle (current top-B_t by MASKED attention) are DIFFERENT targets. The 2-view wins offline (+0.10 recall@10%) on the former; H2O wins deployment on the latter because its running accumulation directly tracks current heavy-hitters.",
+    "METHODOLOGICAL TAKEAWAY: offline saliency-prediction accuracy does NOT predict deployment selection quality at block granularity \u2014 a model can win every offline metric and still lose to a trivial heavy-hitter in the loop."
+  ],
+  "future_aware_test": {
+    "method": "bin per_step_eps by k = step % decision_period(8); does learned eps degrade slower with lookahead than H2O?",
+    "b0.20": {
+      "h2o_k0_k7": "0.501->0.494 (flat)",
+      "xqp_k0_k7": "0.607->0.619 (flat, worse at every k)"
+    },
+    "verdict": "REFUTED \u2014 H2O wins at every lookahead k; neither degrades within the 8-step window because intra-generation drift is mild (salient set stable). No predictive-eviction advantage exists to exploit."
+  },
+  "overall_verdict": "Three design hypotheses (horizon-lookahead, native-cross/accum-within, future-aware-eviction) all CLEANLY REFUTED. At block granularity, reactive H2O is near-optimal in deployment; no learned selector beats it because mild within-generation drift makes the salient set stable. The honest contribution is the measurement/benchmark + this rigorous negative, not a selector that beats H2O."
+}

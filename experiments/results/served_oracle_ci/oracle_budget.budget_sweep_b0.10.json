@@ -1,0 +1,82 @@
+{
+  "schema": "oracle-budget-v1",
+  "root": "experiments/results/budget_sweep/b0.10",
+  "datasets": [
+    "2wikimqa",
+    "hotpotqa",
+    "multifieldqa_en",
+    "musique",
+    "narrativeqa",
+    "qasper",
+    "triviaqa"
+  ],
+  "label_rule": "served oracle: top max(32, floor(0.1 n)); policy budget: round(f n)",
+  "policies": {
+    "h2o": {
+      "n_requests": 448,
+      "kept_blocks": {
+        "mean": 12.495089285714286,
+        "min": 4.0,
+        "max": 13.0
+      },
+      "oracle_set_size": {
+        "mean": 32.0,
+        "min": 32.0,
+        "max": 32.0
+      },
+      "steps_with_budget_below_oracle": 1.0,
+      "measured_miss": {
+        "mean": 0.7269596581931852,
+        "min": 0.61962890625,
+        "max": 0.87626953125
+      },
+      "forced_floor": {
+        "mean": 0.6095284598214287,
+        "min": 0.59375,
+        "max": 0.875
+      },
+      "selector_residual": {
+        "mean": 0.11743119837175664,
+        "min": 0.0,
+        "max": 0.23046875
+      }
+    },
+    "xqp": {
+      "n_requests": 448,
+      "kept_blocks": {
+        "mean": 12.495155775075988,
+        "min": 4.0,
+        "max": 13.0
+      },
+      "oracle_set_size": {
+        "mean": 32.0,
+        "min": 32.0,
+        "max": 32.0
+      },
+      "steps_with_budget_below_oracle": 1.0,
+      "measured_miss": {
+        "mean": 0.7397647216648616,
+        "min": 0.6611328125,
+        "max": 0.9030086436170213
+      },
+      "forced_floor": {
+        "mean": 0.6095263820288753,
+        "min": 0.59375,
+        "max": 0.875
+      },
+      "selector_residual": {
+        "mean": 0.13023833963598627,
+        "min": 0.0,
+        "max": 0.25
+      }
+    }
+  },
+  "context_tokens": 4096,
+  "prompt_blocks": 128,
+  "budget_fraction": 0.1,
+  "offline_label_k": 13,
+  "served_oracle_k": 32,
+  "policy_budget_blocks": 13,
+  "oracle_floor_branch_active": true,
+  "recall_ceiling_at_full_prompt": 0.40625
+}

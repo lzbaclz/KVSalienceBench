@@ -1,0 +1,196 @@
+{
+  "schema_version": 1,
+  "status": "passed",
+  "args": {
+    "model": "/public/model_zoo/Qwen2.5-7B-Instruct",
+    "data": "/home/lzq/codes/accepted_papers/KVSalienceBench/experiments/results/physical_kv/physical-qa-qwen-v1.jsonl",
+    "out": "/home/lzq/codes/accepted_papers/KVSalienceBench/experiments/results/physical_kv/qwen25-v1/physical-gates-fp32.json",
+    "policy": "xqp_reconstructed",
+    "backend": "physical",
+    "budget": 0.2,
+    "block_size": 32,
+    "sink_blocks": 1,
+    "recent_blocks": 1,
+    "prefill_chunk": 256,
+    "observation_window": 64,
+    "weights": "/home/lzq/codes/accepted_papers/KVSalienceBench/experiments/predictors/xqp_closed_2view_h4.json",
+    "device": "cuda:0",
+    "dtype": "float32",
+    "max_new_tokens": 128,
+    "max_input_tokens": 4096,
+    "chat": true,
+    "fixed_output": false,
+    "gate_only": true,
+    "gate_tokens": 1024,
+    "gate_steps": 4,
+    "warmup": 1,
+    "seed": 0,
+    "hash_model_weights": true
+  },
+  "git": {
+    "revision": "8821a212e8f9ddd578b3824fc64b978fd6eafb35",
+    "dirty": true
+  },
+  "config": {
+    "policy": "xqp_reconstructed",
+    "backend": "physical",
+    "budget_fraction": 0.2,
+    "block_size": 32,
+    "sink_blocks": 1,
+    "recent_blocks": 1,
+    "ema_decay": 0.9,
+    "cross_fraction": 0.1,
+    "prefill_chunk": 256,
+    "observation_window": 64
+  },
+  "data_sha256": "46ee183b690874f5e30e112a097bc4a691f0424e98447be9135ef3db184c10c0",
+  "checkpoint_files_sha256": {
+    "config.json": "7463bb0ea78315365e6c6b74de4e73bbcc8359dfb0c5a737584e077d42c0b03c",
+    "generation_config.json": "3a8f9087e486054c8a4a08dae2e5a3ba62e23da212b5b8c08bc42cb983c3459f",
+    "model.safetensors.index.json": "624bf7c47cd12468fdc16e38a47cf4f19e0415b859a223ba3c027eed2f0e1028",
+    "tokenizer.json": "c0382117ea329cdf097041132f6d735924b697924d6f6fc3945713e96ce87539",
+    "tokenizer_config.json": "5b5d4f65d0acd3b2d56a35b56d374a36cbc1c8fa5cf3b3febbbfabf22f359583",
+    "vocab.json": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910",
+    "model-00001-of-00004.safetensors": "a1333e6293854747c481288ea83b348226af178dd565c49b6f9495ba1966aba7",
+    "model-00002-of-00004.safetensors": "f5d25a2772cb825164a2a2c0fb6d51a87e282abf21e4dd75bc5cfb3cd0ea6185",
+    "model-00003-of-00004.safetensors": "8efdec4c1bc12317ae1a38dc42b595ce777738a64deea3fcb8a0a91381bcdfd5",
+    "model-00004-of-00004.safetensors": "1a72d403cdf0c1ec3cb7f289f17b394a01e64394c2e9b3c0f94dbce3faf879bd"
+  },
+  "weights_hashed": true,
+  "predictor_sha256": "4696ed039d784b19bbc5576db7bc6cf1b20a839b9c2e2e625d86354b34d8fc7c",
+  "source_sha256": {
+    "physical_kv.py": "dfe4be51b71dde8533c0b6e0e4ddd18ebc7777f7a7c0798c625ff9537d37823c",
+    "physical_validation.py": "148948b48308e57b486a5c3f2178158cf8d514f168e3084beb4cc1febe2b189b",
+    "run_physical_kv.py": "d84f044006188549a17409b6d91ece8d624dab5aa6171eb2865340f8da97378f"
+  },
+  "runtime": {
+    "python": "3.11.15",
+    "torch": "2.6.0+cu124",
+    "transformers": "4.51.3",
+    "cuda": "12.4",
+    "device": "cuda:0",
+    "gpu_name": "NVIDIA A100-SXM4-80GB",
+    "cpu_threads": 1,
+    "pid": 2819352
+  },
+  "measurement_scope": "reference eager, single request, irreversible per-layer block selection; NOT production throughput, offload, DMA or allocator-pool capacity",
+  "policy_scope": "h2o_block is a shared-per-KV-head block accumulator; xqp_reconstructed is a new explicitly defined online realization, not the exact historical SEER scorer",
+  "quality_metric": "English QA token F1, max over references",
+  "gates": {
+    "passed": true,
+    "prompt_tokens": 1024,
+    "decode_steps": 4,
+    "input_token_sha256": "fe62a91d3bc98e9d75b8a602176a0f0f847ddbf42a2dfb16a992addd94fc4416",
+    "config": {
+      "policy": "xqp_reconstructed",
+      "backend": "physical",
+      "budget_fraction": 0.2,
+      "block_size": 32,
+      "sink_blocks": 1,
+      "recent_blocks": 1,
+      "ema_decay": 0.9,
+      "cross_fraction": 0.1,
+      "prefill_chunk": 256,
+      "observation_window": 64
+    },
+    "native_full_checks": [
+      {
+        "passed": true,
+        "max_abs_error": 0.0,
+        "max_tolerance_ratio": 0.0,
+        "argmax_equal": true,
+        "atol": 2e-05,
+        "rtol": 0.0002
+      },
+      {
+        "passed": true,
+        "max_abs_error": 0.0,
+        "max_tolerance_ratio": 0.0,
+        "argmax_equal": true,
+        "atol": 2e-05,
+        "rtol": 0.0002
+      },
+      {
+        "passed": true,
+        "max_abs_error": 0.0,
+        "max_tolerance_ratio": 0.0,
+        "argmax_equal": true,
+        "atol": 2e-05,
+        "rtol": 0.0002
+      },
+      {
+        "passed": true,
+        "max_abs_error": 0.0,
+        "max_tolerance_ratio": 0.0,
+        "argmax_equal": true,
+        "atol": 2e-05,
+        "rtol": 0.0002
+      },
+      {
+        "passed": true,
+        "max_abs_error": 0.0,
+        "max_tolerance_ratio": 0.0,
+        "argmax_equal": true,
+        "atol": 2e-05,
+        "rtol": 0.0002
+      }
+    ],
+    "masked_replay_checks": [
+      {
+        "passed": true,
+        "max_abs_error": 0.0,
+        "max_tolerance_ratio": 0.0,
+        "argmax_equal": true,
+        "atol": 2e-05,
+        "rtol": 0.0002
+      },
+      {
+        "passed": true,
+        "max_abs_error": 1.52587890625e-05,
+        "max_tolerance_ratio": 0.39061155915260315,
+        "argmax_equal": true,
+        "atol": 2e-05,
+        "rtol": 0.0002
+      },
+      {
+        "passed": true,
+        "max_abs_error": 9.5367431640625e-06,
+        "max_tolerance_ratio": 0.2211793065071106,
+        "argmax_equal": true,
+        "atol": 2e-05,
+        "rtol": 0.0002
+      },
+      {
+        "passed": true,
+        "max_abs_error": 1.239776611328125e-05,
+        "max_tolerance_ratio": 0.41606101393699646,
+        "argmax_equal": true,
+        "atol": 2e-05,
+        "rtol": 0.0002
+      },
+      {
+        "passed": true,
+        "max_abs_error": 1.049041748046875e-05,
+        "max_tolerance_ratio": 0.24550752341747284,
+        "argmax_equal": true,
+        "atol": 2e-05,
+        "rtol": 0.0002
+      }
+    ],
+    "masked_memory": {
+      "logical_live_kv_bytes": 18808832,
+      "kv_tensor_bytes": 117899264,
+      "kv_storage_bytes": 117899264,
+      "metadata_storage_bytes": 261744,
+      "max_live_blocks_per_layer": 6
+    },
+    "physical_memory": {
+      "logical_live_kv_bytes": 18808832,
+      "kv_tensor_bytes": 18808832,
+      "kv_storage_bytes": 18808832,
+      "metadata_storage_bytes": 44016,
+      "max_live_blocks_per_layer": 6
+    },
+    "scope": "this pinned adapter; fixed-schedule numerical parity, not legacy SEER or serving performance"
+  }
+}

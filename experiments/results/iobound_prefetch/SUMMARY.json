@@ -1,0 +1,25 @@
+{
+  "experiment": "IO-bound cross-layer query-free prefetch (gate for the systems-module pivot)",
+  "setup": "SEER sim, Llama-3.1-8B, mooncake 4096, budget 0.10, io_mode=analytical ell_bar=6000us (simulated CPU/NVMe offload), h2o policy",
+  "result": {
+    "noprefetch": {
+      "tpot_p50_ms": 57.4,
+      "tpot_p99_ms": 61.2,
+      "io_pct_of_tpot": 27.6
+    },
+    "xlayer_prefetch_oracle_prev": {
+      "tpot_p50_ms": 44.1,
+      "tpot_p99_ms": 47.0,
+      "io_pct_of_tpot": 11.5
+    },
+    "tpot_reduction_pct": 23,
+    "io_hidden_pct": 68
+  },
+  "verdict": "GATE PASSED in principle: cross-layer prefetch (prev-layer attention top-K) hides 68% of recall IO and cuts TPOT 23% in the IO-bound regime.",
+  "honest_scope": [
+    "Source = oracle_prev (prev-layer ATTENTION top-K). Realizable QUERY-FREE only where you HAVE prev-layer attention over the candidate blocks: the FlexGen-style full-attention OFFLOAD regime (all KV offloaded but attended) -> predict layer-l hot blocks from layer-(l-1) attention (87.5% recall, a layer ahead), fetch ONLY those instead of ALL. FlexGen fetches all KV/layer; vLLM keeps KV in GPU. Neither does attention-predicted selective cross-layer prefetch. THIS is the novel module.",
+    "In the EVICTION-recall regime (demoted blocks masked) query-free prefetch is INERT (can't see demoted blocks' attention) -- there the realizable signal needs the query (InfiniGen q.k), confirming the earlier inert finding. So the module's home is FlexGen-style offload, not eviction-recall.",
+    "IO here is SIMULATED (analytical ell_bar). A real contribution needs measured offload (CPU/NVMe) + the realizable prev-layer-attention source, and it is a SYSTEMS contribution (MLSys-ish), not the ICDM data-mining core."
+  ],
+  "bottom_line": "First real positive of the design search: a novel, grounded systems module (selective attention-predicted cross-layer prefetch for offloaded serving) with a demonstrated 23% TPOT cut at the cross-layer-persistence ceiling. Worth a scoped systems build; honest about the realizable-source + real-offload gaps."
+}

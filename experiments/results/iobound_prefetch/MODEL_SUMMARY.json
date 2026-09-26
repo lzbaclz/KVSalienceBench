@@ -1,0 +1,78 @@
+{
+  "experiment": "Cross-layer query-free prefetch throughput model for offloaded-KV serving (measured constants)",
+  "measured_constants": {
+    "pcie_GBps": 25.0,
+    "c_dma_us_per_block": 5.25,
+    "per_layer_compute_us": {
+      "4096": 802.4,
+      "8192": 980.5,
+      "16384": 919.6,
+      "32768": 975.3,
+      "65536": 1466.0
+    },
+    "hot_fraction_h": 0.25,
+    "realizable_queryfree_recall_r": 0.875
+  },
+  "tpot_ms": {
+    "4096": {
+      "gpu_resident": 25.6768,
+      "flexgen_fetch_all": 25.6768,
+      "reactive_fetch_hot": 31.05026304015955,
+      "prefetch_hot": 26.348482880019944
+    },
+    "8192": {
+      "gpu_resident": 31.376,
+      "flexgen_fetch_all": 42.9877043212764,
+      "reactive_fetch_hot": 42.1229260803191,
+      "prefetch_hot": 32.719365760039885
+    },
+    "16384": {
+      "gpu_resident": 29.4272,
+      "flexgen_fetch_all": 85.9754086425528,
+      "reactive_fetch_hot": 50.9210521606382,
+      "prefetch_hot": 32.113931520079774
+    },
+    "32768": {
+      "gpu_resident": 31.2096,
+      "flexgen_fetch_all": 171.9508172851056,
+      "reactive_fetch_hot": 74.1973043212764,
+      "prefetch_hot": 42.9877043212764
+    },
+    "65536": {
+      "gpu_resident": 46.912,
+      "flexgen_fetch_all": 343.9016345702112,
+      "reactive_fetch_hot": 132.8874086425528,
+      "prefetch_hot": 85.9754086425528
+    }
+  },
+  "headline": {
+    "vs_reactive_matched_quality_pct": {
+      "16384": -37,
+      "32768": -42,
+      "65536": -35
+    },
+    "vs_flexgen_fetch_all_pct": {
+      "16384": -63,
+      "32768": -75,
+      "65536": -75
+    },
+    "throughput_64K_tok_s": {
+      "flexgen_fetch_all": 2.9,
+      "reactive": 7.5,
+      "prefetch_hot": 11.6,
+      "gpu_resident": 21.3
+    }
+  },
+  "claims": [
+    "MATCHED-QUALITY (same hot fraction): query-free a-layer-ahead prefetch cuts TPOT 35-42% vs reactive on-demand fetch at 16-64K context -- a pure latency-hiding win from predicting layer l's hot set from layer l-1 attention (87.5% recall, no query, issued a layer ahead).",
+    "vs FlexGen fetch-all: up to -75% TPOT / 4x throughput at 32-64K, by fetching only the hot 25% (predicted) instead of all KV (quality = hot-set vs full, a tradeoff).",
+    "Realizable: uses measured 87.5% query-free recall (prev-layer attention), NOT the oracle. All timing constants measured (PCIe 25GB/s, real per-layer compute)."
+  ],
+  "honest_caveats": [
+    "Analytical throughput model with MEASURED constants (not a full FlexGen integration).",
+    "Win regime = LONG context offload (>=16K); at 4-8K GPU-resident, not IO-bound.",
+    "Module-vs-FlexGen has a quality tradeoff (hot-set vs full); module-vs-reactive is matched-quality (clean).",
+    "Observability: the query-free prediction assumes prev-layer attention over the candidate blocks (holds in full-attention offload; a hot-set-only tier needs periodic refresh).",
+    "Systems contribution (MLSys-ish), not the ICDM data-mining core."
+  ]
+}

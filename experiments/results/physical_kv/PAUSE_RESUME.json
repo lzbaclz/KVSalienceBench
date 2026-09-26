@@ -1,0 +1,7 @@
+{
+  "resumed_at_utc": "2026-09-20T11:30:39Z",
+  "completed_at_utc": "2026-09-20T13:06:42Z",
+  "reason": "4h exclusive-GPU yield elapsed; both GPUs free. Qwen float32 matrix and query-v2 finished.",
+  "qwen_physical": "experiments/results/physical_kv/qwen25-v1/summary.json",
+  "qwen_query_v2": "experiments/results/physical_kv/query-v2/query-v2.qwen.bs32.analysis.json"
+}

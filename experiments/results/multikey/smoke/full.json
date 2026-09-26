@@ -1,0 +1,164 @@
+{
+  "model": "/public/model_zoo/Llama-3.1-8B-Instruct",
+  "policy": "full",
+  "fallback": null,
+  "hbm_budget": 0.05,
+  "workload": "longbench",
+  "prompts_file": null,
+  "family": null,
+  "sigma": null,
+  "slo": {
+    "name": "tpot-P99-4000ms",
+    "kind": "TPOT",
+    "percentile": 99.0,
+    "threshold_ms": 4000.0,
+    "miss_target": 0.010000000000000009
+  },
+  "context_length": 16384,
+  "num_requests": 4,
+  "wall_time_s": 20.268176555633545,
+  "f1_mean": 1.0,
+  "em_mean": 1.0,
+  "substring_mean": 1.0,
+  "tokens_per_second": 0.5920611539504572,
+  "tpot_p50_us": 1638293.937333098,
+  "tpot_p90_us": 1988769.5690000933,
+  "tpot_p99_us": 1988769.5690000933,
+  "tpot_p999_us": 1988769.5690000933,
+  "tpot_max_us": 1988769.5690000933,
+  "miss_ratio": 0.0,
+  "miss_count": 0,
+  "deadline_us": 4000000.0,
+  "bound_lemma2_miss": null,
+  "pessimism": null,
+  "bound_inputs": {
+    "base_cost_us": null,
+    "base_cost_source": null,
+    "B_t_avg": null,
+    "B_t_source": null,
+    "ell_bar_us": 200.0,
+    "sigma_residual_us": 100.0,
+    "epsilon": null,
+    "eps_source": "n/a (non-seer)"
+  },
+  "io_mode": "measured-dma",
+  "policy_stats": null,
+  "results": [
+    {
+      "pred": "72468",
+      "ref": "72468",
+      "n_gen_tokens": 3,
+      "policy": "full",
+      "budget_frac": 0.05,
+      "decision_period": 8,
+      "prefill_us": 0.0,
+      "per_step_us": [
+        1988769.5690000933,
+        1988769.5690000933,
+        1988769.5690000933
+      ],
+      "id": 0,
+      "f1": 1.0,
+      "em": 1.0,
+      "substring": 1.0,
+      "latency_stats": {
+        "n": 3,
+        "mean_us": 1988769.5690000933,
+        "p50_us": 1988769.5690000933,
+        "p90_us": 1988769.5690000933,
+        "p99_us": 1988769.5690000933,
+        "p999_us": 1988769.5690000933,
+        "max_us": 1988769.5690000933,
+        "miss_count": 0,
+        "miss_ratio": 0.0
+      }
+    },
+    {
+      "pred": "56372",
+      "ref": "56372",
+      "n_gen_tokens": 3,
+      "policy": "full",
+      "budget_frac": 0.05,
+      "decision_period": 8,
+      "prefill_us": 0.0,
+      "per_step_us": [
+        1451122.8253322772,
+        1451122.8253322772,
+        1451122.8253322772
+      ],
+      "id": 1,
+      "f1": 1.0,
+      "em": 1.0,
+      "substring": 1.0,
+      "latency_stats": {
+        "n": 3,
+        "mean_us": 1451122.8253322772,
+        "p50_us": 1451122.8253322772,
+        "p90_us": 1451122.8253322772,
+        "p99_us": 1451122.8253322772,
+        "p999_us": 1451122.8253322772,
+        "max_us": 1451122.8253322772,
+        "miss_count": 0,
+        "miss_ratio": 0.0
+      }
+    },
+    {
+      "pred": "68716",
+      "ref": "68716",
+      "n_gen_tokens": 3,
+      "policy": "full",
+      "budget_frac": 0.05,
+      "decision_period": 8,
+      "prefill_us": 0.0,
+      "per_step_us": [
+        1456457.4910000374,
+        1456457.4910000374,
+        1456457.4910000374
+      ],
+      "id": 2,
+      "f1": 1.0,
+      "em": 1.0,
+      "substring": 1.0,
+      "latency_stats": {
+        "n": 3,
+        "mean_us": 1456457.4910000374,
+        "p50_us": 1456457.4910000374,
+        "p90_us": 1456457.4910000374,
+        "p99_us": 1456457.4910000374,
+        "p999_us": 1456457.4910000374,
+        "max_us": 1456457.4910000374,
+        "miss_count": 0,
+        "miss_ratio": 0.0
+      }
+    },
+    {
+      "pred": "51555",
+      "ref": "51555",
+      "n_gen_tokens": 3,
+      "policy": "full",
+      "budget_frac": 0.05,
+      "decision_period": 8,
+      "prefill_us": 0.0,
+      "per_step_us": [
+        1820130.3836661584,
+        1820130.3836661584,
+        1820130.3836661584
+      ],
+      "id": 3,
+      "f1": 1.0,
+      "em": 1.0,
+      "substring": 1.0,
+      "latency_stats": {
+        "n": 3,
+        "mean_us": 1820130.3836661584,
+        "p50_us": 1820130.3836661584,
+        "p90_us": 1820130.3836661584,
+        "p99_us": 1820130.3836661584,
+        "p999_us": 1820130.3836661584,
+        "max_us": 1820130.3836661584,
+        "miss_count": 0,
+        "miss_ratio": 0.0
+      }
+    }
+  ]
+}

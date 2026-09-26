@@ -1,0 +1,40 @@
+{
+  "constants": {
+    "c_dma_us": 5.24752250015581,
+    "h": 0.25,
+    "r": 0.875,
+    "n_layers": 32
+  },
+  "tpot_ms": {
+    "4096": {
+      "gpu_resident": 25.6768,
+      "flexgen_fetch_all": 25.6768,
+      "reactive_fetch_hot": 31.05026304015955,
+      "prefetch_hot": 26.348482880019944
+    },
+    "8192": {
+      "gpu_resident": 31.376,
+      "flexgen_fetch_all": 42.9877043212764,
+      "reactive_fetch_hot": 42.1229260803191,
+      "prefetch_hot": 32.719365760039885
+    },
+    "16384": {
+      "gpu_resident": 29.4272,
+      "flexgen_fetch_all": 85.9754086425528,
+      "reactive_fetch_hot": 50.9210521606382,
+      "prefetch_hot": 32.113931520079774
+    },
+    "32768": {
+      "gpu_resident": 31.2096,
+      "flexgen_fetch_all": 171.9508172851056,
+      "reactive_fetch_hot": 74.1973043212764,
+      "prefetch_hot": 42.9877043212764
+    },
+    "65536": {
+      "gpu_resident": 46.912,
+      "flexgen_fetch_all": 343.9016345702112,
+      "reactive_fetch_hot": 132.8874086425528,
+      "prefetch_hot": 85.9754086425528
+    }
+  }
+}

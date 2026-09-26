@@ -1,0 +1,12 @@
+{
+  "trace": "Qwen3-8B.jsonl",
+  "r": 0.1,
+  "n_groups": 512,
+  "n_layer_pairs": 17920,
+  "prev_layer_prefetch_recall": 0.8745934701459255,
+  "newly_hot_auc_query": 0.7397429600271441,
+  "newly_hot_auc_prev_within": 0.9471740375702518,
+  "combined_recall_base": 0.9322516504968107,
+  "combined_recall_query_aug": 0.8676979247573373,
+  "combined_recall_lift": -0.06455372573947338
+}

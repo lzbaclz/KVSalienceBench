@@ -1,0 +1,82 @@
+{
+  "schema": "oracle-budget-v1",
+  "root": "experiments/results/budget_sweep/b0.50",
+  "datasets": [
+    "2wikimqa",
+    "hotpotqa",
+    "multifieldqa_en",
+    "musique",
+    "narrativeqa",
+    "qasper",
+    "triviaqa"
+  ],
+  "label_rule": "served oracle: top max(32, floor(0.1 n)); policy budget: round(f n)",
+  "policies": {
+    "h2o": {
+      "n_requests": 448,
+      "kept_blocks": {
+        "mean": 62.471985008487856,
+        "min": 18.0,
+        "max": 65.48936170212765
+      },
+      "oracle_set_size": {
+        "mean": 32.0,
+        "min": 32.0,
+        "max": 32.0
+      },
+      "steps_with_budget_below_oracle": 0.017857142857142856,
+      "measured_miss": {
+        "mean": 0.25821539313284175,
+        "min": 0.049153645833333336,
+        "max": 0.49609375
+      },
+      "forced_floor": {
+        "mean": 0.0038364955357142855,
+        "min": 0.0,
+        "max": 0.4375
+      },
+      "selector_residual": {
+        "mean": 0.25437889759712745,
+        "min": 0.0224609375,
+        "max": 0.49609375
+      }
+    },
+    "xqp": {
+      "n_requests": 448,
+      "kept_blocks": {
+        "mean": 62.47397161649292,
+        "min": 18.0,
+        "max": 65.48936170212765
+      },
+      "oracle_set_size": {
+        "mean": 32.0,
+        "min": 32.0,
+        "max": 32.0
+      },
+      "steps_with_budget_below_oracle": 0.017857142857142856,
+      "measured_miss": {
+        "mean": 0.3796927737672376,
+        "min": 0.2177734375,
+        "max": 0.64453125
+      },
+      "forced_floor": {
+        "mean": 0.0038364955357142855,
+        "min": 0.0,
+        "max": 0.4375
+      },
+      "selector_residual": {
+        "mean": 0.3758562782315233,
+        "min": 0.02880859375,
+        "max": 0.64453125
+      }
+    }
+  },
+  "context_tokens": 4096,
+  "prompt_blocks": 128,
+  "budget_fraction": 0.5,
+  "offline_label_k": 13,
+  "served_oracle_k": 32,
+  "policy_budget_blocks": 64,
+  "oracle_floor_branch_active": true,
+  "recall_ceiling_at_full_prompt": 1.0
+}

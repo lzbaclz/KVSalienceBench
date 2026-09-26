@@ -1,0 +1,79 @@
+{
+  "schema": "oracle-budget-v1",
+  "root": "experiments/results/e2e_confirm",
+  "datasets": [
+    "hotpotqa",
+    "multifieldqa_en",
+    "narrativeqa",
+    "qasper"
+  ],
+  "label_rule": "served oracle: top max(32, floor(0.1 n)); policy budget: round(f n)",
+  "policies": {
+    "h2o": {
+      "n_requests": 192,
+      "kept_blocks": {
+        "mean": 24.979166666666668,
+        "min": 10.0,
+        "max": 26.0
+      },
+      "oracle_set_size": {
+        "mean": 32.0,
+        "min": 32.0,
+        "max": 32.0
+      },
+      "steps_with_budget_below_oracle": 1.0,
+      "measured_miss": {
+        "mean": 0.5790157230599536,
+        "min": 0.3973524305555556,
+        "max": 0.7872548204787234
+      },
+      "forced_floor": {
+        "mean": 0.21940104166666666,
+        "min": 0.1875,
+        "max": 0.6875
+      },
+      "selector_residual": {
+        "mean": 0.35961468139328695,
+        "min": 0.03759765625,
+        "max": 0.5257457386363636
+      }
+    },
+    "xqp": {
+      "n_requests": 192,
+      "kept_blocks": {
+        "mean": 24.979166666666668,
+        "min": 10.0,
+        "max": 26.0
+      },
+      "oracle_set_size": {
+        "mean": 32.0,
+        "min": 32.0,
+        "max": 32.0
+      },
+      "steps_with_budget_below_oracle": 1.0,
+      "measured_miss": {
+        "mean": 0.6230238121748152,
+        "min": 0.4752061631944444,
+        "max": 0.765673828125
+      },
+      "forced_floor": {
+        "mean": 0.21940104166666666,
+        "min": 0.1875,
+        "max": 0.6875
+      },
+      "selector_residual": {
+        "mean": 0.4036227705081485,
+        "min": 0.015299479166666666,
+        "max": 0.578173828125
+      }
+    }
+  },
+  "context_tokens": 4096,
+  "prompt_blocks": 128,
+  "budget_fraction": 0.2,
+  "offline_label_k": 13,
+  "served_oracle_k": 32,
+  "policy_budget_blocks": 26,
+  "oracle_floor_branch_active": true,
+  "recall_ceiling_at_full_prompt": 0.8125
+}

@@ -1,0 +1,184 @@
+{
+  "schema": "decision-operating-point-v1",
+  "estimand": "per-request macro top-k precision/recall over cache decisions, paired across scorers within a request",
+  "seed": 0,
+  "n_boot": 2000,
+  "held_out_requests": 64,
+  "held_out_rows": 7633988,
+  "scorers": [
+    "LightGBM, balanced",
+    "two-view logistic (refit)",
+    "within-layer EMA"
+  ],
+  "k_fracs": [
+    0.1,
+    0.2
+  ],
+  "provenance": {
+    "Llama-3.1-8B-Instruct": {
+      "trace": "experiments/results/physical_kv/query-v2/query-v2.llama.bs32.jsonl",
+      "trace_sha256": "3126da33a1261c77e99c288853b9f77bf157e6105ed2128f5dcdd384e2edc7c0",
+      "rows": 16215424,
+      "collector_sha256": "6d94ce81498f46d3da9c8b96f02e48bb2f0df3a6df63c3eaf32d0d415564aa2f",
+      "transformers": "4.51.3",
+      "torch": "2.6.0+cu124",
+      "feature_steps": 32,
+      "lookahead_steps": 64,
+      "block_size": 32,
+      "r_label": 0.1,
+      "ema_decay": 0.9,
+      "model_type": "llama",
+      "cohort_data_sha256": "2fdd0e2ed3f6ecb24ea124126640d564194d5c45e09d12fbef3da2e1b4c8e343",
+      "model_weight_sha256": {
+        "model-00001-of-00004.safetensors": "2b1879f356aed350030bb40eb45ad362c89d9891096f79a3ab323d3ba5607668",
+        "model-00002-of-00004.safetensors": "09d433f650646834a83c580877bd60c6d1f88f7755305c12576b5c7058f9af15",
+        "model-00003-of-00004.safetensors": "fc1cdddd6bfa91128d6e94ee73d0ce62bfcdb7af29e978ddcab30c66ae9ea7fa",
+        "model-00004-of-00004.safetensors": "92ecfe1a2414458b4821ac8c13cf8cb70aed66b5eea8dc5ad9eeb4ff309d6d7b"
+      }
+    },
+    "Qwen2.5-7B-Instruct": {
+      "trace": "experiments/results/physical_kv/query-v2/query-v2.qwen.bs32.jsonl",
+      "trace_sha256": "0d8e8947a10416f913e5c87ed84cbbab70349ddb355036e6765e09ccb1a39158",
+      "rows": 14229908,
+      "collector_sha256": "6d94ce81498f46d3da9c8b96f02e48bb2f0df3a6df63c3eaf32d0d415564aa2f",
+      "transformers": "4.51.3",
+      "torch": "2.6.0+cu124",
+      "feature_steps": 32,
+      "lookahead_steps": 64,
+      "block_size": 32,
+      "r_label": 0.1,
+      "ema_decay": 0.9,
+      "model_type": "qwen2",
+      "cohort_data_sha256": "46ee183b690874f5e30e112a097bc4a691f0424e98447be9135ef3db184c10c0",
+      "model_weight_sha256": {
+        "model-00001-of-00004.safetensors": "a1333e6293854747c481288ea83b348226af178dd565c49b6f9495ba1966aba7",
+        "model-00002-of-00004.safetensors": "f5d25a2772cb825164a2a2c0fb6d51a87e282abf21e4dd75bc5cfb3cd0ea6185",
+        "model-00003-of-00004.safetensors": "8efdec4c1bc12317ae1a38dc42b595ce777738a64deea3fcb8a0a91381bcdfd5",
+        "model-00004-of-00004.safetensors": "1a72d403cdf0c1ec3cb7f289f17b394a01e64394c2e9b3c0f94dbce3faf879bd"
+      }
+    }
+  },
+  "operating_points": {
+    "0.10": {
+      "k_frac": 0.1,
+      "per_scorer": {
+        "within-layer EMA": {
+          "macro_precision_mean": 0.6590303715033416,
+          "macro_recall_mean": 0.6590303715033416
+        },
+        "two-view logistic (refit)": {
+          "macro_precision_mean": 0.6128229656884572,
+          "macro_recall_mean": 0.6128229656884572
+        },
+        "LightGBM, balanced": {
+          "macro_precision_mean": 0.6147580537632243,
+          "macro_recall_mean": 0.6147580537632243
+        }
+      },
+      "paired": {
+        "within-layer EMA minus two-view logistic (refit) (precision)": {
+          "mean": 0.046207405814884375,
+          "ci95": [
+            0.04299911176701088,
+            0.04955067832098342
+          ],
+          "n_requests": 64,
+          "n_negative": 0,
+          "n_positive": 64
+        },
+        "within-layer EMA minus two-view logistic (refit) (recall)": {
+          "mean": 0.046207405814884375,
+          "ci95": [
+            0.04299911176701088,
+            0.04955067832098342
+          ],
+          "n_requests": 64,
+          "n_negative": 0,
+          "n_positive": 64
+        },
+        "within-layer EMA minus LightGBM, balanced (precision)": {
+          "mean": 0.04427231774011735,
+          "ci95": [
+            0.04148879081650221,
+            0.047285023714933025
+          ],
+          "n_requests": 64,
+          "n_negative": 0,
+          "n_positive": 64
+        },
+        "within-layer EMA minus LightGBM, balanced (recall)": {
+          "mean": 0.04427231774011735,
+          "ci95": [
+            0.04148879081650221,
+            0.047285023714933025
+          ],
+          "n_requests": 64,
+          "n_negative": 0,
+          "n_positive": 64
+        }
+      },
+      "decision_groups_total": 61184
+    },
+    "0.20": {
+      "k_frac": 0.2,
+      "per_scorer": {
+        "within-layer EMA": {
+          "macro_precision_mean": 0.42302818745706156,
+          "macro_recall_mean": 0.8402887313298605
+        },
+        "two-view logistic (refit)": {
+          "macro_precision_mean": 0.42187686224769577,
+          "macro_recall_mean": 0.8379980061602159
+        },
+        "LightGBM, balanced": {
+          "macro_precision_mean": 0.4180527936087658,
+          "macro_recall_mean": 0.8304163943975869
+        }
+      },
+      "paired": {
+        "within-layer EMA minus two-view logistic (refit) (precision)": {
+          "mean": 0.0011513252093657963,
+          "ci95": [
+            0.0008331452924706518,
+            0.0015062820350447653
+          ],
+          "n_requests": 64,
+          "n_negative": 12,
+          "n_positive": 52
+        },
+        "within-layer EMA minus two-view logistic (refit) (recall)": {
+          "mean": 0.002290725169644509,
+          "ci95": [
+            0.0016496332972283046,
+            0.0030035947385899132
+          ],
+          "n_requests": 64,
+          "n_negative": 12,
+          "n_positive": 52
+        },
+        "within-layer EMA minus LightGBM, balanced (precision)": {
+          "mean": 0.004975393848295782,
+          "ci95": [
+            0.004389246829392079,
+            0.005590395369521264
+          ],
+          "n_requests": 64,
+          "n_negative": 0,
+          "n_positive": 64
+        },
+        "within-layer EMA minus LightGBM, balanced (recall)": {
+          "mean": 0.009872336932273452,
+          "ci95": [
+            0.008724750648368952,
+            0.011082381249426834
+          ],
+          "n_requests": 64,
+          "n_negative": 0,
+          "n_positive": 64
+        }
+      },
+      "decision_groups_total": 61184
+    }
+  },
+  "wall_s": 322.411004781723
+}

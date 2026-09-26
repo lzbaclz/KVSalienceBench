@@ -1,0 +1,34 @@
+{
+  "n_rows": 255776,
+  "n_prompts": 24,
+  "by_alpha": [
+    {
+      "target_alpha": 0.05,
+      "serving_calibrated_FN": 0.0,
+      "emergent_budget": 1.0,
+      "per_layer_FN_std": 0.0,
+      "offline_tau_FN": 0.5618
+    },
+    {
+      "target_alpha": 0.1,
+      "serving_calibrated_FN": 0.0,
+      "emergent_budget": 1.0,
+      "per_layer_FN_std": 0.0,
+      "offline_tau_FN": 0.5618
+    },
+    {
+      "target_alpha": 0.15,
+      "serving_calibrated_FN": 0.0,
+      "emergent_budget": 1.0,
+      "per_layer_FN_std": 0.0,
+      "offline_tau_FN": 0.5618
+    },
+    {
+      "target_alpha": 0.2,
+      "serving_calibrated_FN": 0.0,
+      "emergent_budget": 1.0,
+      "per_layer_FN_std": 0.0,
+      "offline_tau_FN": 0.5618
+    }
+  ]
+}

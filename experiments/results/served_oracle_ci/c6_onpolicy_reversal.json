@@ -1,0 +1,200 @@
+{
+  "task": "C6 \u2014 quantify the off-policy vs on-policy reversal of a served-oracle-trained KV scorer",
+  "seed": 20260604,
+  "n_bootstrap": 10000,
+  "off_policy_recall20": {
+    "metric": "recall@20 of served-oracle-trained scorer (GBDT on {within_accum,native_cross,recency}, no attn_now) vs H2O (within_accum) on the held-out test prompts; replicates experiments/analyze_ceiling.py recall_at; cluster bootstrap resamples TEST PROMPTS",
+    "per_model": {
+      "llama": {
+        "n_test_prompts": 12,
+        "n_test_rows": 117984,
+        "native_recall20": 0.5734,
+        "h2o_recall20": 0.5111,
+        "gain_point": 0.0624,
+        "gain_ci95": [
+          0.029,
+          0.0984
+        ],
+        "native_recall20_ci95": [
+          0.4723,
+          0.6569
+        ],
+        "h2o_recall20_ci95": [
+          0.4432,
+          0.5598
+        ]
+      },
+      "mistral": {
+        "n_test_prompts": 12,
+        "n_test_rows": 117984,
+        "native_recall20": 0.5825,
+        "h2o_recall20": 0.5183,
+        "gain_point": 0.0641,
+        "gain_ci95": [
+          0.0302,
+          0.1032
+        ],
+        "native_recall20_ci95": [
+          0.4809,
+          0.6669
+        ],
+        "h2o_recall20_ci95": [
+          0.4494,
+          0.5647
+        ]
+      },
+      "qwen": {
+        "n_test_prompts": 12,
+        "n_test_rows": 99552,
+        "native_recall20": 0.6066,
+        "h2o_recall20": 0.5748,
+        "gain_point": 0.0317,
+        "gain_ci95": [
+          0.0106,
+          0.0578
+        ],
+        "native_recall20_ci95": [
+          0.4954,
+          0.6986
+        ],
+        "h2o_recall20_ci95": [
+          0.484,
+          0.6443
+        ]
+      }
+    },
+    "headline_model": "llama"
+  },
+  "on_policy_eps": {
+    "metric": "served-oracle miss eps (per_step_eps_measured) averaged per prompt; closed-loop live runs in experiments/results/native_deploy/; paired prompt-level bootstrap (native & h2o on same 24 prompts)",
+    "lower_is_better": true,
+    "per_config": {
+      "llama_b0.20": {
+        "n_items": 24,
+        "model": "Llama-3.1-8B-Instruct",
+        "budget": 0.2,
+        "native_eps": 0.6308,
+        "h2o_eps": 0.4997,
+        "delta_native_minus_h2o": 0.1312,
+        "native_eps_ci95": [
+          0.6092,
+          0.6558
+        ],
+        "h2o_eps_ci95": [
+          0.4579,
+          0.5485
+        ],
+        "delta_ci95": [
+          0.0968,
+          0.162
+        ]
+      },
+      "llama_b0.30": {
+        "n_items": 24,
+        "model": "Llama-3.1-8B-Instruct",
+        "budget": 0.3,
+        "native_eps": 0.564,
+        "h2o_eps": 0.3688,
+        "delta_native_minus_h2o": 0.1952,
+        "native_eps_ci95": [
+          0.5481,
+          0.5832
+        ],
+        "h2o_eps_ci95": [
+          0.3246,
+          0.4198
+        ],
+        "delta_ci95": [
+          0.1536,
+          0.2333
+        ]
+      },
+      "mistral_b0.20": {
+        "n_items": 24,
+        "model": "Mistral-7B-Instruct-v0.3",
+        "budget": 0.2,
+        "native_eps": 0.5756,
+        "h2o_eps": 0.4785,
+        "delta_native_minus_h2o": 0.0971,
+        "native_eps_ci95": [
+          0.5475,
+          0.6104
+        ],
+        "h2o_eps_ci95": [
+          0.4331,
+          0.5324
+        ],
+        "delta_ci95": [
+          0.0699,
+          0.1243
+        ]
+      },
+      "qwen_b0.20": {
+        "n_items": 24,
+        "model": "Qwen2.5-7B-Instruct",
+        "budget": 0.2,
+        "native_eps": 0.5268,
+        "h2o_eps": 0.5113,
+        "delta_native_minus_h2o": 0.0155,
+        "native_eps_ci95": [
+          0.4916,
+          0.5697
+        ],
+        "h2o_eps_ci95": [
+          0.4702,
+          0.5587
+        ],
+        "delta_ci95": [
+          0.0003,
+          0.0309
+        ]
+      },
+      "llama_b0.10_native_only": {
+        "n_items": 24,
+        "model": "Llama-3.1-8B-Instruct",
+        "budget": 0.1,
+        "native_eps": 0.7423,
+        "native_eps_ci95": [
+          0.7204,
+          0.7685
+        ],
+        "h2o_eps": 0.685,
+        "h2o_eps_source": "reported in TRANSFER_GAP_RESULTS.md / SUMMARY (h2o b0.10 JSON absent; log only)",
+        "delta_native_minus_h2o": 0.0573,
+        "note": "H2O b0.10 per-item JSON missing; delta uses reported H2O point 0.685, no paired CI"
+      }
+    },
+    "headline_config": "llama_b0.20"
+  },
+  "files_used": {
+    "off_policy": [
+      "experiments/results/ceiling/feat_llama.json",
+      "experiments/results/ceiling/feat_mistral.json",
+      "experiments/results/ceiling/feat_qwen.json"
+    ],
+    "on_policy": [
+      "experiments/results/native_deploy/llama_native_b0.20.json",
+      "experiments/results/native_deploy/llama_h2o_b0.20.json",
+      "... b0.30, mistral/qwen b0.20, llama_native_b0.10.json"
+    ],
+    "note": "task pointed to native_cross/xqpnative_b*.json; those are the native-cross PROBE (policy=xqp+native_cross), the actual B closed-loop native-vs-H2O runs live in native_deploy/ and produced the 0.631/0.500 figures cited; native_cross on-policy native eps b0.20 mean is reported below for completeness"
+  },
+  "native_cross_probe_eps_for_reference": {
+    "xqpnative_b0.10": {
+      "n_items": 16,
+      "native_cross_probe_eps": 0.7194,
+      "ci95": [
+        0.6993,
+        0.7485
+      ]
+    },
+    "xqpnative_b0.20": {
+      "n_items": 16,
+      "native_cross_probe_eps": 0.6089,
+      "ci95": [
+        0.5871,
+        0.6389
+      ]
+    }
+  }
+}

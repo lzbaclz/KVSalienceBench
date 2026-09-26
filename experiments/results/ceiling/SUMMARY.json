@@ -1,0 +1,99 @@
+{
+  "per_model": {
+    "llama": {
+      "pos_rate": 0.287,
+      "within_accum(H2O)": {
+        "auc": 0.8359,
+        "recall20": 0.5119,
+        "recall20_gain_vs_H2O": 0.0008
+      },
+      "attn_now": {
+        "auc": 0.8283,
+        "recall20": 0.5576,
+        "recall20_gain_vs_H2O": 0.0466
+      },
+      "accum+now": {
+        "auc": 0.8695,
+        "recall20": 0.5666,
+        "recall20_gain_vs_H2O": 0.0555
+      },
+      "accum+cross+recency(noNow)": {
+        "auc": 0.9094,
+        "recall20": 0.5734,
+        "recall20_gain_vs_H2O": 0.0624
+      },
+      "ALL": {
+        "auc": 0.9293,
+        "recall20": 0.5946,
+        "recall20_gain_vs_H2O": 0.0836
+      },
+      "H2O_auc": 0.8359,
+      "clean_gain_recall20": 0.0624
+    },
+    "mistral": {
+      "pos_rate": 0.287,
+      "within_accum(H2O)": {
+        "auc": 0.8392,
+        "recall20": 0.518,
+        "recall20_gain_vs_H2O": -0.0003
+      },
+      "attn_now": {
+        "auc": 0.8372,
+        "recall20": 0.5678,
+        "recall20_gain_vs_H2O": 0.0495
+      },
+      "accum+now": {
+        "auc": 0.8759,
+        "recall20": 0.5735,
+        "recall20_gain_vs_H2O": 0.0552
+      },
+      "accum+cross+recency(noNow)": {
+        "auc": 0.9254,
+        "recall20": 0.5825,
+        "recall20_gain_vs_H2O": 0.0641
+      },
+      "ALL": {
+        "auc": 0.9399,
+        "recall20": 0.6055,
+        "recall20_gain_vs_H2O": 0.0871
+      },
+      "H2O_auc": 0.8392,
+      "clean_gain_recall20": 0.0641
+    },
+    "qwen": {
+      "pos_rate": 0.287,
+      "within_accum(H2O)": {
+        "auc": 0.8738,
+        "recall20": 0.5752,
+        "recall20_gain_vs_H2O": 0.0003
+      },
+      "attn_now": {
+        "auc": 0.8595,
+        "recall20": 0.5577,
+        "recall20_gain_vs_H2O": -0.0171
+      },
+      "accum+now": {
+        "auc": 0.9004,
+        "recall20": 0.5849,
+        "recall20_gain_vs_H2O": 0.0101
+      },
+      "accum+cross+recency(noNow)": {
+        "auc": 0.9313,
+        "recall20": 0.6066,
+        "recall20_gain_vs_H2O": 0.0317
+      },
+      "ALL": {
+        "auc": 0.9457,
+        "recall20": 0.6158,
+        "recall20_gain_vs_H2O": 0.0409
+      },
+      "H2O_auc": 0.8738,
+      "clean_gain_recall20": 0.0317
+    }
+  },
+  "transfer": {
+    "llama->llama": 0.9293,
+    "llama->mistral": 0.9343,
+    "llama->qwen": 0.9407
+  }
+}

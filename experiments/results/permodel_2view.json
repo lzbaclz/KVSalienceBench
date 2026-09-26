@@ -1,0 +1,18 @@
+{
+  "Llama-3.1-8B-Instruct": {
+    "auc2": 0.9332,
+    "ece2": 0.0044
+  },
+  "Mistral-7B-Instruct-v0.3": {
+    "auc2": 0.9386,
+    "ece2": 0.0024
+  },
+  "Qwen2.5-7B-Instruct": {
+    "auc2": 0.9596,
+    "ece2": 0.0103
+  },
+  "Qwen3-8B": {
+    "auc2": 0.9512,
+    "ece2": 0.0053
+  }
+}

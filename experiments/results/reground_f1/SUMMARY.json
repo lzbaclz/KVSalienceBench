@@ -1,0 +1,27 @@
+{
+  "experiment": "Re-grounded deployment comparison on REAL LongBench F1 (b0.20, chat, 48 prompts)",
+  "table_realF1": {
+    "narrativeqa": {
+      "full": 0.249,
+      "h2o": 0.201,
+      "quest": 0.209,
+      "xqp": 0.212,
+      "guardkv": 0.192
+    },
+    "qasper": {
+      "full": 0.39,
+      "h2o": 0.249,
+      "quest": 0.27,
+      "xqp": 0.266,
+      "guardkv": 0.263
+    }
+  },
+  "contrast_eps_deploy_consistent_b0.20": {
+    "h2o": 0.5,
+    "quest": 0.613,
+    "infinigen": 0.549,
+    "xqp": 0.609,
+    "guardkv": 0.642
+  },
+  "finding": "On REAL task quality all selectors are statistically tied (within ~0.02-0.03); H2O is NOT best (lowest on qasper). The eps ordering (H2O best, GuardKV worst) does NOT hold on task quality. Re-grounds the deployment story: selector choice barely affects task quality at 20% budget; the eps-based H2O-best conclusion was a proxy artifact."
+}

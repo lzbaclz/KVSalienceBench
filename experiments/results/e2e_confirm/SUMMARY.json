@@ -1,0 +1,87 @@
+{
+  "experiment": "End-to-end LongBench task quality (chat + middle-out truncation) backing transfer_gap.tex; matched 20% budget, 48 prompts/dataset",
+  "metric": "F1 mean (SE, n) per dataset; full = uncapped ceiling",
+  "datasets": {
+    "narrativeqa": {
+      "full_f1": 0.2487,
+      "h2o": {
+        "f1": 0.2012,
+        "se": 0.0336,
+        "n": 48
+      },
+      "snapkv": {
+        "f1": 0.0771,
+        "se": 0.0258,
+        "n": 48
+      },
+      "xqp": {
+        "f1": 0.2124,
+        "se": 0.0361,
+        "n": 48
+      },
+      "xqp_minus_h2o": 0.0112,
+      "winner": "XQP"
+    },
+    "qasper": {
+      "full_f1": 0.3899,
+      "h2o": {
+        "f1": 0.2493,
+        "se": 0.0469,
+        "n": 48
+      },
+      "snapkv": {
+        "f1": 0.1143,
+        "se": 0.0366,
+        "n": 48
+      },
+      "xqp": {
+        "f1": 0.2658,
+        "se": 0.05,
+        "n": 48
+      },
+      "xqp_minus_h2o": 0.0165,
+      "winner": "XQP"
+    },
+    "hotpotqa": {
+      "full_f1": 0.4772,
+      "h2o": {
+        "f1": 0.4754,
+        "se": 0.0657,
+        "n": 48
+      },
+      "xqp": {
+        "f1": 0.4541,
+        "se": 0.066,
+        "n": 48
+      },
+      "xqp_minus_h2o": -0.0214,
+      "winner": "H2O"
+    },
+    "multifieldqa_en": {
+      "full_f1": 0.5426,
+      "h2o": {
+        "f1": 0.5059,
+        "se": 0.0479,
+        "n": 48
+      },
+      "xqp": {
+        "f1": 0.4876,
+        "se": 0.0499,
+        "n": 48
+      },
+      "xqp_minus_h2o": -0.0183,
+      "winner": "H2O"
+    }
+  },
+  "mean_f1_over_4_datasets": {
+    "full": 0.4146,
+    "h2o": 0.358,
+    "xqp": 0.355
+  },
+  "per_dataset_winner_tally": {
+    "h2o_ahead": 2,
+    "xqp_ahead": 2,
+    "tie": 0
+  },
+  "verdict": "H2O mean F1 0.358 vs 2-view 0.355 over 4 datasets -> statistically tied; H2O ahead on 2, 2-view ahead on 2. Reproduces the transfer_gap.tex 0.358/0.355 headline. full ceiling 0.4146. No degenerate F1=0 (chat template + middle-out applied)."
+}

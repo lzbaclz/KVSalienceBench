@@ -1,0 +1,37 @@
+{
+  "experiment": "Real end-to-end LongBench task quality (chat + middle-out truncation fix) vs the eps proxy",
+  "date": "2026-06-02",
+  "setup": "SEER sim, Llama-3.1-8B, LongBench, 48 prompts/dataset, b0.20, --chat, measured-DMA",
+  "harness_fix": "_truncate was HEAD truncation (cut the question off the tail) -> full-cache F1 0.08; fixed to MIDDLE-OUT (LongBench standard) + chat template -> full-cache F1 ~0.25-0.39. Real task quality now measurable.",
+  "eps_vs_F1_same_prompts": {
+    "narrativeqa": {
+      "h2o": {
+        "eps": 0.545,
+        "f1": 0.201
+      },
+      "xqp": {
+        "eps": 0.626,
+        "f1": 0.212
+      },
+      "full_f1": 0.249
+    },
+    "qasper": {
+      "h2o": {
+        "eps": 0.597,
+        "f1": 0.249
+      },
+      "xqp": {
+        "eps": 0.653,
+        "f1": 0.266
+      },
+      "full_f1": 0.39
+    }
+  },
+  "findings": [
+    "The served-oracle eps proxy is MISLEADING: it ranks H2O clearly better (miss ~0.07 lower) but on REAL task F1 the learned 2-view is tied-or-slightly-higher. Same prompts, both datasets.",
+    "On real task quality the learned minimal model TIES H2O (F1 +0.011/+0.017, ~0.2 SE, n=48) -- NOT beaten by it. This DEFUSES the H2O-beats-our-selector reject-trigger, which was based on the eps proxy.",
+    "Both offline AUC (0.95 vs trace label) AND the served-oracle eps proxy fail to predict real task quality; only end-to-end task eval ranks methods correctly.",
+    "SEER snapkv is a position-only heuristic (sink+window, no attention), collapses to F1 0.077 on QA (drops the document); excluded as not real SnapKV."
+  ],
+  "implication": "The projects entire eps-based deployment story (deploy_consistent H2O-best, GuardKV E4, the transfer_gap capstone) is re-grounded: on real task quality the minimal model is deployment-COMPETITIVE with H2O, not beaten. The compiled transfer_gap.tex capstone (says H2O wins) must be revised."
+}

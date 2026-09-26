@@ -1,0 +1,19 @@
+{
+  "title": "KVSalienceBench: artifact for Mining Attention Dynamics: Auditing KV-Saliency Prediction in LLMs",
+  "upload_type": "software",
+  "description": "Reproducibility artifact for the accepted D2AI at IEEE ICDM 2026 paper DM2158. Includes version-2 and historical experiment records, analysis and validation code, the pinned MIT-licensed simulator source bundle, tests, LaTeX and PDF, editable draw.io diagram source, Python chart sources and an English presentation. Source input corpora, model weights, raw attention traces and internal review history are excluded. Masked-loop answer-quality findings do not imply production serving efficiency. This metadata file prepares a later author-managed Zenodo deposit; it is not evidence that a DOI has been issued.",
+  "creators": [
+    {"name": "Li, Ziqing", "affiliation": "Huazhong University of Science and Technology"},
+    {"name": "Guo, Jiawei", "affiliation": "Beihang University"},
+    {"name": "Tang, Kaicheng", "affiliation": "The Chinese University of Hong Kong"},
+    {"name": "Chen, Jianxi", "affiliation": "Huazhong University of Science and Technology"}
+  ],
+  "license": "Apache-2.0",
+  "access_right": "open",
+  "version": "d2ai-camera-ready",
+  "keywords": ["KV cache", "attention prediction", "benchmark", "empirical audit"],
+  "related_identifiers": [
+    {"identifier": "https://github.com/lzbaclz/KVSalienceBench", "relation": "isSupplementTo", "scheme": "url"}
+  ],
+  "notes": "The bundled SEER package retains its MIT notice. Third-party model and dataset terms are separate. No grant funding was declared by the authors."
+}

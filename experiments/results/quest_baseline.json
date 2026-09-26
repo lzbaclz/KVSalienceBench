@@ -1,0 +1,66 @@
+{
+  "config": {
+    "n": 32,
+    "max_new_tokens": 64
+  },
+  "per_model": {
+    "Llama-3.1-8B-Instruct": {
+      "n_rows": 7809024,
+      "n_requests": 32,
+      "pos_rate": 0.10069581121206284,
+      "single_view_auc": {
+        "f_within": 0.9008600386061152,
+        "f_cross": 0.8046157499449614,
+        "f_query": 0.5946345917885463,
+        "f_query_dotmean": 0.716787392595768,
+        "f_query_dotmax": 0.7057134584864087
+      },
+      "marginal": {
+        "f_query": {
+          "within_cross": 0.9122135449421016,
+          "plus_query": 0.913148544669722,
+          "delta": 0.0009349997276203448
+        },
+        "f_query_dotmean": {
+          "within_cross": 0.9122135449421016,
+          "plus_query": 0.9045483099278856,
+          "delta": -0.00766523501421601
+        },
+        "f_query_dotmax": {
+          "within_cross": 0.9122135449421016,
+          "plus_query": 0.9072135600795463,
+          "delta": -0.004999984862555262
+        }
+      }
+    },
+    "Qwen2.5-7B-Instruct": {
+      "n_rows": 6838552,
+      "n_requests": 32,
+      "pos_rate": 0.10075173527002335,
+      "single_view_auc": {
+        "f_within": NaN,
+        "f_cross": 0.8173395168896054,
+        "f_query": 0.5394350307296022,
+        "f_query_dotmean": 0.5687253800402735,
+        "f_query_dotmax": 0.5450514481526015
+      },
+      "marginal": {
+        "f_query": {
+          "within_cross": NaN,
+          "plus_query": NaN,
+          "delta": NaN
+        },
+        "f_query_dotmean": {
+          "within_cross": NaN,
+          "plus_query": NaN,
+          "delta": NaN
+        },
+        "f_query_dotmax": {
+          "within_cross": NaN,
+          "plus_query": NaN,
+          "delta": NaN
+        }
+      }
+    }
+  }
+}

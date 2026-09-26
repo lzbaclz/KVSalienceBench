@@ -1,0 +1,14 @@
+\section{Conclusion}
+KV-saliency prediction and KV retention are related but distinct evaluation
+problems. On version-2 traces, the ranking advantage of learned scorers in pooled
+metrics reverses under per-decision top-decile budgets and narrows at 20\%
+retention. A separate pinned bfloat16 masked-loop rerun finds the reconstructed
+scorer mean-F1 equivalent to an accumulator within $\pm0.02$, while both lose
+quality relative to full cache. Historical served-oracle diagnostics favor the
+accumulator; they are not a same-version proxy--quality experiment. The bridge
+quantifies feature reconstruction at $-0.003$ AUC, but jointly changing trajectory
+and candidates does not explain the archived gap; a label-only arm is still missing.
+These findings concern the tested data and implementations, not the impossibility
+of better query-aware selection or a serving-efficiency result. Versioned collection,
+provenance and an explicit benchmark protocol are the artifact's contribution to
+data and database systems for AI.

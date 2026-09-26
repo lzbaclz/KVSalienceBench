@@ -1,0 +1,30 @@
+{
+  "n_groups": 1280,
+  "params": {
+    "r": 0.1,
+    "h": 0.25,
+    "w": 0.1
+  },
+  "regimes": {
+    "open_loop": {
+      "mean_recall": 0.9694,
+      "n": 39680
+    },
+    "closed_noref": {
+      "mean_recall": 0.6405,
+      "n": 39680
+    },
+    "closed_ref8": {
+      "mean_recall": 0.9075,
+      "n": 39680
+    },
+    "closed_ref4": {
+      "mean_recall": 0.9499,
+      "n": 39680
+    },
+    "closed_ref2": {
+      "mean_recall": 0.9659,
+      "n": 39680
+    }
+  }
+}

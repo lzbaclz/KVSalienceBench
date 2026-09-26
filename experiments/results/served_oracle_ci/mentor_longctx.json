@@ -1,0 +1,3277 @@
+{
+  "schema": "oracle-budget-v2",
+  "root": "experiments/results/longctx/c16384_n64",
+  "datasets": [
+    "2wikimqa",
+    "hotpotqa",
+    "multifieldqa_en",
+    "musique",
+    "narrativeqa",
+    "qasper",
+    "triviaqa"
+  ],
+  "label_rule": "K=min(n,max(32,floor(0.1*n))); use recorded actual kept count B, not configured f*n",
+  "aggregation": "F_it=max(0,1-B_it/K_it); mean over recorded steps per request, then equal-weight mean over requests",
+  "count_provenance": "per_step_block_count and per_step_B_t_oracle; simulator stores rounded layer means; uniform-budget policies are assumed; candidate n is not recorded in archived cells",
+  "policies": {
+    "h2o": {
+      "n_requests": 448,
+      "kept_blocks": {
+        "mean": 65.92086105287713,
+        "min": 7.0,
+        "max": 103.0
+      },
+      "oracle_set_size": {
+        "mean": 39.45326450892857,
+        "min": 32.0,
+        "max": 51.0
+      },
+      "steps_with_budget_below_oracle": 0.19412878787878787,
+      "measured_miss": {
+        "mean": 0.46755762692477465,
+        "min": 0.13349780701754388,
+        "max": 0.7872548204787234
+      },
+      "forced_floor": {
+        "mean": 0.06326407812177902,
+        "min": 0.0,
+        "max": 0.78125
+      },
+      "selector_residual": {
+        "mean": 0.4042935488029957,
+        "min": 0.0,
+        "max": 0.7606534090909091
+      },
+      "recorded_count_ranges": {
+        "kept": [
+          7,
+          103
+        ],
+        "oracle": [
+          32,
+          51
+        ],
+        "requests_with_positive_floor": 87,
+        "positive_floor_steps": 937,
+        "positive_floor_steps_outside_k32": 0
+      }
+    },
+    "xqp": {
+      "n_requests": 448,
+      "kept_blocks": {
+        "mean": 65.91792905992183,
+        "min": 7.0,
+        "max": 103.0
+      },
+      "oracle_set_size": {
+        "mean": 39.453497023809526,
+        "min": 32.0,
+        "max": 51.0
+      },
+      "steps_with_budget_below_oracle": 0.19419642857142858,
+      "measured_miss": {
+        "mean": 0.523115445687221,
+        "min": 0.23893229166666666,
+        "max": 0.798828125
+      },
+      "forced_floor": {
+        "mean": 0.06333705357142858,
+        "min": 0.0,
+        "max": 0.78125
+      },
+      "selector_residual": {
+        "mean": 0.45977839211579247,
+        "min": 0.008674172794117647,
+        "max": 0.7288818359375
+      },
+      "recorded_count_ranges": {
+        "kept": [
+          7,
+          103
+        ],
+        "oracle": [
+          32,
+          51
+        ],
+        "requests_with_positive_floor": 87,
+        "positive_floor_steps": 882,
+        "positive_floor_steps_outside_k32": 0
+      }
+    }
+  },
+  "paired_second_minus_first": {
+    "n_pairs": 448,
+    "n_boot": 10000,
+    "seed": 1234,
+    "pairing": "dataset and request id; steps averaged within each policy/request first",
+    "floors_equal_per_request": false,
+    "max_abs_request_floor_delta": 0.02430555555555558,
+    "floor_delta": {
+      "mean": 7.297544964955684e-05,
+      "ci95": [
+        0.0,
+        0.00020025721581246075
+      ]
+    },
+    "miss_delta": {
+      "mean": 0.05555781876244636,
+      "ci95": [
+        0.047949778740398026,
+        0.06341773251918005
+      ]
+    },
+    "residual_delta": {
+      "mean": 0.05548484331279681,
+      "ci95": [
+        0.04785732623194268,
+        0.06334381741295676
+      ]
+    },
+    "pairs": [
+      {
+        "dataset": "2wikimqa",
+        "id": 0,
+        "floor_delta": 0.0,
+        "miss_delta": 0.0022437686011904656,
+        "residual_delta": 0.0022437686011904656
+      },
+      {
+        "dataset": "2wikimqa",
+        "id": 1,
+        "floor_delta": 0.0,
+        "miss_delta": -0.0595703125,
+        "residual_delta": -0.0595703125
+      },
+      {
+        "dataset": "2wikimqa",
+        "id": 2,
+        "floor_delta": 0.0,
+        "miss_delta": 0.015429687499999956,
+        "residual_delta": 0.015429687499999956
+      },
+      {
+        "dataset": "2wikimqa",
+        "id": 3,
+        "floor_delta": 0.0,
+        "miss_delta": 0.2210477941176468,
+        "residual_delta": 0.2210477941176468
+      },
+      {
+        "dataset": "2wikimqa",
+        "id": 4,
+        "floor_delta": 0.0,
+        "miss_delta": 0.03730468749999999,
+        "residual_delta": 0.03730468749999999
+      },
+      {
+        "dataset": "2wikimqa",
+        "id": 5,
+        "floor_delta": 0.0,
+        "miss_delta": 0.05718315972222232,
+        "residual_delta": 0.05718315972222232
+      },
+      {
+        "dataset": "2wikimqa",
+        "id": 6,
+        "floor_delta": 0.0,
+        "miss_delta": 0.07958984375,
+        "residual_delta": 0.07958984375
+      },
+      {
+        "dataset": "2wikimqa",
+        "id": 7,
+        "floor_delta": 0.0,
+        "miss_delta": 0.06678921568627433,
+        "residual_delta": 0.06678921568627433
+      },
+      {
+        "dataset": "2wikimqa",
+        "id": 8,
+        "floor_delta": 0.0,
+        "miss_delta": -0.10316297743055558,
+        "residual_delta": -0.10316297743055558
+      },
+      {
+        "dataset": "2wikimqa",
+        "id": 9,
+        "floor_delta": 0.0,
+        "miss_delta": 0.007080078125,
+        "residual_delta": 0.007080078125
+      },
+      {
+        "dataset": "2wikimqa",
+        "id": 10,
+        "floor_delta": 0.0,
+        "miss_delta": 0.06152950310559002,
+        "residual_delta": 0.06152950310559002
+      },
+      {
+        "dataset": "2wikimqa",
+        "id": 11,
+        "floor_delta": 0.0,
+        "miss_delta": 0.039062499999999944,
+        "residual_delta": 0.039062499999999944
+      },
+      {
+        "dataset": "2wikimqa",
+        "id": 12,
+        "floor_delta": 0.0,
+        "miss_delta": -0.07183159722222221,
+        "residual_delta": -0.07183159722222221
+      },
+      {
+        "dataset": "2wikimqa",
+        "id": 13,
+        "floor_delta": 0.0,
+        "miss_delta": 0.1279296875,
+        "residual_delta": 0.1279296875
+      },
+      {
+        "dataset": "2wikimqa",
+        "id": 14,
+        "floor_delta": 0.0,
+        "miss_delta": 0.2265625,
+        "residual_delta": 0.2265625
+      },
+      {
+        "dataset": "2wikimqa",
+        "id": 15,
+        "floor_delta": 0.0,
+        "miss_delta": 0.09768518518518515,
+        "residual_delta": 0.09768518518518515
+      },
+      {
+        "dataset": "2wikimqa",
+        "id": 16,
+        "floor_delta": 0.0,
+        "miss_delta": 0.050585937499999956,
+        "residual_delta": 0.0505859375
+      },
+      {
+        "dataset": "2wikimqa",
+        "id": 17,
+        "floor_delta": 0.0,
+        "miss_delta": 0.123046875,
+        "residual_delta": 0.123046875
+      },
+      {
+        "dataset": "2wikimqa",
+        "id": 18,
+        "floor_delta": 0.0,
+        "miss_delta": 0.017578125,
+        "residual_delta": 0.017578125
+      },
+      {
+        "dataset": "2wikimqa",
+        "id": 19,
+        "floor_delta": 0.0,
+        "miss_delta": 0.10042317708333331,
+        "residual_delta": 0.10042317708333331
+      },
+      {
+        "dataset": "2wikimqa",
+        "id": 20,
+        "floor_delta": 0.0,
+        "miss_delta": 0.097900390625,
+        "residual_delta": 0.097900390625
+      },
+      {
+        "dataset": "2wikimqa",
+        "id": 21,
+        "floor_delta": 0.0,
+        "miss_delta": -0.05513468013468015,
+        "residual_delta": -0.05513468013468015
+      },
+      {
+        "dataset": "2wikimqa",
+        "id": 22,
+        "floor_delta": 0.0,
+        "miss_delta": 0.05408653846153855,
+        "residual_delta": 0.05408653846153855
+      },
+      {
+        "dataset": "2wikimqa",
+        "id": 23,
+        "floor_delta": 0.0,
+        "miss_delta": -0.04468677662037035,
+        "residual_delta": -0.04468677662037035
+      },
+      {
+        "dataset": "2wikimqa",
+        "id": 24,
+        "floor_delta": 0.0,
+        "miss_delta": 0.012451171875,
+        "residual_delta": 0.012451171875
+      },
+      {
+        "dataset": "2wikimqa",
+        "id": 25,
+        "floor_delta": 0.0,
+        "miss_delta": 0.005615234375,
+        "residual_delta": 0.005615234375
+      },
+      {
+        "dataset": "2wikimqa",
+        "id": 26,
+        "floor_delta": 0.0,
+        "miss_delta": 0.027148437499999956,
+        "residual_delta": 0.027148437499999956
+      },
+      {
+        "dataset": "2wikimqa",
+        "id": 27,
+        "floor_delta": 0.0,
+        "miss_delta": 0.00146484375,
+        "residual_delta": 0.00146484375
+      },
+      {
+        "dataset": "2wikimqa",
+        "id": 28,
+        "floor_delta": 0.0,
+        "miss_delta": -0.08365885416666663,
+        "residual_delta": -0.08365885416666663
+      },
+      {
+        "dataset": "2wikimqa",
+        "id": 29,
+        "floor_delta": 0.0,
+        "miss_delta": -0.0021344866071428825,
+        "residual_delta": -0.0021344866071428825
+      },
+      {
+        "dataset": "2wikimqa",
+        "id": 30,
+        "floor_delta": 0.0,
+        "miss_delta": 0.07900766225961536,
+        "residual_delta": 0.07900766225961536
+      },
+      {
+        "dataset": "2wikimqa",
+        "id": 31,
+        "floor_delta": 0.0,
+        "miss_delta": -0.035156250000000056,
+        "residual_delta": -0.035156250000000056
+      },
+      {
+        "dataset": "2wikimqa",
+        "id": 32,
+        "floor_delta": 0.0,
+        "miss_delta": -0.02767857142857144,
+        "residual_delta": -0.02767857142857144
+      },
+      {
+        "dataset": "2wikimqa",
+        "id": 33,
+        "floor_delta": 0.0,
+        "miss_delta": -0.02587890625,
+        "residual_delta": -0.02587890625
+      },
+      {
+        "dataset": "2wikimqa",
+        "id": 34,
+        "floor_delta": 0.0,
+        "miss_delta": -0.022265624999999956,
+        "residual_delta": -0.022265624999999956
+      },
+      {
+        "dataset": "2wikimqa",
+        "id": 35,
+        "floor_delta": 0.0,
+        "miss_delta": -0.0502232142857143,
+        "residual_delta": -0.0502232142857143
+      },
+      {
+        "dataset": "2wikimqa",
+        "id": 36,
+        "floor_delta": 0.0,
+        "miss_delta": -0.064697265625,
+        "residual_delta": -0.064697265625
+      },
+      {
+        "dataset": "2wikimqa",
+        "id": 37,
+        "floor_delta": 0.0,
+        "miss_delta": -0.09993489583333337,
+        "residual_delta": -0.09993489583333331
+      },
+      {
+        "dataset": "2wikimqa",
+        "id": 38,
+        "floor_delta": 0.0,
+        "miss_delta": -0.030974014945652162,
+        "residual_delta": -0.030974014945652162
+      },
+      {
+        "dataset": "2wikimqa",
+        "id": 39,
+        "floor_delta": 0.0,
+        "miss_delta": 0.015652901785714324,
+        "residual_delta": 0.015652901785714324
+      },
+      {
+        "dataset": "2wikimqa",
+        "id": 40,
+        "floor_delta": 0.0,
+        "miss_delta": -0.021484375,
+        "residual_delta": -0.021484375
+      },
+      {
+        "dataset": "2wikimqa",
+        "id": 41,
+        "floor_delta": 0.0,
+        "miss_delta": -0.05436197916666663,
+        "residual_delta": -0.054361979166666685
+      },
+      {
+        "dataset": "2wikimqa",
+        "id": 42,
+        "floor_delta": 0.0,
+        "miss_delta": -0.028293918918918914,
+        "residual_delta": -0.028293918918918914
+      },
+      {
+        "dataset": "2wikimqa",
+        "id": 43,
+        "floor_delta": 0.0,
+        "miss_delta": 0.132568359375,
+        "residual_delta": 0.132568359375
+      },
+      {
+        "dataset": "2wikimqa",
+        "id": 44,
+        "floor_delta": 0.0,
+        "miss_delta": -0.0595703125,
+        "residual_delta": -0.0595703125
+      },
+      {
+        "dataset": "2wikimqa",
+        "id": 45,
+        "floor_delta": 0.0,
+        "miss_delta": 0.01953125,
+        "residual_delta": 0.01953125
+      },
+      {
+        "dataset": "2wikimqa",
+        "id": 46,
+        "floor_delta": 0.0,
+        "miss_delta": -0.02408854166666663,
+        "residual_delta": -0.02408854166666663
+      },
+      {
+        "dataset": "2wikimqa",
+        "id": 47,
+        "floor_delta": 0.0,
+        "miss_delta": -0.0400390625,
+        "residual_delta": -0.0400390625
+      },
+      {
+        "dataset": "2wikimqa",
+        "id": 48,
+        "floor_delta": 0.0,
+        "miss_delta": -0.00764973958333337,
+        "residual_delta": -0.007649739583333336
+      },
+      {
+        "dataset": "2wikimqa",
+        "id": 49,
+        "floor_delta": 0.0,
+        "miss_delta": -0.0057373046875,
+        "residual_delta": -0.0057373046875
+      },
+      {
+        "dataset": "2wikimqa",
+        "id": 50,
+        "floor_delta": 0.0,
+        "miss_delta": -0.030902777777777724,
+        "residual_delta": -0.030902777777777724
+      },
+      {
+        "dataset": "2wikimqa",
+        "id": 51,
+        "floor_delta": 0.0,
+        "miss_delta": -0.007986886160714302,
+        "residual_delta": -0.007986886160714302
+      },
+      {
+        "dataset": "2wikimqa",
+        "id": 52,
+        "floor_delta": 0.0,
+        "miss_delta": 0.03157552083333337,
+        "residual_delta": 0.03157552083333337
+      },
+      {
+        "dataset": "2wikimqa",
+        "id": 53,
+        "floor_delta": 0.0,
+        "miss_delta": 0.0938720703125,
+        "residual_delta": 0.0938720703125
+      },
+      {
+        "dataset": "2wikimqa",
+        "id": 54,
+        "floor_delta": 0.0,
+        "miss_delta": 0.1025390625,
+        "residual_delta": 0.1025390625
+      },
+      {
+        "dataset": "2wikimqa",
+        "id": 55,
+        "floor_delta": 0.0,
+        "miss_delta": 0.026269531249999978,
+        "residual_delta": 0.026269531249999978
+      },
+      {
+        "dataset": "2wikimqa",
+        "id": 56,
+        "floor_delta": 0.0,
+        "miss_delta": 0.09394531249999999,
+        "residual_delta": 0.09394531249999999
+      },
+      {
+        "dataset": "2wikimqa",
+        "id": 57,
+        "floor_delta": 0.0,
+        "miss_delta": 0.09521484375,
+        "residual_delta": 0.09521484375
+      },
+      {
+        "dataset": "2wikimqa",
+        "id": 58,
+        "floor_delta": 0.0,
+        "miss_delta": -0.097900390625,
+        "residual_delta": -0.097900390625
+      },
+      {
+        "dataset": "2wikimqa",
+        "id": 59,
+        "floor_delta": 0.0,
+        "miss_delta": -0.11445312500000004,
+        "residual_delta": -0.11445312499999999
+      },
+      {
+        "dataset": "2wikimqa",
+        "id": 60,
+        "floor_delta": 0.0,
+        "miss_delta": 0.13717830882352927,
+        "residual_delta": 0.13717830882352927
+      },
+      {
+        "dataset": "2wikimqa",
+        "id": 61,
+        "floor_delta": 0.0,
+        "miss_delta": 0.13818359375,
+        "residual_delta": 0.13818359375
+      },
+      {
+        "dataset": "2wikimqa",
+        "id": 62,
+        "floor_delta": 0.0,
+        "miss_delta": 0.05859375,
+        "residual_delta": 0.05859375
+      },
+      {
+        "dataset": "2wikimqa",
+        "id": 63,
+        "floor_delta": 0.0,
+        "miss_delta": -0.0126953125,
+        "residual_delta": -0.0126953125
+      },
+      {
+        "dataset": "hotpotqa",
+        "id": 0,
+        "floor_delta": 0.0,
+        "miss_delta": -0.029761904761904823,
+        "residual_delta": -0.029761904761904823
+      },
+      {
+        "dataset": "hotpotqa",
+        "id": 1,
+        "floor_delta": 0.0,
+        "miss_delta": 0.18137254901960798,
+        "residual_delta": 0.18137254901960798
+      },
+      {
+        "dataset": "hotpotqa",
+        "id": 2,
+        "floor_delta": 0.0,
+        "miss_delta": 0.0226715686274509,
+        "residual_delta": 0.0226715686274509
+      },
+      {
+        "dataset": "hotpotqa",
+        "id": 3,
+        "floor_delta": 0.0,
+        "miss_delta": 0.14062499999999978,
+        "residual_delta": 0.14062499999999978
+      },
+      {
+        "dataset": "hotpotqa",
+        "id": 4,
+        "floor_delta": 0.0,
+        "miss_delta": 0.08356481481481465,
+        "residual_delta": 0.08356481481481465
+      },
+      {
+        "dataset": "hotpotqa",
+        "id": 5,
+        "floor_delta": 0.0,
+        "miss_delta": 0.07523148148148151,
+        "residual_delta": 0.07523148148148151
+      },
+      {
+        "dataset": "hotpotqa",
+        "id": 6,
+        "floor_delta": 0.0,
+        "miss_delta": -0.055506876663708904,
+        "residual_delta": -0.055506876663708904
+      },
+      {
+        "dataset": "hotpotqa",
+        "id": 7,
+        "floor_delta": 0.0,
+        "miss_delta": -0.02962239583333337,
+        "residual_delta": -0.029622395833333343
+      },
+      {
+        "dataset": "hotpotqa",
+        "id": 8,
+        "floor_delta": 0.0,
+        "miss_delta": -0.014802631578947345,
+        "residual_delta": -0.014802631578947345
+      },
+      {
+        "dataset": "hotpotqa",
+        "id": 9,
+        "floor_delta": 0.0,
+        "miss_delta": 0.122314453125,
+        "residual_delta": 0.122314453125
+      },
+      {
+        "dataset": "hotpotqa",
+        "id": 10,
+        "floor_delta": 0.0,
+        "miss_delta": -0.03294642857142849,
+        "residual_delta": -0.03294642857142849
+      },
+      {
+        "dataset": "hotpotqa",
+        "id": 11,
+        "floor_delta": 0.0,
+        "miss_delta": 0.04910714285714285,
+        "residual_delta": 0.04910714285714285
+      },
+      {
+        "dataset": "hotpotqa",
+        "id": 12,
+        "floor_delta": 0.0,
+        "miss_delta": 0.04817708333333337,
+        "residual_delta": 0.04817708333333337
+      },
+      {
+        "dataset": "hotpotqa",
+        "id": 13,
+        "floor_delta": 0.0,
+        "miss_delta": 0.054361979166666685,
+        "residual_delta": 0.054361979166666685
+      },
+      {
+        "dataset": "hotpotqa",
+        "id": 14,
+        "floor_delta": 0.0,
+        "miss_delta": 0.010333333333333306,
+        "residual_delta": 0.010333333333333306
+      },
+      {
+        "dataset": "hotpotqa",
+        "id": 15,
+        "floor_delta": 0.0,
+        "miss_delta": 0.1726973684210525,
+        "residual_delta": 0.1726973684210525
+      },
+      {
+        "dataset": "hotpotqa",
+        "id": 16,
+        "floor_delta": 0.0,
+        "miss_delta": 0.07421875,
+        "residual_delta": 0.07421875
+      },
+      {
+        "dataset": "hotpotqa",
+        "id": 17,
+        "floor_delta": 0.0,
+        "miss_delta": -0.1254166666666668,
+        "residual_delta": -0.1254166666666668
+      },
+      {
+        "dataset": "hotpotqa",
+        "id": 18,
+        "floor_delta": 0.0,
+        "miss_delta": -0.04433139534883712,
+        "residual_delta": -0.04433139534883712
+      },
+      {
+        "dataset": "hotpotqa",
+        "id": 19,
+        "floor_delta": 0.0,
+        "miss_delta": -0.03255208333333337,
+        "residual_delta": -0.03255208333333337
+      },
+      {
+        "dataset": "hotpotqa",
+        "id": 20,
+        "floor_delta": 0.0,
+        "miss_delta": -0.002297794117647134,
+        "residual_delta": -0.002297794117647134
+      },
+      {
+        "dataset": "hotpotqa",
+        "id": 21,
+        "floor_delta": 0.0,
+        "miss_delta": 0.011801861702127658,
+        "residual_delta": 0.011801861702127658
+      },
+      {
+        "dataset": "hotpotqa",
+        "id": 22,
+        "floor_delta": 0.0,
+        "miss_delta": -0.05794270833333326,
+        "residual_delta": -0.05794270833333326
+      },
+      {
+        "dataset": "hotpotqa",
+        "id": 23,
+        "floor_delta": 0.0,
+        "miss_delta": 0.010937499999999933,
+        "residual_delta": 0.010937499999999933
+      },
+      {
+        "dataset": "hotpotqa",
+        "id": 24,
+        "floor_delta": 0.0,
+        "miss_delta": 0.09836647727272729,
+        "residual_delta": 0.09836647727272729
+      },
+      {
+        "dataset": "hotpotqa",
+        "id": 25,
+        "floor_delta": 0.0,
+        "miss_delta": 0.12851562500000002,
+        "residual_delta": 0.12851562500000002
+      },
+      {
+        "dataset": "hotpotqa",
+        "id": 26,
+        "floor_delta": 0.0,
+        "miss_delta": -0.030330882352941013,
+        "residual_delta": -0.030330882352941013
+      },
+      {
+        "dataset": "hotpotqa",
+        "id": 27,
+        "floor_delta": 0.0,
+        "miss_delta": -0.019694010416666685,
+        "residual_delta": -0.019694010416666685
+      },
+      {
+        "dataset": "hotpotqa",
+        "id": 28,
+        "floor_delta": 0.0,
+        "miss_delta": -0.02783203125,
+        "residual_delta": -0.02783203125
+      },
+      {
+        "dataset": "hotpotqa",
+        "id": 29,
+        "floor_delta": 0.0,
+        "miss_delta": 0.07499999999999996,
+        "residual_delta": 0.07499999999999996
+      },
+      {
+        "dataset": "hotpotqa",
+        "id": 30,
+        "floor_delta": 0.0,
+        "miss_delta": 0.0600490196078432,
+        "residual_delta": 0.0600490196078432
+      },
+      {
+        "dataset": "hotpotqa",
+        "id": 31,
+        "floor_delta": 0.0,
+        "miss_delta": 0.12337962962962956,
+        "residual_delta": 0.12337962962962956
+      },
+      {
+        "dataset": "hotpotqa",
+        "id": 32,
+        "floor_delta": 0.0,
+        "miss_delta": 0.07481060606060613,
+        "residual_delta": 0.07481060606060613
+      },
+      {
+        "dataset": "hotpotqa",
+        "id": 33,
+        "floor_delta": 0.0,
+        "miss_delta": 0.053316326530612246,
+        "residual_delta": 0.053316326530612246
+      },
+      {
+        "dataset": "hotpotqa",
+        "id": 34,
+        "floor_delta": 0.0,
+        "miss_delta": -0.054658812729498185,
+        "residual_delta": -0.054658812729498185
+      },
+      {
+        "dataset": "hotpotqa",
+        "id": 35,
+        "floor_delta": 0.0,
+        "miss_delta": 0.08220996732026142,
+        "residual_delta": 0.08220996732026142
+      },
+      {
+        "dataset": "hotpotqa",
+        "id": 36,
+        "floor_delta": 0.0,
+        "miss_delta": 0.07486979166666663,
+        "residual_delta": 0.07486979166666663
+      },
+      {
+        "dataset": "hotpotqa",
+        "id": 37,
+        "floor_delta": 0.0,
+        "miss_delta": -0.007774390243902474,
+        "residual_delta": -0.007774390243902474
+      },
+      {
+        "dataset": "hotpotqa",
+        "id": 38,
+        "floor_delta": 0.0,
+        "miss_delta": -0.014218749999999947,
+        "residual_delta": -0.014218749999999947
+      },
+      {
+        "dataset": "hotpotqa",
+        "id": 39,
+        "floor_delta": 0.0,
+        "miss_delta": 0.049479166666666685,
+        "residual_delta": 0.049479166666666685
+      },
+      {
+        "dataset": "hotpotqa",
+        "id": 40,
+        "floor_delta": 0.0,
+        "miss_delta": 0.11449999999999982,
+        "residual_delta": 0.11449999999999982
+      },
+      {
+        "dataset": "hotpotqa",
+        "id": 41,
+        "floor_delta": 0.0,
+        "miss_delta": 0.04544642857142861,
+        "residual_delta": 0.04544642857142861
+      },
+      {
+        "dataset": "hotpotqa",
+        "id": 42,
+        "floor_delta": 0.0,
+        "miss_delta": 0.006756756756756743,
+        "residual_delta": 0.006756756756756743
+      },
+      {
+        "dataset": "hotpotqa",
+        "id": 43,
+        "floor_delta": 0.0,
+        "miss_delta": 0.09437499999999988,
+        "residual_delta": 0.09437499999999988
+      },
+      {
+        "dataset": "hotpotqa",
+        "id": 44,
+        "floor_delta": 0.0,
+        "miss_delta": 0.07077205882352927,
+        "residual_delta": 0.07077205882352927
+      },
+      {
+        "dataset": "hotpotqa",
+        "id": 45,
+        "floor_delta": 0.0,
+        "miss_delta": -0.07291666666666652,
+        "residual_delta": -0.07291666666666652
+      },
+      {
+        "dataset": "hotpotqa",
+        "id": 46,
+        "floor_delta": 0.0,
+        "miss_delta": 0.10297619047619044,
+        "residual_delta": 0.10297619047619044
+      },
+      {
+        "dataset": "hotpotqa",
+        "id": 47,
+        "floor_delta": 0.0,
+        "miss_delta": 0.1064453125,
+        "residual_delta": 0.1064453125
+      },
+      {
+        "dataset": "hotpotqa",
+        "id": 48,
+        "floor_delta": 0.0,
+        "miss_delta": 0.11152343749999999,
+        "residual_delta": 0.11152343749999999
+      },
+      {
+        "dataset": "hotpotqa",
+        "id": 49,
+        "floor_delta": 0.0,
+        "miss_delta": 0.0016622340425531124,
+        "residual_delta": 0.0016622340425531124
+      },
+      {
+        "dataset": "hotpotqa",
+        "id": 50,
+        "floor_delta": 0.0,
+        "miss_delta": 0.014208984374999956,
+        "residual_delta": 0.014208984374999956
+      },
+      {
+        "dataset": "hotpotqa",
+        "id": 51,
+        "floor_delta": 0.0,
+        "miss_delta": 0.10140306122448989,
+        "residual_delta": 0.10140306122448989
+      },
+      {
+        "dataset": "hotpotqa",
+        "id": 52,
+        "floor_delta": 0.0,
+        "miss_delta": 0.036111111111111094,
+        "residual_delta": 0.036111111111111094
+      },
+      {
+        "dataset": "hotpotqa",
+        "id": 53,
+        "floor_delta": 0.0,
+        "miss_delta": -0.08447265625,
+        "residual_delta": -0.08447265625
+      },
+      {
+        "dataset": "hotpotqa",
+        "id": 54,
+        "floor_delta": 0.0,
+        "miss_delta": -0.012939453125,
+        "residual_delta": -0.012939453125
+      },
+      {
+        "dataset": "hotpotqa",
+        "id": 55,
+        "floor_delta": 0.0,
+        "miss_delta": 0.05840773809523797,
+        "residual_delta": 0.05840773809523797
+      },
+      {
+        "dataset": "hotpotqa",
+        "id": 56,
+        "floor_delta": 0.0,
+        "miss_delta": 0.07865767045454541,
+        "residual_delta": 0.07865767045454541
+      },
+      {
+        "dataset": "hotpotqa",
+        "id": 57,
+        "floor_delta": 0.0,
+        "miss_delta": 0.0078125,
+        "residual_delta": 0.0078125
+      },
+      {
+        "dataset": "hotpotqa",
+        "id": 58,
+        "floor_delta": 0.0,
+        "miss_delta": -0.06803385416666663,
+        "residual_delta": -0.06803385416666663
+      },
+      {
+        "dataset": "hotpotqa",
+        "id": 59,
+        "floor_delta": 0.0,
+        "miss_delta": 0.08159722222222215,
+        "residual_delta": 0.08159722222222215
+      },
+      {
+        "dataset": "hotpotqa",
+        "id": 60,
+        "floor_delta": 0.0,
+        "miss_delta": 0.013174019607843257,
+        "residual_delta": 0.013174019607843257
+      },
+      {
+        "dataset": "hotpotqa",
+        "id": 61,
+        "floor_delta": 0.0,
+        "miss_delta": 0.03076171875,
+        "residual_delta": 0.03076171875
+      },
+      {
+        "dataset": "hotpotqa",
+        "id": 62,
+        "floor_delta": 0.0,
+        "miss_delta": 0.02293882978723405,
+        "residual_delta": 0.02293882978723405
+      },
+      {
+        "dataset": "hotpotqa",
+        "id": 63,
+        "floor_delta": 0.0,
+        "miss_delta": 0.005063153310104429,
+        "residual_delta": 0.005063153310104429
+      },
+      {
+        "dataset": "multifieldqa_en",
+        "id": 0,
+        "floor_delta": 0.0,
+        "miss_delta": -0.08383685172872346,
+        "residual_delta": -0.0838368517287234
+      },
+      {
+        "dataset": "multifieldqa_en",
+        "id": 1,
+        "floor_delta": 0.0,
+        "miss_delta": 0.147518382352941,
+        "residual_delta": 0.147518382352941
+      },
+      {
+        "dataset": "multifieldqa_en",
+        "id": 2,
+        "floor_delta": 0.0,
+        "miss_delta": 0.22257719494047623,
+        "residual_delta": 0.22257719494047623
+      },
+      {
+        "dataset": "multifieldqa_en",
+        "id": 3,
+        "floor_delta": 0.0,
+        "miss_delta": 0.02801724137931033,
+        "residual_delta": 0.02801724137931033
+      },
+      {
+        "dataset": "multifieldqa_en",
+        "id": 4,
+        "floor_delta": 0.0,
+        "miss_delta": 0.061767578125,
+        "residual_delta": 0.061767578125
+      },
+      {
+        "dataset": "multifieldqa_en",
+        "id": 5,
+        "floor_delta": 0.0,
+        "miss_delta": 0.08567821067821074,
+        "residual_delta": 0.08567821067821074
+      },
+      {
+        "dataset": "multifieldqa_en",
+        "id": 6,
+        "floor_delta": 0.0,
+        "miss_delta": -0.015595935639880931,
+        "residual_delta": -0.015595935639880931
+      },
+      {
+        "dataset": "multifieldqa_en",
+        "id": 7,
+        "floor_delta": 0.0,
+        "miss_delta": 0.076416015625,
+        "residual_delta": 0.076416015625
+      },
+      {
+        "dataset": "multifieldqa_en",
+        "id": 8,
+        "floor_delta": 0.0,
+        "miss_delta": -0.03190104166666674,
+        "residual_delta": -0.03190104166666667
+      },
+      {
+        "dataset": "multifieldqa_en",
+        "id": 9,
+        "floor_delta": 0.0,
+        "miss_delta": 0.029475732600732718,
+        "residual_delta": 0.029475732600732718
+      },
+      {
+        "dataset": "multifieldqa_en",
+        "id": 10,
+        "floor_delta": 0.0,
+        "miss_delta": 0.005859375,
+        "residual_delta": 0.005859375
+      },
+      {
+        "dataset": "multifieldqa_en",
+        "id": 11,
+        "floor_delta": 0.0,
+        "miss_delta": 0.04833984375,
+        "residual_delta": 0.04833984375
+      },
+      {
+        "dataset": "multifieldqa_en",
+        "id": 12,
+        "floor_delta": 0.0,
+        "miss_delta": 0.05824032738095242,
+        "residual_delta": 0.05824032738095242
+      },
+      {
+        "dataset": "multifieldqa_en",
+        "id": 13,
+        "floor_delta": 0.0,
+        "miss_delta": 0.13834635416666669,
+        "residual_delta": 0.13834635416666669
+      },
+      {
+        "dataset": "multifieldqa_en",
+        "id": 14,
+        "floor_delta": 0.0,
+        "miss_delta": 0.00634765625,
+        "residual_delta": 0.00634765625
+      },
+      {
+        "dataset": "multifieldqa_en",
+        "id": 15,
+        "floor_delta": 0.0,
+        "miss_delta": 0.019287109375,
+        "residual_delta": 0.019287109375
+      },
+      {
+        "dataset": "multifieldqa_en",
+        "id": 16,
+        "floor_delta": 0.0,
+        "miss_delta": 0.09889322916666665,
+        "residual_delta": 0.09889322916666665
+      },
+      {
+        "dataset": "multifieldqa_en",
+        "id": 17,
+        "floor_delta": 0.0,
+        "miss_delta": 0.07763529932776164,
+        "residual_delta": 0.07763529932776164
+      },
+      {
+        "dataset": "multifieldqa_en",
+        "id": 18,
+        "floor_delta": 0.0,
+        "miss_delta": 0.09765625,
+        "residual_delta": 0.09765625
+      },
+      {
+        "dataset": "multifieldqa_en",
+        "id": 19,
+        "floor_delta": 0.0,
+        "miss_delta": -0.0126953125,
+        "residual_delta": -0.0126953125
+      },
+      {
+        "dataset": "multifieldqa_en",
+        "id": 20,
+        "floor_delta": 0.0,
+        "miss_delta": -0.1318142361111112,
+        "residual_delta": -0.1318142361111111
+      },
+      {
+        "dataset": "multifieldqa_en",
+        "id": 21,
+        "floor_delta": 0.0,
+        "miss_delta": -0.029808407738095233,
+        "residual_delta": -0.029808407738095233
+      },
+      {
+        "dataset": "multifieldqa_en",
+        "id": 22,
+        "floor_delta": 0.0,
+        "miss_delta": 0.013671875,
+        "residual_delta": 0.013671875
+      },
+      {
+        "dataset": "multifieldqa_en",
+        "id": 23,
+        "floor_delta": 0.0,
+        "miss_delta": -0.06614879261363638,
+        "residual_delta": -0.06614879261363638
+      },
+      {
+        "dataset": "multifieldqa_en",
+        "id": 24,
+        "floor_delta": 0.0,
+        "miss_delta": 0.09366861979166663,
+        "residual_delta": 0.09366861979166663
+      },
+      {
+        "dataset": "multifieldqa_en",
+        "id": 25,
+        "floor_delta": 0.0,
+        "miss_delta": -0.013653273809523747,
+        "residual_delta": -0.013653273809523747
+      },
+      {
+        "dataset": "multifieldqa_en",
+        "id": 26,
+        "floor_delta": 0.0,
+        "miss_delta": 0.08221726190476192,
+        "residual_delta": 0.08221726190476192
+      },
+      {
+        "dataset": "multifieldqa_en",
+        "id": 27,
+        "floor_delta": 0.0,
+        "miss_delta": 0.1425304878048782,
+        "residual_delta": 0.1425304878048782
+      },
+      {
+        "dataset": "multifieldqa_en",
+        "id": 28,
+        "floor_delta": 0.0,
+        "miss_delta": -0.004231770833333315,
+        "residual_delta": -0.004231770833333315
+      },
+      {
+        "dataset": "multifieldqa_en",
+        "id": 29,
+        "floor_delta": 0.0,
+        "miss_delta": -0.00455729166666663,
+        "residual_delta": -0.00455729166666663
+      },
+      {
+        "dataset": "multifieldqa_en",
+        "id": 30,
+        "floor_delta": 0.0,
+        "miss_delta": 0.053598257211538436,
+        "residual_delta": 0.053598257211538436
+      },
+      {
+        "dataset": "multifieldqa_en",
+        "id": 31,
+        "floor_delta": 0.0,
+        "miss_delta": -0.04518821022727271,
+        "residual_delta": -0.04518821022727271
+      },
+      {
+        "dataset": "multifieldqa_en",
+        "id": 32,
+        "floor_delta": 0.0,
+        "miss_delta": 0.048701359675480727,
+        "residual_delta": 0.048701359675480727
+      },
+      {
+        "dataset": "multifieldqa_en",
+        "id": 33,
+        "floor_delta": 0.0,
+        "miss_delta": 0.134521484375,
+        "residual_delta": 0.134521484375
+      },
+      {
+        "dataset": "multifieldqa_en",
+        "id": 34,
+        "floor_delta": 0.0,
+        "miss_delta": 0.08500744047619047,
+        "residual_delta": 0.08500744047619047
+      },
+      {
+        "dataset": "multifieldqa_en",
+        "id": 35,
+        "floor_delta": 0.0,
+        "miss_delta": -0.0914151278409091,
+        "residual_delta": -0.0914151278409091
+      },
+      {
+        "dataset": "multifieldqa_en",
+        "id": 36,
+        "floor_delta": 0.0,
+        "miss_delta": -0.0400390625,
+        "residual_delta": -0.0400390625
+      },
+      {
+        "dataset": "multifieldqa_en",
+        "id": 37,
+        "floor_delta": 0.0,
+        "miss_delta": 0.014770507812500056,
+        "residual_delta": 0.014770507812500056
+      },
+      {
+        "dataset": "multifieldqa_en",
+        "id": 38,
+        "floor_delta": 0.0,
+        "miss_delta": 0.05410156249999998,
+        "residual_delta": 0.05410156249999998
+      },
+      {
+        "dataset": "multifieldqa_en",
+        "id": 39,
+        "floor_delta": 0.0,
+        "miss_delta": -0.05693359375000007,
+        "residual_delta": -0.05693359375000001
+      },
+      {
+        "dataset": "multifieldqa_en",
+        "id": 40,
+        "floor_delta": 0.0,
+        "miss_delta": 0.05244140624999993,
+        "residual_delta": 0.05244140624999999
+      },
+      {
+        "dataset": "multifieldqa_en",
+        "id": 41,
+        "floor_delta": 0.0,
+        "miss_delta": -0.0576171875,
+        "residual_delta": -0.0576171875
+      },
+      {
+        "dataset": "multifieldqa_en",
+        "id": 42,
+        "floor_delta": 0.0,
+        "miss_delta": 0.12531628619976354,
+        "residual_delta": 0.12531628619976354
+      },
+      {
+        "dataset": "multifieldqa_en",
+        "id": 43,
+        "floor_delta": 0.0,
+        "miss_delta": 0.07358685661764702,
+        "residual_delta": 0.07358685661764702
+      },
+      {
+        "dataset": "multifieldqa_en",
+        "id": 44,
+        "floor_delta": 0.0,
+        "miss_delta": -0.06510416666666663,
+        "residual_delta": -0.06510416666666663
+      },
+      {
+        "dataset": "multifieldqa_en",
+        "id": 45,
+        "floor_delta": 0.0,
+        "miss_delta": -0.0047022926026958345,
+        "residual_delta": -0.0047022926026958345
+      },
+      {
+        "dataset": "multifieldqa_en",
+        "id": 46,
+        "floor_delta": 0.0,
+        "miss_delta": 0.0900772758152174,
+        "residual_delta": 0.0900772758152174
+      },
+      {
+        "dataset": "multifieldqa_en",
+        "id": 47,
+        "floor_delta": 0.0,
+        "miss_delta": 0.0537884424603175,
+        "residual_delta": 0.0537884424603175
+      },
+      {
+        "dataset": "multifieldqa_en",
+        "id": 48,
+        "floor_delta": 0.0,
+        "miss_delta": 0.06103515625,
+        "residual_delta": 0.06103515625
+      },
+      {
+        "dataset": "multifieldqa_en",
+        "id": 49,
+        "floor_delta": 0.0,
+        "miss_delta": -0.0458984375,
+        "residual_delta": -0.0458984375
+      },
+      {
+        "dataset": "multifieldqa_en",
+        "id": 50,
+        "floor_delta": 0.0,
+        "miss_delta": 0.048828125,
+        "residual_delta": 0.048828125
+      },
+      {
+        "dataset": "multifieldqa_en",
+        "id": 51,
+        "floor_delta": 0.0,
+        "miss_delta": 0.114355881672833,
+        "residual_delta": 0.114355881672833
+      },
+      {
+        "dataset": "multifieldqa_en",
+        "id": 52,
+        "floor_delta": 0.0,
+        "miss_delta": 0.4507300967261905,
+        "residual_delta": 0.4507300967261905
+      },
+      {
+        "dataset": "multifieldqa_en",
+        "id": 53,
+        "floor_delta": 0.0,
+        "miss_delta": 0.00390625,
+        "residual_delta": 0.00390625
+      },
+      {
+        "dataset": "multifieldqa_en",
+        "id": 54,
+        "floor_delta": 0.0,
+        "miss_delta": 0.010498046875,
+        "residual_delta": 0.010498046875
+      },
+      {
+        "dataset": "multifieldqa_en",
+        "id": 55,
+        "floor_delta": 0.0,
+        "miss_delta": -0.078125,
+        "residual_delta": -0.078125
+      },
+      {
+        "dataset": "multifieldqa_en",
+        "id": 56,
+        "floor_delta": 0.0,
+        "miss_delta": 0.09746093749999996,
+        "residual_delta": 0.09746093749999996
+      },
+      {
+        "dataset": "multifieldqa_en",
+        "id": 57,
+        "floor_delta": 0.0,
+        "miss_delta": 0.0784040178571429,
+        "residual_delta": 0.07840401785714285
+      },
+      {
+        "dataset": "multifieldqa_en",
+        "id": 58,
+        "floor_delta": 0.0,
+        "miss_delta": -0.03049683415032678,
+        "residual_delta": -0.0304968341503268
+      },
+      {
+        "dataset": "multifieldqa_en",
+        "id": 59,
+        "floor_delta": 0.0,
+        "miss_delta": 0.07231445312499996,
+        "residual_delta": 0.07231445312499996
+      },
+      {
+        "dataset": "multifieldqa_en",
+        "id": 60,
+        "floor_delta": 0.0,
+        "miss_delta": 0.09796121922044576,
+        "residual_delta": 0.09796121922044576
+      },
+      {
+        "dataset": "multifieldqa_en",
+        "id": 61,
+        "floor_delta": 0.0,
+        "miss_delta": 0.10028594771241828,
+        "residual_delta": 0.10028594771241828
+      },
+      {
+        "dataset": "multifieldqa_en",
+        "id": 62,
+        "floor_delta": 0.0,
+        "miss_delta": 0.002197265625,
+        "residual_delta": 0.002197265625
+      },
+      {
+        "dataset": "multifieldqa_en",
+        "id": 63,
+        "floor_delta": 0.0,
+        "miss_delta": -0.002666766826923128,
+        "residual_delta": -0.0026667668269230727
+      },
+      {
+        "dataset": "musique",
+        "id": 0,
+        "floor_delta": 0.0,
+        "miss_delta": 0.13600127551020402,
+        "residual_delta": 0.13600127551020402
+      },
+      {
+        "dataset": "musique",
+        "id": 1,
+        "floor_delta": 0.0,
+        "miss_delta": -0.021061862244897978,
+        "residual_delta": -0.021061862244897978
+      },
+      {
+        "dataset": "musique",
+        "id": 2,
+        "floor_delta": 0.0,
+        "miss_delta": -0.14923469387755106,
+        "residual_delta": -0.14923469387755106
+      },
+      {
+        "dataset": "musique",
+        "id": 3,
+        "floor_delta": 0.0,
+        "miss_delta": 0.14495089285714274,
+        "residual_delta": 0.14495089285714274
+      },
+      {
+        "dataset": "musique",
+        "id": 4,
+        "floor_delta": 0.0,
+        "miss_delta": 0.11988450683303603,
+        "residual_delta": 0.11988450683303603
+      },
+      {
+        "dataset": "musique",
+        "id": 5,
+        "floor_delta": 0.0,
+        "miss_delta": 0.116489651416122,
+        "residual_delta": 0.116489651416122
+      },
+      {
+        "dataset": "musique",
+        "id": 6,
+        "floor_delta": 0.0,
+        "miss_delta": 0.1243749999999999,
+        "residual_delta": 0.1243749999999999
+      },
+      {
+        "dataset": "musique",
+        "id": 7,
+        "floor_delta": 0.0,
+        "miss_delta": 0.16375000000000006,
+        "residual_delta": 0.16375000000000006
+      },
+      {
+        "dataset": "musique",
+        "id": 8,
+        "floor_delta": 0.0,
+        "miss_delta": -0.0287873641304347,
+        "residual_delta": -0.0287873641304347
+      },
+      {
+        "dataset": "musique",
+        "id": 9,
+        "floor_delta": 0.0,
+        "miss_delta": -0.014374999999999916,
+        "residual_delta": -0.014374999999999916
+      },
+      {
+        "dataset": "musique",
+        "id": 10,
+        "floor_delta": 0.0,
+        "miss_delta": 0.050857843137255054,
+        "residual_delta": 0.050857843137255054
+      },
+      {
+        "dataset": "musique",
+        "id": 11,
+        "floor_delta": 0.0,
+        "miss_delta": -0.009874131944444309,
+        "residual_delta": -0.009874131944444309
+      },
+      {
+        "dataset": "musique",
+        "id": 12,
+        "floor_delta": 0.0,
+        "miss_delta": 0.029105392156862808,
+        "residual_delta": 0.029105392156862808
+      },
+      {
+        "dataset": "musique",
+        "id": 13,
+        "floor_delta": 0.0,
+        "miss_delta": 0.04783163265306145,
+        "residual_delta": 0.04783163265306145
+      },
+      {
+        "dataset": "musique",
+        "id": 14,
+        "floor_delta": 0.0,
+        "miss_delta": 0.02890624999999991,
+        "residual_delta": 0.02890624999999991
+      },
+      {
+        "dataset": "musique",
+        "id": 15,
+        "floor_delta": 0.0,
+        "miss_delta": -0.06203124999999987,
+        "residual_delta": -0.06203124999999987
+      },
+      {
+        "dataset": "musique",
+        "id": 16,
+        "floor_delta": 0.0,
+        "miss_delta": -0.02937500000000004,
+        "residual_delta": -0.02937500000000004
+      },
+      {
+        "dataset": "musique",
+        "id": 17,
+        "floor_delta": 0.0,
+        "miss_delta": -0.0036874999999999547,
+        "residual_delta": -0.0036874999999999547
+      },
+      {
+        "dataset": "musique",
+        "id": 18,
+        "floor_delta": 0.0,
+        "miss_delta": 0.14208333333333328,
+        "residual_delta": 0.14208333333333328
+      },
+      {
+        "dataset": "musique",
+        "id": 19,
+        "floor_delta": 0.0,
+        "miss_delta": 0.12847222222222204,
+        "residual_delta": 0.12847222222222204
+      },
+      {
+        "dataset": "musique",
+        "id": 20,
+        "floor_delta": 0.0,
+        "miss_delta": 0.0404166666666666,
+        "residual_delta": 0.0404166666666666
+      },
+      {
+        "dataset": "musique",
+        "id": 21,
+        "floor_delta": 0.0,
+        "miss_delta": 0.1158088235294118,
+        "residual_delta": 0.1158088235294118
+      },
+      {
+        "dataset": "musique",
+        "id": 22,
+        "floor_delta": 0.0,
+        "miss_delta": -0.010546874999999956,
+        "residual_delta": -0.010546874999999956
+      },
+      {
+        "dataset": "musique",
+        "id": 23,
+        "floor_delta": 0.0,
+        "miss_delta": 0.09258078231292516,
+        "residual_delta": 0.09258078231292516
+      },
+      {
+        "dataset": "musique",
+        "id": 24,
+        "floor_delta": 0.0,
+        "miss_delta": -0.029166666666666563,
+        "residual_delta": -0.029166666666666563
+      },
+      {
+        "dataset": "musique",
+        "id": 25,
+        "floor_delta": 0.0,
+        "miss_delta": 0.022959183673469385,
+        "residual_delta": 0.022959183673469385
+      },
+      {
+        "dataset": "musique",
+        "id": 26,
+        "floor_delta": 0.0,
+        "miss_delta": 0.09783496732026153,
+        "residual_delta": 0.09783496732026153
+      },
+      {
+        "dataset": "musique",
+        "id": 27,
+        "floor_delta": 0.0,
+        "miss_delta": -0.0642006802721089,
+        "residual_delta": -0.0642006802721089
+      },
+      {
+        "dataset": "musique",
+        "id": 28,
+        "floor_delta": 0.0,
+        "miss_delta": 0.02842881944444442,
+        "residual_delta": 0.02842881944444442
+      },
+      {
+        "dataset": "musique",
+        "id": 29,
+        "floor_delta": 0.0,
+        "miss_delta": 0.05729166666666663,
+        "residual_delta": 0.05729166666666663
+      },
+      {
+        "dataset": "musique",
+        "id": 30,
+        "floor_delta": 0.0,
+        "miss_delta": 0.09765625,
+        "residual_delta": 0.09765625
+      },
+      {
+        "dataset": "musique",
+        "id": 31,
+        "floor_delta": 0.0,
+        "miss_delta": -0.05800925925925937,
+        "residual_delta": -0.05800925925925937
+      },
+      {
+        "dataset": "musique",
+        "id": 32,
+        "floor_delta": 0.0,
+        "miss_delta": 0.19541666666666657,
+        "residual_delta": 0.19541666666666657
+      },
+      {
+        "dataset": "musique",
+        "id": 33,
+        "floor_delta": 0.0,
+        "miss_delta": -0.058650362318840576,
+        "residual_delta": -0.058650362318840576
+      },
+      {
+        "dataset": "musique",
+        "id": 34,
+        "floor_delta": 0.0,
+        "miss_delta": -0.0008333333333334636,
+        "residual_delta": -0.0008333333333334636
+      },
+      {
+        "dataset": "musique",
+        "id": 35,
+        "floor_delta": 0.0,
+        "miss_delta": 0.008333333333333304,
+        "residual_delta": 0.008333333333333304
+      },
+      {
+        "dataset": "musique",
+        "id": 36,
+        "floor_delta": 0.0,
+        "miss_delta": 0.23512499999999992,
+        "residual_delta": 0.23512499999999992
+      },
+      {
+        "dataset": "musique",
+        "id": 37,
+        "floor_delta": 0.0,
+        "miss_delta": 0.0022321428571427937,
+        "residual_delta": 0.0022321428571427937
+      },
+      {
+        "dataset": "musique",
+        "id": 38,
+        "floor_delta": 0.0,
+        "miss_delta": -0.0308067375886526,
+        "residual_delta": -0.0308067375886526
+      },
+      {
+        "dataset": "musique",
+        "id": 39,
+        "floor_delta": 0.0,
+        "miss_delta": 0.09693627450980397,
+        "residual_delta": 0.09693627450980397
+      },
+      {
+        "dataset": "musique",
+        "id": 40,
+        "floor_delta": 0.0,
+        "miss_delta": -0.03125000000000022,
+        "residual_delta": -0.03125000000000022
+      },
+      {
+        "dataset": "musique",
+        "id": 41,
+        "floor_delta": 0.0,
+        "miss_delta": 0.19102328431372528,
+        "residual_delta": 0.19102328431372528
+      },
+      {
+        "dataset": "musique",
+        "id": 42,
+        "floor_delta": 0.0,
+        "miss_delta": 0.04528000945179583,
+        "residual_delta": 0.04528000945179583
+      },
+      {
+        "dataset": "musique",
+        "id": 43,
+        "floor_delta": 0.0,
+        "miss_delta": 0.15125,
+        "residual_delta": 0.15125
+      },
+      {
+        "dataset": "musique",
+        "id": 44,
+        "floor_delta": 0.0,
+        "miss_delta": 0.047998366013071836,
+        "residual_delta": 0.047998366013071836
+      },
+      {
+        "dataset": "musique",
+        "id": 45,
+        "floor_delta": 0.0,
+        "miss_delta": 0.06874999999999998,
+        "residual_delta": 0.06874999999999998
+      },
+      {
+        "dataset": "musique",
+        "id": 46,
+        "floor_delta": 0.0,
+        "miss_delta": 0.15609681372549028,
+        "residual_delta": 0.15609681372549028
+      },
+      {
+        "dataset": "musique",
+        "id": 47,
+        "floor_delta": 0.0,
+        "miss_delta": 0.022727272727272707,
+        "residual_delta": 0.022727272727272707
+      },
+      {
+        "dataset": "musique",
+        "id": 48,
+        "floor_delta": 0.0,
+        "miss_delta": 0.1458928571428573,
+        "residual_delta": 0.1458928571428573
+      },
+      {
+        "dataset": "musique",
+        "id": 49,
+        "floor_delta": 0.0,
+        "miss_delta": -0.008333333333333415,
+        "residual_delta": -0.008333333333333415
+      },
+      {
+        "dataset": "musique",
+        "id": 50,
+        "floor_delta": 0.0,
+        "miss_delta": 0.009089052287581667,
+        "residual_delta": 0.009089052287581667
+      },
+      {
+        "dataset": "musique",
+        "id": 51,
+        "floor_delta": 0.0,
+        "miss_delta": 0.13966836734693866,
+        "residual_delta": 0.13966836734693866
+      },
+      {
+        "dataset": "musique",
+        "id": 52,
+        "floor_delta": 0.0,
+        "miss_delta": 0.1039341517857143,
+        "residual_delta": 0.1039341517857143
+      },
+      {
+        "dataset": "musique",
+        "id": 53,
+        "floor_delta": 0.0,
+        "miss_delta": -0.030937500000000118,
+        "residual_delta": -0.030937500000000118
+      },
+      {
+        "dataset": "musique",
+        "id": 54,
+        "floor_delta": 0.0,
+        "miss_delta": -0.019874999999999976,
+        "residual_delta": -0.019874999999999976
+      },
+      {
+        "dataset": "musique",
+        "id": 55,
+        "floor_delta": 0.0,
+        "miss_delta": 0.13603723404255325,
+        "residual_delta": 0.13603723404255325
+      },
+      {
+        "dataset": "musique",
+        "id": 56,
+        "floor_delta": 0.0,
+        "miss_delta": 0.19138808139534852,
+        "residual_delta": 0.19138808139534852
+      },
+      {
+        "dataset": "musique",
+        "id": 57,
+        "floor_delta": 0.0,
+        "miss_delta": -0.0561224489795919,
+        "residual_delta": -0.0561224489795919
+      },
+      {
+        "dataset": "musique",
+        "id": 58,
+        "floor_delta": 0.0,
+        "miss_delta": 0.025937499999999947,
+        "residual_delta": 0.025937499999999947
+      },
+      {
+        "dataset": "musique",
+        "id": 59,
+        "floor_delta": 0.0,
+        "miss_delta": 0.11280637254901943,
+        "residual_delta": 0.11280637254901943
+      },
+      {
+        "dataset": "musique",
+        "id": 60,
+        "floor_delta": 0.0,
+        "miss_delta": 0.012867647058823595,
+        "residual_delta": 0.012867647058823595
+      },
+      {
+        "dataset": "musique",
+        "id": 61,
+        "floor_delta": 0.0,
+        "miss_delta": 0.039628623188405876,
+        "residual_delta": 0.039628623188405876
+      },
+      {
+        "dataset": "musique",
+        "id": 62,
+        "floor_delta": 0.0,
+        "miss_delta": 0.06515522875816987,
+        "residual_delta": 0.06515522875816987
+      },
+      {
+        "dataset": "musique",
+        "id": 63,
+        "floor_delta": 0.0,
+        "miss_delta": 0.003972278566599152,
+        "residual_delta": 0.003972278566599152
+      },
+      {
+        "dataset": "narrativeqa",
+        "id": 0,
+        "floor_delta": 0.0,
+        "miss_delta": 0.1457861990950225,
+        "residual_delta": 0.1457861990950225
+      },
+      {
+        "dataset": "narrativeqa",
+        "id": 1,
+        "floor_delta": 0.0,
+        "miss_delta": 0.05333453311394487,
+        "residual_delta": 0.05333453311394487
+      },
+      {
+        "dataset": "narrativeqa",
+        "id": 2,
+        "floor_delta": 0.0,
+        "miss_delta": 0.06573016826923073,
+        "residual_delta": 0.06573016826923073
+      },
+      {
+        "dataset": "narrativeqa",
+        "id": 3,
+        "floor_delta": 0.0,
+        "miss_delta": 0.0516880580357143,
+        "residual_delta": 0.0516880580357143
+      },
+      {
+        "dataset": "narrativeqa",
+        "id": 4,
+        "floor_delta": 0.0,
+        "miss_delta": 0.11542872496592199,
+        "residual_delta": 0.11542872496592199
+      },
+      {
+        "dataset": "narrativeqa",
+        "id": 5,
+        "floor_delta": 0.0,
+        "miss_delta": 0.07291666666666685,
+        "residual_delta": 0.07291666666666685
+      },
+      {
+        "dataset": "narrativeqa",
+        "id": 6,
+        "floor_delta": 0.0,
+        "miss_delta": 0.037377450980392135,
+        "residual_delta": 0.037377450980392135
+      },
+      {
+        "dataset": "narrativeqa",
+        "id": 7,
+        "floor_delta": 0.0,
+        "miss_delta": -0.027818627450980182,
+        "residual_delta": -0.027818627450980182
+      },
+      {
+        "dataset": "narrativeqa",
+        "id": 8,
+        "floor_delta": 0.0,
+        "miss_delta": 0.13388480392156843,
+        "residual_delta": 0.13388480392156843
+      },
+      {
+        "dataset": "narrativeqa",
+        "id": 9,
+        "floor_delta": 0.0,
+        "miss_delta": 0.20820312500000004,
+        "residual_delta": 0.20820312500000004
+      },
+      {
+        "dataset": "narrativeqa",
+        "id": 10,
+        "floor_delta": 0.0,
+        "miss_delta": 0.10704316448801743,
+        "residual_delta": 0.10704316448801743
+      },
+      {
+        "dataset": "narrativeqa",
+        "id": 11,
+        "floor_delta": 0.0,
+        "miss_delta": -0.06251702069716752,
+        "residual_delta": -0.06251702069716752
+      },
+      {
+        "dataset": "narrativeqa",
+        "id": 12,
+        "floor_delta": 0.0,
+        "miss_delta": 0.044196428571428525,
+        "residual_delta": 0.044196428571428525
+      },
+      {
+        "dataset": "narrativeqa",
+        "id": 13,
+        "floor_delta": 0.0,
+        "miss_delta": -0.02113095238095225,
+        "residual_delta": -0.02113095238095225
+      },
+      {
+        "dataset": "narrativeqa",
+        "id": 14,
+        "floor_delta": 0.0,
+        "miss_delta": 0.012499999999999956,
+        "residual_delta": 0.012499999999999956
+      },
+      {
+        "dataset": "narrativeqa",
+        "id": 15,
+        "floor_delta": 0.0,
+        "miss_delta": -0.029636437908496904,
+        "residual_delta": -0.029636437908496904
+      },
+      {
+        "dataset": "narrativeqa",
+        "id": 16,
+        "floor_delta": 0.0,
+        "miss_delta": 0.038194444444444364,
+        "residual_delta": 0.038194444444444364
+      },
+      {
+        "dataset": "narrativeqa",
+        "id": 17,
+        "floor_delta": 0.0,
+        "miss_delta": 0.10704316448801743,
+        "residual_delta": 0.10704316448801743
+      },
+      {
+        "dataset": "narrativeqa",
+        "id": 18,
+        "floor_delta": 0.0,
+        "miss_delta": 0.19123774509803904,
+        "residual_delta": 0.19123774509803904
+      },
+      {
+        "dataset": "narrativeqa",
+        "id": 19,
+        "floor_delta": 0.0,
+        "miss_delta": 0.09900681515957444,
+        "residual_delta": 0.09900681515957444
+      },
+      {
+        "dataset": "narrativeqa",
+        "id": 20,
+        "floor_delta": 0.0,
+        "miss_delta": 0.09344883786848096,
+        "residual_delta": 0.09344883786848096
+      },
+      {
+        "dataset": "narrativeqa",
+        "id": 21,
+        "floor_delta": 0.0,
+        "miss_delta": 0.2629901960784316,
+        "residual_delta": 0.2629901960784316
+      },
+      {
+        "dataset": "narrativeqa",
+        "id": 22,
+        "floor_delta": 0.0,
+        "miss_delta": 0.1877801120448181,
+        "residual_delta": 0.1877801120448181
+      },
+      {
+        "dataset": "narrativeqa",
+        "id": 23,
+        "floor_delta": 0.0,
+        "miss_delta": 0.10588430851063829,
+        "residual_delta": 0.10588430851063829
+      },
+      {
+        "dataset": "narrativeqa",
+        "id": 24,
+        "floor_delta": 0.0,
+        "miss_delta": 0.016456582633053163,
+        "residual_delta": 0.016456582633053163
+      },
+      {
+        "dataset": "narrativeqa",
+        "id": 25,
+        "floor_delta": 0.0,
+        "miss_delta": 0.13480392156862725,
+        "residual_delta": 0.13480392156862725
+      },
+      {
+        "dataset": "narrativeqa",
+        "id": 26,
+        "floor_delta": 0.0,
+        "miss_delta": 0.07760690694380207,
+        "residual_delta": 0.07760690694380207
+      },
+      {
+        "dataset": "narrativeqa",
+        "id": 27,
+        "floor_delta": 0.0,
+        "miss_delta": 0.02954406194295911,
+        "residual_delta": 0.02954406194295911
+      },
+      {
+        "dataset": "narrativeqa",
+        "id": 28,
+        "floor_delta": 0.0,
+        "miss_delta": 0.12613795518207271,
+        "residual_delta": 0.12613795518207271
+      },
+      {
+        "dataset": "narrativeqa",
+        "id": 29,
+        "floor_delta": 0.0,
+        "miss_delta": 0.08230698529411756,
+        "residual_delta": 0.08230698529411756
+      },
+      {
+        "dataset": "narrativeqa",
+        "id": 30,
+        "floor_delta": 0.0,
+        "miss_delta": 0.05263109031491375,
+        "residual_delta": 0.05263109031491375
+      },
+      {
+        "dataset": "narrativeqa",
+        "id": 31,
+        "floor_delta": 0.0,
+        "miss_delta": 0.18188316993464015,
+        "residual_delta": 0.18188316993464015
+      },
+      {
+        "dataset": "narrativeqa",
+        "id": 32,
+        "floor_delta": 0.0,
+        "miss_delta": 0.012561274509804043,
+        "residual_delta": 0.012561274509804043
+      },
+      {
+        "dataset": "narrativeqa",
+        "id": 33,
+        "floor_delta": 0.0,
+        "miss_delta": 0.2540369088811997,
+        "residual_delta": 0.2540369088811997
+      },
+      {
+        "dataset": "narrativeqa",
+        "id": 34,
+        "floor_delta": 0.0,
+        "miss_delta": 0.05785472972972994,
+        "residual_delta": 0.05785472972972994
+      },
+      {
+        "dataset": "narrativeqa",
+        "id": 35,
+        "floor_delta": 0.0,
+        "miss_delta": 0.006302521008403228,
+        "residual_delta": 0.006302521008403228
+      },
+      {
+        "dataset": "narrativeqa",
+        "id": 36,
+        "floor_delta": 0.0,
+        "miss_delta": -0.12704248366013116,
+        "residual_delta": -0.12704248366013116
+      },
+      {
+        "dataset": "narrativeqa",
+        "id": 37,
+        "floor_delta": 0.0,
+        "miss_delta": 0.10827228327228322,
+        "residual_delta": 0.10827228327228322
+      },
+      {
+        "dataset": "narrativeqa",
+        "id": 38,
+        "floor_delta": 0.0,
+        "miss_delta": -0.002742763772175416,
+        "residual_delta": -0.002742763772175416
+      },
+      {
+        "dataset": "narrativeqa",
+        "id": 39,
+        "floor_delta": 0.0,
+        "miss_delta": 0.28188505794474666,
+        "residual_delta": 0.28188505794474666
+      },
+      {
+        "dataset": "narrativeqa",
+        "id": 40,
+        "floor_delta": 0.0,
+        "miss_delta": 0.17828839869281027,
+        "residual_delta": 0.17828839869281027
+      },
+      {
+        "dataset": "narrativeqa",
+        "id": 41,
+        "floor_delta": 0.0,
+        "miss_delta": 0.05412581699346414,
+        "residual_delta": 0.05412581699346414
+      },
+      {
+        "dataset": "narrativeqa",
+        "id": 42,
+        "floor_delta": 0.0,
+        "miss_delta": 0.0645228794642857,
+        "residual_delta": 0.0645228794642857
+      },
+      {
+        "dataset": "narrativeqa",
+        "id": 43,
+        "floor_delta": 0.0,
+        "miss_delta": -0.0077614379084969265,
+        "residual_delta": -0.0077614379084969265
+      },
+      {
+        "dataset": "narrativeqa",
+        "id": 44,
+        "floor_delta": 0.0,
+        "miss_delta": 0.08331677265500803,
+        "residual_delta": 0.08331677265500803
+      },
+      {
+        "dataset": "narrativeqa",
+        "id": 45,
+        "floor_delta": 0.0,
+        "miss_delta": 0.1091911764705884,
+        "residual_delta": 0.1091911764705884
+      },
+      {
+        "dataset": "narrativeqa",
+        "id": 46,
+        "floor_delta": 0.0,
+        "miss_delta": 0.05584733893557425,
+        "residual_delta": 0.05584733893557425
+      },
+      {
+        "dataset": "narrativeqa",
+        "id": 47,
+        "floor_delta": 0.0,
+        "miss_delta": 0.28188505794474666,
+        "residual_delta": 0.28188505794474666
+      },
+      {
+        "dataset": "narrativeqa",
+        "id": 48,
+        "floor_delta": 0.0,
+        "miss_delta": 0.12091503267973841,
+        "residual_delta": 0.12091503267973841
+      },
+      {
+        "dataset": "narrativeqa",
+        "id": 49,
+        "floor_delta": 0.0,
+        "miss_delta": 0.05912990196078427,
+        "residual_delta": 0.05912990196078427
+      },
+      {
+        "dataset": "narrativeqa",
+        "id": 50,
+        "floor_delta": 0.0,
+        "miss_delta": 0.1947457431704182,
+        "residual_delta": 0.1947457431704182
+      },
+      {
+        "dataset": "narrativeqa",
+        "id": 51,
+        "floor_delta": 0.0,
+        "miss_delta": 0.18704044117647095,
+        "residual_delta": 0.18704044117647095
+      },
+      {
+        "dataset": "narrativeqa",
+        "id": 52,
+        "floor_delta": 0.0,
+        "miss_delta": 0.08230698529411756,
+        "residual_delta": 0.08230698529411756
+      },
+      {
+        "dataset": "narrativeqa",
+        "id": 53,
+        "floor_delta": 0.0,
+        "miss_delta": 0.12277369281045747,
+        "residual_delta": 0.12277369281045747
+      },
+      {
+        "dataset": "narrativeqa",
+        "id": 54,
+        "floor_delta": 0.0,
+        "miss_delta": 0.15747549019607854,
+        "residual_delta": 0.15747549019607854
+      },
+      {
+        "dataset": "narrativeqa",
+        "id": 55,
+        "floor_delta": 0.0,
+        "miss_delta": 0.04446778711484611,
+        "residual_delta": 0.04446778711484611
+      },
+      {
+        "dataset": "narrativeqa",
+        "id": 56,
+        "floor_delta": 0.0,
+        "miss_delta": 0.13860294117647076,
+        "residual_delta": 0.13860294117647076
+      },
+      {
+        "dataset": "narrativeqa",
+        "id": 57,
+        "floor_delta": 0.0,
+        "miss_delta": 0.17279411764705876,
+        "residual_delta": 0.17279411764705876
+      },
+      {
+        "dataset": "narrativeqa",
+        "id": 58,
+        "floor_delta": 0.0,
+        "miss_delta": 0.08789414414414415,
+        "residual_delta": 0.08789414414414415
+      },
+      {
+        "dataset": "narrativeqa",
+        "id": 59,
+        "floor_delta": 0.0,
+        "miss_delta": 0.1938316993464053,
+        "residual_delta": 0.1938316993464053
+      },
+      {
+        "dataset": "narrativeqa",
+        "id": 60,
+        "floor_delta": 0.0,
+        "miss_delta": -0.0459681919642857,
+        "residual_delta": -0.0459681919642857
+      },
+      {
+        "dataset": "narrativeqa",
+        "id": 61,
+        "floor_delta": 0.0,
+        "miss_delta": -0.04226190476190478,
+        "residual_delta": -0.04226190476190478
+      },
+      {
+        "dataset": "narrativeqa",
+        "id": 62,
+        "floor_delta": 0.0,
+        "miss_delta": 0.007829520697167691,
+        "residual_delta": 0.007829520697167691
+      },
+      {
+        "dataset": "narrativeqa",
+        "id": 63,
+        "floor_delta": 0.0,
+        "miss_delta": 0.04738562091503262,
+        "residual_delta": 0.04738562091503262
+      },
+      {
+        "dataset": "qasper",
+        "id": 0,
+        "floor_delta": 0.007440476190476192,
+        "miss_delta": 0.04554501488095242,
+        "residual_delta": 0.0381045386904762
+      },
+      {
+        "dataset": "qasper",
+        "id": 1,
+        "floor_delta": 0.0,
+        "miss_delta": 0.06730143229166663,
+        "residual_delta": 0.06730143229166669
+      },
+      {
+        "dataset": "qasper",
+        "id": 2,
+        "floor_delta": 0.0,
+        "miss_delta": 0.11806640624999998,
+        "residual_delta": 0.11806640624999998
+      },
+      {
+        "dataset": "qasper",
+        "id": 3,
+        "floor_delta": 0.0,
+        "miss_delta": 0.0376674107142857,
+        "residual_delta": 0.0376674107142857
+      },
+      {
+        "dataset": "qasper",
+        "id": 4,
+        "floor_delta": 0.0,
+        "miss_delta": 0.004356046028325178,
+        "residual_delta": 0.004356046028325122
+      },
+      {
+        "dataset": "qasper",
+        "id": 5,
+        "floor_delta": 0.0,
+        "miss_delta": 0.0830078125,
+        "residual_delta": 0.0830078125
+      },
+      {
+        "dataset": "qasper",
+        "id": 6,
+        "floor_delta": 0.0,
+        "miss_delta": 0.10009765625,
+        "residual_delta": 0.10009765625
+      },
+      {
+        "dataset": "qasper",
+        "id": 7,
+        "floor_delta": 0.0,
+        "miss_delta": 0.02875434027777779,
+        "residual_delta": 0.02875434027777779
+      },
+      {
+        "dataset": "qasper",
+        "id": 8,
+        "floor_delta": 0.0,
+        "miss_delta": 0.0032569969093406703,
+        "residual_delta": 0.0032569969093406703
+      },
+      {
+        "dataset": "qasper",
+        "id": 9,
+        "floor_delta": 0.0,
+        "miss_delta": 0.08780751329787234,
+        "residual_delta": 0.08780751329787234
+      },
+      {
+        "dataset": "qasper",
+        "id": 10,
+        "floor_delta": 0.0,
+        "miss_delta": -0.0007921006944444642,
+        "residual_delta": -0.0007921006944444642
+      },
+      {
+        "dataset": "qasper",
+        "id": 11,
+        "floor_delta": 0.0,
+        "miss_delta": 0.001953125,
+        "residual_delta": 0.001953125
+      },
+      {
+        "dataset": "qasper",
+        "id": 12,
+        "floor_delta": 0.02430555555555558,
+        "miss_delta": 0.04668511284722221,
+        "residual_delta": 0.022379557291666657
+      },
+      {
+        "dataset": "qasper",
+        "id": 13,
+        "floor_delta": 0.0,
+        "miss_delta": 0.29299990031897927,
+        "residual_delta": 0.29299990031897927
+      },
+      {
+        "dataset": "qasper",
+        "id": 14,
+        "floor_delta": 0.0,
+        "miss_delta": -0.0400390625,
+        "residual_delta": -0.0400390625
+      },
+      {
+        "dataset": "qasper",
+        "id": 15,
+        "floor_delta": 0.0,
+        "miss_delta": 0.10269347100542359,
+        "residual_delta": 0.10269347100542359
+      },
+      {
+        "dataset": "qasper",
+        "id": 16,
+        "floor_delta": 0.0,
+        "miss_delta": 0.1337890625,
+        "residual_delta": 0.1337890625
+      },
+      {
+        "dataset": "qasper",
+        "id": 17,
+        "floor_delta": 0.0,
+        "miss_delta": -0.047206333705357095,
+        "residual_delta": -0.047206333705357095
+      },
+      {
+        "dataset": "qasper",
+        "id": 18,
+        "floor_delta": 0.0009469696969696961,
+        "miss_delta": 0.04091526679841895,
+        "residual_delta": 0.039968297101449224
+      },
+      {
+        "dataset": "qasper",
+        "id": 19,
+        "floor_delta": 0.0,
+        "miss_delta": 0.10499378551136362,
+        "residual_delta": 0.10499378551136362
+      },
+      {
+        "dataset": "qasper",
+        "id": 20,
+        "floor_delta": 0.0,
+        "miss_delta": 0.064208984375,
+        "residual_delta": 0.064208984375
+      },
+      {
+        "dataset": "qasper",
+        "id": 21,
+        "floor_delta": 0.0,
+        "miss_delta": -0.007651130698005715,
+        "residual_delta": -0.007651130698005715
+      },
+      {
+        "dataset": "qasper",
+        "id": 22,
+        "floor_delta": 0.0,
+        "miss_delta": 0.03515625,
+        "residual_delta": 0.03515625
+      },
+      {
+        "dataset": "qasper",
+        "id": 23,
+        "floor_delta": 0.0,
+        "miss_delta": 0.010120738636363646,
+        "residual_delta": 0.010120738636363646
+      },
+      {
+        "dataset": "qasper",
+        "id": 24,
+        "floor_delta": 0.0,
+        "miss_delta": 0.0478515625,
+        "residual_delta": 0.0478515625
+      },
+      {
+        "dataset": "qasper",
+        "id": 25,
+        "floor_delta": 0.0,
+        "miss_delta": -0.01826985677083337,
+        "residual_delta": -0.01826985677083337
+      },
+      {
+        "dataset": "qasper",
+        "id": 26,
+        "floor_delta": 0.0,
+        "miss_delta": 0.111328125,
+        "residual_delta": 0.111328125
+      },
+      {
+        "dataset": "qasper",
+        "id": 27,
+        "floor_delta": 0.0,
+        "miss_delta": 0.0048828125,
+        "residual_delta": 0.0048828125
+      },
+      {
+        "dataset": "qasper",
+        "id": 28,
+        "floor_delta": 0.0,
+        "miss_delta": 0.06784667968750002,
+        "residual_delta": 0.0678466796875
+      },
+      {
+        "dataset": "qasper",
+        "id": 29,
+        "floor_delta": 0.0,
+        "miss_delta": 0.041748046875,
+        "residual_delta": 0.041748046875
+      },
+      {
+        "dataset": "qasper",
+        "id": 30,
+        "floor_delta": 0.0,
+        "miss_delta": -0.010319010416666718,
+        "residual_delta": -0.010319010416666663
+      },
+      {
+        "dataset": "qasper",
+        "id": 31,
+        "floor_delta": 0.0,
+        "miss_delta": 0.03997785345441596,
+        "residual_delta": 0.03997785345441596
+      },
+      {
+        "dataset": "qasper",
+        "id": 32,
+        "floor_delta": 0.0,
+        "miss_delta": 0.14223345588235292,
+        "residual_delta": 0.14223345588235292
+      },
+      {
+        "dataset": "qasper",
+        "id": 33,
+        "floor_delta": 0.0,
+        "miss_delta": -0.000244140625,
+        "residual_delta": -0.000244140625
+      },
+      {
+        "dataset": "qasper",
+        "id": 34,
+        "floor_delta": 0.0,
+        "miss_delta": 0.11328125,
+        "residual_delta": 0.11328125
+      },
+      {
+        "dataset": "qasper",
+        "id": 35,
+        "floor_delta": 0.0,
+        "miss_delta": 0.0949337121212121,
+        "residual_delta": 0.0949337121212121
+      },
+      {
+        "dataset": "qasper",
+        "id": 36,
+        "floor_delta": 0.0,
+        "miss_delta": 0.03173828125,
+        "residual_delta": 0.03173828125
+      },
+      {
+        "dataset": "qasper",
+        "id": 37,
+        "floor_delta": 0.0,
+        "miss_delta": -0.017889793882978733,
+        "residual_delta": -0.017889793882978705
+      },
+      {
+        "dataset": "qasper",
+        "id": 38,
+        "floor_delta": 0.0,
+        "miss_delta": 0.21539523077349293,
+        "residual_delta": 0.21539523077349293
+      },
+      {
+        "dataset": "qasper",
+        "id": 39,
+        "floor_delta": 0.0,
+        "miss_delta": -0.0022786458333333703,
+        "residual_delta": -0.0022786458333333703
+      },
+      {
+        "dataset": "qasper",
+        "id": 40,
+        "floor_delta": 0.0,
+        "miss_delta": -0.045591127622377714,
+        "residual_delta": -0.045591127622377714
+      },
+      {
+        "dataset": "qasper",
+        "id": 41,
+        "floor_delta": 0.0,
+        "miss_delta": 0.0166015625,
+        "residual_delta": 0.0166015625
+      },
+      {
+        "dataset": "qasper",
+        "id": 42,
+        "floor_delta": 0.0,
+        "miss_delta": 0.06267333164193722,
+        "residual_delta": 0.0626733316419373
+      },
+      {
+        "dataset": "qasper",
+        "id": 43,
+        "floor_delta": 0.0,
+        "miss_delta": 0.1667782738095238,
+        "residual_delta": 0.1667782738095238
+      },
+      {
+        "dataset": "qasper",
+        "id": 44,
+        "floor_delta": 0.0,
+        "miss_delta": -0.02880859375,
+        "residual_delta": -0.02880859375
+      },
+      {
+        "dataset": "qasper",
+        "id": 45,
+        "floor_delta": 0.0,
+        "miss_delta": -0.03173828125,
+        "residual_delta": -0.03173828125
+      },
+      {
+        "dataset": "qasper",
+        "id": 46,
+        "floor_delta": 0.0,
+        "miss_delta": -0.036257480053191404,
+        "residual_delta": -0.03625748005319149
+      },
+      {
+        "dataset": "qasper",
+        "id": 47,
+        "floor_delta": 0.0,
+        "miss_delta": -0.10912566489361697,
+        "residual_delta": -0.10912566489361702
+      },
+      {
+        "dataset": "qasper",
+        "id": 48,
+        "floor_delta": 0.0,
+        "miss_delta": 0.0556640625,
+        "residual_delta": 0.0556640625
+      },
+      {
+        "dataset": "qasper",
+        "id": 49,
+        "floor_delta": 0.0,
+        "miss_delta": 0.030808221726190466,
+        "residual_delta": 0.030808221726190466
+      },
+      {
+        "dataset": "qasper",
+        "id": 50,
+        "floor_delta": 0.0,
+        "miss_delta": 0.11464843749999998,
+        "residual_delta": 0.1146484375
+      },
+      {
+        "dataset": "qasper",
+        "id": 51,
+        "floor_delta": 0.0,
+        "miss_delta": 0.03173828125,
+        "residual_delta": 0.03173828125
+      },
+      {
+        "dataset": "qasper",
+        "id": 52,
+        "floor_delta": 0.0,
+        "miss_delta": 0.04248046875,
+        "residual_delta": 0.04248046875
+      },
+      {
+        "dataset": "qasper",
+        "id": 53,
+        "floor_delta": 0.0,
+        "miss_delta": 0.025683593749999956,
+        "residual_delta": 0.025683593749999997
+      },
+      {
+        "dataset": "qasper",
+        "id": 54,
+        "floor_delta": 0.0,
+        "miss_delta": -0.03573418003565054,
+        "residual_delta": -0.03573418003565054
+      },
+      {
+        "dataset": "qasper",
+        "id": 55,
+        "floor_delta": 0.0,
+        "miss_delta": -0.009765625,
+        "residual_delta": -0.009765625
+      },
+      {
+        "dataset": "qasper",
+        "id": 56,
+        "floor_delta": 0.0,
+        "miss_delta": -0.05403645833333337,
+        "residual_delta": -0.05403645833333337
+      },
+      {
+        "dataset": "qasper",
+        "id": 57,
+        "floor_delta": 0.0,
+        "miss_delta": 0.08396645296049476,
+        "residual_delta": 0.08396645296049476
+      },
+      {
+        "dataset": "qasper",
+        "id": 58,
+        "floor_delta": 0.0,
+        "miss_delta": -0.036645754419191934,
+        "residual_delta": -0.036645754419191934
+      },
+      {
+        "dataset": "qasper",
+        "id": 59,
+        "floor_delta": 0.0,
+        "miss_delta": 0.03125,
+        "residual_delta": 0.03125
+      },
+      {
+        "dataset": "qasper",
+        "id": 60,
+        "floor_delta": 0.0,
+        "miss_delta": 0.030160164293068004,
+        "residual_delta": 0.030160164293067948
+      },
+      {
+        "dataset": "qasper",
+        "id": 61,
+        "floor_delta": 0.0,
+        "miss_delta": 0.057544625580495334,
+        "residual_delta": 0.057544625580495334
+      },
+      {
+        "dataset": "qasper",
+        "id": 62,
+        "floor_delta": 0.0,
+        "miss_delta": 0.027734374999999978,
+        "residual_delta": 0.027734375000000006
+      },
+      {
+        "dataset": "qasper",
+        "id": 63,
+        "floor_delta": 0.0,
+        "miss_delta": 0.068359375,
+        "residual_delta": 0.068359375
+      },
+      {
+        "dataset": "triviaqa",
+        "id": 0,
+        "floor_delta": 0.0,
+        "miss_delta": 0.06396484375,
+        "residual_delta": 0.06396484375
+      },
+      {
+        "dataset": "triviaqa",
+        "id": 1,
+        "floor_delta": 0.0,
+        "miss_delta": 0.2421568627450981,
+        "residual_delta": 0.2421568627450981
+      },
+      {
+        "dataset": "triviaqa",
+        "id": 2,
+        "floor_delta": 0.0,
+        "miss_delta": 0.05411585365853655,
+        "residual_delta": 0.05411585365853655
+      },
+      {
+        "dataset": "triviaqa",
+        "id": 3,
+        "floor_delta": 0.0,
+        "miss_delta": 0.18002450980392173,
+        "residual_delta": 0.18002450980392173
+      },
+      {
+        "dataset": "triviaqa",
+        "id": 4,
+        "floor_delta": 0.0,
+        "miss_delta": 0.07964409722222218,
+        "residual_delta": 0.07964409722222218
+      },
+      {
+        "dataset": "triviaqa",
+        "id": 5,
+        "floor_delta": 0.0,
+        "miss_delta": 0.09085648148148145,
+        "residual_delta": 0.09085648148148145
+      },
+      {
+        "dataset": "triviaqa",
+        "id": 6,
+        "floor_delta": 0.0,
+        "miss_delta": 0.12744140625,
+        "residual_delta": 0.12744140625
+      },
+      {
+        "dataset": "triviaqa",
+        "id": 7,
+        "floor_delta": 0.0,
+        "miss_delta": 0.0830078125,
+        "residual_delta": 0.0830078125
+      },
+      {
+        "dataset": "triviaqa",
+        "id": 8,
+        "floor_delta": 0.0,
+        "miss_delta": -0.044189453125,
+        "residual_delta": -0.044189453125
+      },
+      {
+        "dataset": "triviaqa",
+        "id": 9,
+        "floor_delta": 0.0,
+        "miss_delta": 0.03895399305555555,
+        "residual_delta": 0.03895399305555555
+      },
+      {
+        "dataset": "triviaqa",
+        "id": 10,
+        "floor_delta": 0.0,
+        "miss_delta": 0.26470588235294124,
+        "residual_delta": 0.26470588235294124
+      },
+      {
+        "dataset": "triviaqa",
+        "id": 11,
+        "floor_delta": 0.0,
+        "miss_delta": 0.130859375,
+        "residual_delta": 0.130859375
+      },
+      {
+        "dataset": "triviaqa",
+        "id": 12,
+        "floor_delta": 0.0,
+        "miss_delta": 0.03105468750000001,
+        "residual_delta": 0.03105468750000001
+      },
+      {
+        "dataset": "triviaqa",
+        "id": 13,
+        "floor_delta": 0.0,
+        "miss_delta": 0.0829326923076924,
+        "residual_delta": 0.0829326923076924
+      },
+      {
+        "dataset": "triviaqa",
+        "id": 14,
+        "floor_delta": 0.0,
+        "miss_delta": 0.0205078125,
+        "residual_delta": 0.0205078125
+      },
+      {
+        "dataset": "triviaqa",
+        "id": 15,
+        "floor_delta": 0.0,
+        "miss_delta": 0.14127604166666663,
+        "residual_delta": 0.14127604166666663
+      },
+      {
+        "dataset": "triviaqa",
+        "id": 16,
+        "floor_delta": 0.0,
+        "miss_delta": 0.22058823529411767,
+        "residual_delta": 0.22058823529411767
+      },
+      {
+        "dataset": "triviaqa",
+        "id": 17,
+        "floor_delta": 0.0,
+        "miss_delta": -0.0068359375,
+        "residual_delta": -0.0068359375
+      },
+      {
+        "dataset": "triviaqa",
+        "id": 18,
+        "floor_delta": 0.0,
+        "miss_delta": 0.18412990196078427,
+        "residual_delta": 0.18412990196078427
+      },
+      {
+        "dataset": "triviaqa",
+        "id": 19,
+        "floor_delta": 0.0,
+        "miss_delta": 0.21058006535947718,
+        "residual_delta": 0.21058006535947718
+      },
+      {
+        "dataset": "triviaqa",
+        "id": 20,
+        "floor_delta": 0.0,
+        "miss_delta": 0.1185546875,
+        "residual_delta": 0.1185546875
+      },
+      {
+        "dataset": "triviaqa",
+        "id": 21,
+        "floor_delta": 0.0,
+        "miss_delta": 0.10807291666666663,
+        "residual_delta": 0.10807291666666663
+      },
+      {
+        "dataset": "triviaqa",
+        "id": 22,
+        "floor_delta": 0.0,
+        "miss_delta": -0.0015624999999999667,
+        "residual_delta": -0.0015624999999999667
+      },
+      {
+        "dataset": "triviaqa",
+        "id": 23,
+        "floor_delta": 0.0,
+        "miss_delta": 0.24835526315789475,
+        "residual_delta": 0.24835526315789475
+      },
+      {
+        "dataset": "triviaqa",
+        "id": 24,
+        "floor_delta": 0.0,
+        "miss_delta": 0.21945028011204495,
+        "residual_delta": 0.21945028011204495
+      },
+      {
+        "dataset": "triviaqa",
+        "id": 25,
+        "floor_delta": 0.0,
+        "miss_delta": 0.13468992248062014,
+        "residual_delta": 0.13468992248062014
+      },
+      {
+        "dataset": "triviaqa",
+        "id": 26,
+        "floor_delta": 0.0,
+        "miss_delta": 0.11825980392156882,
+        "residual_delta": 0.11825980392156882
+      },
+      {
+        "dataset": "triviaqa",
+        "id": 27,
+        "floor_delta": 0.0,
+        "miss_delta": -0.0029296875,
+        "residual_delta": -0.0029296875
+      },
+      {
+        "dataset": "triviaqa",
+        "id": 28,
+        "floor_delta": 0.0,
+        "miss_delta": 0.048828125,
+        "residual_delta": 0.048828125
+      },
+      {
+        "dataset": "triviaqa",
+        "id": 29,
+        "floor_delta": 0.0,
+        "miss_delta": 0.09695512820512825,
+        "residual_delta": 0.09695512820512825
+      },
+      {
+        "dataset": "triviaqa",
+        "id": 30,
+        "floor_delta": 0.0,
+        "miss_delta": 0.09727328431372545,
+        "residual_delta": 0.09727328431372545
+      },
+      {
+        "dataset": "triviaqa",
+        "id": 31,
+        "floor_delta": 0.0,
+        "miss_delta": 0.0,
+        "residual_delta": 0.0
+      },
+      {
+        "dataset": "triviaqa",
+        "id": 32,
+        "floor_delta": 0.0,
+        "miss_delta": 0.2529616013071895,
+        "residual_delta": 0.2529616013071895
+      },
+      {
+        "dataset": "triviaqa",
+        "id": 33,
+        "floor_delta": 0.0,
+        "miss_delta": 0.074951171875,
+        "residual_delta": 0.074951171875
+      },
+      {
+        "dataset": "triviaqa",
+        "id": 34,
+        "floor_delta": 0.0,
+        "miss_delta": 0.18347537878787878,
+        "residual_delta": 0.18347537878787878
+      },
+      {
+        "dataset": "triviaqa",
+        "id": 35,
+        "floor_delta": 0.0,
+        "miss_delta": 0.1270424836601309,
+        "residual_delta": 0.1270424836601309
+      },
+      {
+        "dataset": "triviaqa",
+        "id": 36,
+        "floor_delta": 0.0,
+        "miss_delta": 0.01123046875,
+        "residual_delta": 0.01123046875
+      },
+      {
+        "dataset": "triviaqa",
+        "id": 37,
+        "floor_delta": 0.0,
+        "miss_delta": 0.22181372549019615,
+        "residual_delta": 0.22181372549019615
+      },
+      {
+        "dataset": "triviaqa",
+        "id": 38,
+        "floor_delta": 0.0,
+        "miss_delta": 0.13602941176470595,
+        "residual_delta": 0.13602941176470595
+      },
+      {
+        "dataset": "triviaqa",
+        "id": 39,
+        "floor_delta": 0.0,
+        "miss_delta": 0.17060810810810811,
+        "residual_delta": 0.17060810810810811
+      },
+      {
+        "dataset": "triviaqa",
+        "id": 40,
+        "floor_delta": 0.0,
+        "miss_delta": 0.19596354166666666,
+        "residual_delta": 0.19596354166666666
+      },
+      {
+        "dataset": "triviaqa",
+        "id": 41,
+        "floor_delta": 0.0,
+        "miss_delta": 0.2041015625,
+        "residual_delta": 0.2041015625
+      },
+      {
+        "dataset": "triviaqa",
+        "id": 42,
+        "floor_delta": 0.0,
+        "miss_delta": 0.09521484375,
+        "residual_delta": 0.09521484375
+      },
+      {
+        "dataset": "triviaqa",
+        "id": 43,
+        "floor_delta": 0.0,
+        "miss_delta": 0.0380859375,
+        "residual_delta": 0.0380859375
+      },
+      {
+        "dataset": "triviaqa",
+        "id": 44,
+        "floor_delta": 0.0,
+        "miss_delta": 0.12578125,
+        "residual_delta": 0.12578125
+      },
+      {
+        "dataset": "triviaqa",
+        "id": 45,
+        "floor_delta": 0.0,
+        "miss_delta": 0.036611519607843146,
+        "residual_delta": 0.036611519607843146
+      },
+      {
+        "dataset": "triviaqa",
+        "id": 46,
+        "floor_delta": 0.0,
+        "miss_delta": 0.10546875,
+        "residual_delta": 0.10546875
+      },
+      {
+        "dataset": "triviaqa",
+        "id": 47,
+        "floor_delta": 0.0,
+        "miss_delta": 0.14339192708333337,
+        "residual_delta": 0.14339192708333337
+      },
+      {
+        "dataset": "triviaqa",
+        "id": 48,
+        "floor_delta": 0.0,
+        "miss_delta": 0.12314814814814823,
+        "residual_delta": 0.12314814814814823
+      },
+      {
+        "dataset": "triviaqa",
+        "id": 49,
+        "floor_delta": 0.0,
+        "miss_delta": 0.06967905405405406,
+        "residual_delta": 0.06967905405405406
+      },
+      {
+        "dataset": "triviaqa",
+        "id": 50,
+        "floor_delta": 0.0,
+        "miss_delta": 0.1650390625,
+        "residual_delta": 0.1650390625
+      },
+      {
+        "dataset": "triviaqa",
+        "id": 51,
+        "floor_delta": 0.0,
+        "miss_delta": 0.03559027777777768,
+        "residual_delta": 0.03559027777777768
+      },
+      {
+        "dataset": "triviaqa",
+        "id": 52,
+        "floor_delta": 0.0,
+        "miss_delta": -0.013867187499999989,
+        "residual_delta": -0.013867187499999989
+      },
+      {
+        "dataset": "triviaqa",
+        "id": 53,
+        "floor_delta": 0.0,
+        "miss_delta": 0.07296874999999997,
+        "residual_delta": 0.07296874999999997
+      },
+      {
+        "dataset": "triviaqa",
+        "id": 54,
+        "floor_delta": 0.0,
+        "miss_delta": 0.0001610289228722861,
+        "residual_delta": 0.0001610289228723416
+      },
+      {
+        "dataset": "triviaqa",
+        "id": 55,
+        "floor_delta": 0.0,
+        "miss_delta": 0.15236928104575154,
+        "residual_delta": 0.15236928104575154
+      },
+      {
+        "dataset": "triviaqa",
+        "id": 56,
+        "floor_delta": 0.0,
+        "miss_delta": 0.12584459459459477,
+        "residual_delta": 0.12584459459459477
+      },
+      {
+        "dataset": "triviaqa",
+        "id": 57,
+        "floor_delta": 0.0,
+        "miss_delta": 0.15671296296296305,
+        "residual_delta": 0.15671296296296305
+      },
+      {
+        "dataset": "triviaqa",
+        "id": 58,
+        "floor_delta": 0.0,
+        "miss_delta": 0.14133986928104564,
+        "residual_delta": 0.14133986928104564
+      },
+      {
+        "dataset": "triviaqa",
+        "id": 59,
+        "floor_delta": 0.0,
+        "miss_delta": 0.14694940476190474,
+        "residual_delta": 0.14694940476190474
+      },
+      {
+        "dataset": "triviaqa",
+        "id": 60,
+        "floor_delta": 0.0,
+        "miss_delta": 0.312109375,
+        "residual_delta": 0.312109375
+      },
+      {
+        "dataset": "triviaqa",
+        "id": 61,
+        "floor_delta": 0.0,
+        "miss_delta": 0.00439453125,
+        "residual_delta": 0.00439453125
+      },
+      {
+        "dataset": "triviaqa",
+        "id": 62,
+        "floor_delta": 0.0,
+        "miss_delta": 0.18612132352941194,
+        "residual_delta": 0.18612132352941194
+      },
+      {
+        "dataset": "triviaqa",
+        "id": 63,
+        "floor_delta": 0.0,
+        "miss_delta": 0.18180147058823543,
+        "residual_delta": 0.18180147058823543
+      }
+    ]
+  },
+  "context_tokens": 16384,
+  "prompt_blocks": 512,
+  "budget_fraction": 0.2,
+  "offline_label_k": 52,
+  "served_oracle_k": 51,
+  "policy_budget_blocks": 102,
+  "oracle_floor_branch_active": false,
+  "recall_ceiling_at_full_prompt": 1.0
+}

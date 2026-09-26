@@ -1,0 +1,29 @@
+\section{Introduction}
+KV state grows with context while attention concentrates on a subset of
+positions. KV-management methods exploit this through
+accumulated attention~\cite{h2o}, recent-query observations~\cite{snapkv},
+query--key page bounds~\cite{quest}, cross-layer information~\cite{infinigen} and
+learned retention~\cite{locret}. Better prediction need not identify a better
+retention policy: selection changes later model states and their outputs.
+Traceable evaluation of inference state under a budget connects this study to
+D2AI's infrastructure, provenance and benchmark scope.
+
+We audit which signals predict future attention, whether predictor complexity
+helps, and how proxy rankings relate to answer quality. Offline labels,
+served-oracle diagnostics and closed-loop answer scores are distinct objects;
+the runtime scorer also reconstructs its features.
+
+\textbf{Contributions.} (1)~\emph{A protocol and benchmark.} KVSalienceBench fixes
+future-attention labels, selector semantics (Table~\ref{tab:protocol}), request-
+and source-prompt splits, tie-aware per-decision metrics and versioned collection.
+(2)~\emph{Controlled findings.} Two attention-magnitude views
+support a three-parameter logistic scorer within 0.006 AUC of LightGBM on v2 traces
+without a calibration step. At the per-decision top-decile budget, the within-layer
+signal recovers more future top-decile blocks than either; this reversal shrinks
+at 20\% retention. A separate pinned bfloat16 masked-loop rerun finds
+the reconstructed scorer and accumulator mean-F1 equivalent within a pre-specified
+$\pm0.02$ margin over 14 model--dataset cells (TOST $p=0.0007$).
+A bridge measures feature reconstruction (\S\ref{sec:realization}).
+(3)~\emph{An audit and its repair.} We diagnose corrupted float16 Qwen2.5
+generation, rerun with a pinned simulator, audit capacity effects from logged counts,
+and report physical-KV parity levels. Code, tests and provenance accompany the paper.

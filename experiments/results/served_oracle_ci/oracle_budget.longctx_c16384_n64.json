@@ -1,0 +1,82 @@
+{
+  "schema": "oracle-budget-v1",
+  "root": "experiments/results/longctx/c16384_n64",
+  "datasets": [
+    "2wikimqa",
+    "hotpotqa",
+    "multifieldqa_en",
+    "musique",
+    "narrativeqa",
+    "qasper",
+    "triviaqa"
+  ],
+  "label_rule": "served oracle: top max(32, floor(0.1 n)); policy budget: round(f n)",
+  "policies": {
+    "h2o": {
+      "n_requests": 448,
+      "kept_blocks": {
+        "mean": 65.92086105287713,
+        "min": 7.0,
+        "max": 103.0
+      },
+      "oracle_set_size": {
+        "mean": 39.45326450892857,
+        "min": 32.0,
+        "max": 51.0
+      },
+      "steps_with_budget_below_oracle": 0.19412878787878787,
+      "measured_miss": {
+        "mean": 0.46755762692477465,
+        "min": 0.13349780701754388,
+        "max": 0.7872548204787234
+      },
+      "forced_floor": {
+        "mean": 0.06326407812177902,
+        "min": 0.0,
+        "max": 0.78125
+      },
+      "selector_residual": {
+        "mean": 0.4042935488029957,
+        "min": 0.0,
+        "max": 0.7606534090909091
+      }
+    },
+    "xqp": {
+      "n_requests": 448,
+      "kept_blocks": {
+        "mean": 65.91792905992183,
+        "min": 7.0,
+        "max": 103.0
+      },
+      "oracle_set_size": {
+        "mean": 39.453497023809526,
+        "min": 32.0,
+        "max": 51.0
+      },
+      "steps_with_budget_below_oracle": 0.19419642857142858,
+      "measured_miss": {
+        "mean": 0.523115445687221,
+        "min": 0.23893229166666666,
+        "max": 0.798828125
+      },
+      "forced_floor": {
+        "mean": 0.06333705357142858,
+        "min": 0.0,
+        "max": 0.78125
+      },
+      "selector_residual": {
+        "mean": 0.45977839211579247,
+        "min": 0.008674172794117647,
+        "max": 0.7288818359375
+      }
+    }
+  },
+  "context_tokens": 16384,
+  "prompt_blocks": 512,
+  "budget_fraction": 0.2,
+  "offline_label_k": 52,
+  "served_oracle_k": 51,
+  "policy_budget_blocks": 102,
+  "oracle_floor_branch_active": false,
+  "recall_ceiling_at_full_prompt": 1.0
+}

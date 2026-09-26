@@ -1,0 +1,26 @@
+{
+  "target_alpha": 0.1,
+  "policies": {
+    "fixed_global": {
+      "mean": 0.1059,
+      "p90": 0.1363,
+      "p99": 0.1655,
+      "max": 0.1797,
+      "frac_blowout": 0.0
+    },
+    "coverage_per_layer": {
+      "mean": 0.1057,
+      "p90": 0.1333,
+      "p99": 0.1561,
+      "max": 0.1648,
+      "frac_blowout": 0.0
+    },
+    "adaptive_conformal": {
+      "mean": 0.0996,
+      "p90": 0.1594,
+      "p99": 0.2096,
+      "max": 0.2174,
+      "frac_blowout": 0.0234
+    }
+  }
+}

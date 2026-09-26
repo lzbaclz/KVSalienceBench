@@ -1,0 +1,429 @@
+{
+  "seer_git_sha": "5a7fbee19045eb0bea92d84c999eafcc2d6de686",
+  "dtype": "bfloat16",
+  "memory_patch": "MaskingSimulator._make_post_hook: prefill attention weights replaced by a 1x1x1x1 placeholder after ingestion",
+  "n_cells": 70,
+  "n_requests_per_cell": 64,
+  "cells": {
+    "llama31_8b/2wikimqa_adakv": {
+      "output_sha256": "034916f23c3d3e0a5610bbd9c81a03b8da2fda33f4bbfbe5bbfcbdfbe068d490",
+      "wall_s": 245.75010108947754,
+      "transformers": "4.51.3",
+      "torch": "2.6.0+cu124"
+    },
+    "llama31_8b/2wikimqa_full": {
+      "output_sha256": "16136d64b70ceee42590147fd1a78509818106e783d8b150ecabc16c5ce3821c",
+      "wall_s": 105.887948513031,
+      "transformers": "4.51.3",
+      "torch": "2.6.0+cu124"
+    },
+    "llama31_8b/2wikimqa_h2o": {
+      "output_sha256": "f1540f67b814c93f1e487ea44cf0aad49c8d9229943338a6559bddaae6bafbf4",
+      "wall_s": 215.07595801353455,
+      "transformers": "4.51.3",
+      "torch": "2.6.0+cu124"
+    },
+    "llama31_8b/2wikimqa_pyramidkv": {
+      "output_sha256": "7ee07568fff94b9f7584e9569fb1ce9f6351f53f69231230f369d86ac401042e",
+      "wall_s": 221.11851978302002,
+      "transformers": "4.51.3",
+      "torch": "2.6.0+cu124"
+    },
+    "llama31_8b/2wikimqa_xqp": {
+      "output_sha256": "6534b0d72c4c9d5a6e325dda29d25dc9c258d3461f8a231e0f2416f79e831175",
+      "wall_s": 215.21271681785583,
+      "transformers": "4.51.3",
+      "torch": "2.6.0+cu124"
+    },
+    "llama31_8b/hotpotqa_adakv": {
+      "output_sha256": "26f636901b648bef2dcad16d627bdf2a8b88c6ceb8ed81eff9da787b7c90e8c1",
+      "wall_s": 219.64470624923706,
+      "transformers": "4.51.3",
+      "torch": "2.6.0+cu124"
+    },
+    "llama31_8b/hotpotqa_full": {
+      "output_sha256": "2b2becf080dd5c900b7c9063a85f5cf768e7fecbaaaf4263a625c27025060137",
+      "wall_s": 74.02732539176941,
+      "transformers": "4.51.3",
+      "torch": "2.6.0+cu124"
+    },
+    "llama31_8b/hotpotqa_h2o": {
+      "output_sha256": "19226af7294f667e1a1be08d8ec28bc1cd6b57ccb1ee8adab9159b2ca13716b7",
+      "wall_s": 110.0597403049469,
+      "transformers": "4.51.3",
+      "torch": "2.6.0+cu124"
+    },
+    "llama31_8b/hotpotqa_pyramidkv": {
+      "output_sha256": "4cb66c32276cf2f22fd2b11ea37758a6dee40a2fc94f6d7443c3a72370bb0de9",
+      "wall_s": 221.20341205596924,
+      "transformers": "4.51.3",
+      "torch": "2.6.0+cu124"
+    },
+    "llama31_8b/hotpotqa_xqp": {
+      "output_sha256": "e1ea9f74c03fdc909770c68b8071fc477923075f75a56b65d09664bb763fe33d",
+      "wall_s": 113.7156708240509,
+      "transformers": "4.51.3",
+      "torch": "2.6.0+cu124"
+    },
+    "llama31_8b/multifieldqa_en_adakv": {
+      "output_sha256": "610b285de6d6ec9976510977276c51adafe67ba21cc43949d71efdc98d93d1bc",
+      "wall_s": 132.58800053596497,
+      "transformers": "4.51.3",
+      "torch": "2.6.0+cu124"
+    },
+    "llama31_8b/multifieldqa_en_full": {
+      "output_sha256": "508bd60ddbe5e220f039970327c0d8a0ca1c88cc389bc2aada6eff522c9d312b",
+      "wall_s": 97.47196674346924,
+      "transformers": "4.51.3",
+      "torch": "2.6.0+cu124"
+    },
+    "llama31_8b/multifieldqa_en_h2o": {
+      "output_sha256": "86b791929a7b4d23774db125b32261ca0201ac35b8b818db2841b1258cd83d1f",
+      "wall_s": 231.8312485218048,
+      "transformers": "4.51.3",
+      "torch": "2.6.0+cu124"
+    },
+    "llama31_8b/multifieldqa_en_pyramidkv": {
+      "output_sha256": "b66d1d6386e6677310f7ef8a0a202fff6efacb0b7ab255aee94aaf6362fe6103",
+      "wall_s": 126.65549564361572,
+      "transformers": "4.51.3",
+      "torch": "2.6.0+cu124"
+    },
+    "llama31_8b/multifieldqa_en_xqp": {
+      "output_sha256": "16034adea7dea0d120c204e79357c0af89bb60ce02eb5116156204fbc431c0c2",
+      "wall_s": 135.9093759059906,
+      "transformers": "4.51.3",
+      "torch": "2.6.0+cu124"
+    },
+    "llama31_8b/musique_adakv": {
+      "output_sha256": "ee2ba53faf3b6b381c480b0641209c18dae1bab9a2a699fc79caab794ee5d35f",
+      "wall_s": 235.88530325889587,
+      "transformers": "4.51.3",
+      "torch": "2.6.0+cu124"
+    },
+    "llama31_8b/musique_full": {
+      "output_sha256": "3d3c8f7cedd4f6515e7b19258e3b173eb58459f8b428d3c0bd42406cc9ef7d07",
+      "wall_s": 119.04202604293823,
+      "transformers": "4.51.3",
+      "torch": "2.6.0+cu124"
+    },
+    "llama31_8b/musique_h2o": {
+      "output_sha256": "7dbf3f35ffd71a58936be7bc18fc8f7d07762e03f1783ccd0beab567f8a5802f",
+      "wall_s": 237.6706738471985,
+      "transformers": "4.51.3",
+      "torch": "2.6.0+cu124"
+    },
+    "llama31_8b/musique_pyramidkv": {
+      "output_sha256": "e87a1ee315e865a3ee7477baf3406056848a3a3d9a915ebfded86b4adb29ea9f",
+      "wall_s": 246.54822635650635,
+      "transformers": "4.51.3",
+      "torch": "2.6.0+cu124"
+    },
+    "llama31_8b/musique_xqp": {
+      "output_sha256": "0a31a4dbb581bb09cb0befe0af31126d3d2fe107dd21d3381085daceaf99237e",
+      "wall_s": 238.95070338249207,
+      "transformers": "4.51.3",
+      "torch": "2.6.0+cu124"
+    },
+    "llama31_8b/narrativeqa_adakv": {
+      "output_sha256": "86d7c1dcd7762c8972937960a2b7c368bea3927a0a3e809d9f595820a4feffe1",
+      "wall_s": 177.0795476436615,
+      "transformers": "4.51.3",
+      "torch": "2.6.0+cu124"
+    },
+    "llama31_8b/narrativeqa_full": {
+      "output_sha256": "2793ba4fb0808912deed50a28ce38ba934fbe319c6cb0e2cc915b5324c74619c",
+      "wall_s": 133.59480667114258,
+      "transformers": "4.51.3",
+      "torch": "2.6.0+cu124"
+    },
+    "llama31_8b/narrativeqa_h2o": {
+      "output_sha256": "3814f413f83a222ce52f1e583adb1ad276379396592d3b111fa9f939b0c9b879",
+      "wall_s": 335.9701964855194,
+      "transformers": "4.51.3",
+      "torch": "2.6.0+cu124"
+    },
+    "llama31_8b/narrativeqa_pyramidkv": {
+      "output_sha256": "42ace82b6a0b983a0d406e085f1e656f316319aa5d99a7d5317a8bb27185e3d4",
+      "wall_s": 187.139395236969,
+      "transformers": "4.51.3",
+      "torch": "2.6.0+cu124"
+    },
+    "llama31_8b/narrativeqa_xqp": {
+      "output_sha256": "76b030ea5873c4b0c1a9e547dd49ce0187ad7aefc1256bfe5181949aaa127e68",
+      "wall_s": 150.00873136520386,
+      "transformers": "4.51.3",
+      "torch": "2.6.0+cu124"
+    },
+    "llama31_8b/qasper_adakv": {
+      "output_sha256": "1dd871e0eadb8678519c92a68e5d34ab2d9c366385c278585a56be635c42dfe2",
+      "wall_s": 225.9458019733429,
+      "transformers": "4.51.3",
+      "torch": "2.6.0+cu124"
+    },
+    "llama31_8b/qasper_full": {
+      "output_sha256": "f63488307945ddb1616753e9fe7ad609018444ec818c179092fa86c0b0d01f5f",
+      "wall_s": 109.32304763793945,
+      "transformers": "4.51.3",
+      "torch": "2.6.0+cu124"
+    },
+    "llama31_8b/qasper_h2o": {
+      "output_sha256": "98958bded6a9afa4769cc9399b188d56f8cacfb03e8f542dc60982f50a22ae9c",
+      "wall_s": 211.18114590644836,
+      "transformers": "4.51.3",
+      "torch": "2.6.0+cu124"
+    },
+    "llama31_8b/qasper_pyramidkv": {
+      "output_sha256": "cd6df6409363378472ef99c2e2f22b721f7a78bf9c7314d4736dc6bcdabe86f8",
+      "wall_s": 305.0365459918976,
+      "transformers": "4.51.3",
+      "torch": "2.6.0+cu124"
+    },
+    "llama31_8b/qasper_xqp": {
+      "output_sha256": "dcd060cd48874fcbd4310f12b1b65052a997159c8b67bc371dc1afb9dd91ea66",
+      "wall_s": 223.83501601219177,
+      "transformers": "4.51.3",
+      "torch": "2.6.0+cu124"
+    },
+    "llama31_8b/triviaqa_adakv": {
+      "output_sha256": "609a6e095e67c1639cf2f8b243d239b77a7c55f7605f830c9ddc92c4a7493e49",
+      "wall_s": 198.36499452590942,
+      "transformers": "4.51.3",
+      "torch": "2.6.0+cu124"
+    },
+    "llama31_8b/triviaqa_full": {
+      "output_sha256": "8562ab112c8483871cee31f92870f42e77a765894495c23f016991f9c673c65a",
+      "wall_s": 111.78651595115662,
+      "transformers": "4.51.3",
+      "torch": "2.6.0+cu124"
+    },
+    "llama31_8b/triviaqa_h2o": {
+      "output_sha256": "a99bebae119524ed18da6c741319451fc23e4635750e5d8c161628ca5e7ae0e9",
+      "wall_s": 194.8970866203308,
+      "transformers": "4.51.3",
+      "torch": "2.6.0+cu124"
+    },
+    "llama31_8b/triviaqa_pyramidkv": {
+      "output_sha256": "7b9649ae8956a2a95fe966ff1f1eed590d8c2c16baaa92058fff2844473e5987",
+      "wall_s": 201.86950063705444,
+      "transformers": "4.51.3",
+      "torch": "2.6.0+cu124"
+    },
+    "llama31_8b/triviaqa_xqp": {
+      "output_sha256": "2d93171a44b61657d2a37489096652e5c3517d693b83638d158d0ef1950b0376",
+      "wall_s": 232.59262251853943,
+      "transformers": "4.51.3",
+      "torch": "2.6.0+cu124"
+    },
+    "qwen25_7b/2wikimqa_adakv": {
+      "output_sha256": "ddefa6379188ec94a80ac3ccf4b3f15abc065a802256d7d5bb4c43daee5ed20d",
+      "wall_s": 114.11124420166016,
+      "transformers": "4.51.3",
+      "torch": "2.6.0+cu124"
+    },
+    "qwen25_7b/2wikimqa_full": {
+      "output_sha256": "47066893f3f383fd6aa55423d4edf4a740e60a84592e1dfe7ff22e038b42eb1c",
+      "wall_s": 73.54638600349426,
+      "transformers": "4.51.3",
+      "torch": "2.6.0+cu124"
+    },
+    "qwen25_7b/2wikimqa_h2o": {
+      "output_sha256": "5c40a3a701ddaa9acebf67b4e69ee38dcab3185fb5e2c906a5e89a6cf2d9c7ed",
+      "wall_s": 115.71313858032227,
+      "transformers": "4.51.3",
+      "torch": "2.6.0+cu124"
+    },
+    "qwen25_7b/2wikimqa_pyramidkv": {
+      "output_sha256": "b5aaad5231ed166bd810cb91e7d062b2c21fab3f8fa4576f369864f09e15b277",
+      "wall_s": 117.09533834457397,
+      "transformers": "4.51.3",
+      "torch": "2.6.0+cu124"
+    },
+    "qwen25_7b/2wikimqa_xqp": {
+      "output_sha256": "393af8cbe3aca4cff2af09cf743f1cb134ff5ec5471a235894cbe0d265282dee",
+      "wall_s": 113.05915927886963,
+      "transformers": "4.51.3",
+      "torch": "2.6.0+cu124"
+    },
+    "qwen25_7b/hotpotqa_adakv": {
+      "output_sha256": "9ef0247574541a7d3164745f7145c7d5a2ef3e283b08e42d5e99b58dcc924692",
+      "wall_s": 125.62305569648743,
+      "transformers": "4.51.3",
+      "torch": "2.6.0+cu124"
+    },
+    "qwen25_7b/hotpotqa_full": {
+      "output_sha256": "fd5aee9ae68b55626a5a409b3f57ec3f7b95bde15a765ea783bec0c817b959f4",
+      "wall_s": 101.83198571205139,
+      "transformers": "4.51.3",
+      "torch": "2.6.0+cu124"
+    },
+    "qwen25_7b/hotpotqa_h2o": {
+      "output_sha256": "d33b593c9192ebc8925cd32b27b6a82312e1ecf0af050384e86e6be1bc0d0b63",
+      "wall_s": 228.542094707489,
+      "transformers": "4.51.3",
+      "torch": "2.6.0+cu124"
+    },
+    "qwen25_7b/hotpotqa_pyramidkv": {
+      "output_sha256": "23745e72054fb88d9038aa69c464dadd90700d63bebc0b14590309b4dc13d656",
+      "wall_s": 126.39765930175781,
+      "transformers": "4.51.3",
+      "torch": "2.6.0+cu124"
+    },
+    "qwen25_7b/hotpotqa_xqp": {
+      "output_sha256": "5b06f84b4d8696b85f5b20d872fecb7b3f27a9f2b0df51fb8df14d6ac0e904aa",
+      "wall_s": 128.7326877117157,
+      "transformers": "4.51.3",
+      "torch": "2.6.0+cu124"
+    },
+    "qwen25_7b/multifieldqa_en_adakv": {
+      "output_sha256": "7a50e583c868f7fe66db4c5590971e5bf27491ba2fd3d84aeee465474b0eb02f",
+      "wall_s": 309.5318148136139,
+      "transformers": "4.51.3",
+      "torch": "2.6.0+cu124"
+    },
+    "qwen25_7b/multifieldqa_en_full": {
+      "output_sha256": "a12cf37fcfa4a98ffa5dcaef4134171c3a04ad4a31185c62236fba3c3a0b8e23",
+      "wall_s": 132.0085346698761,
+      "transformers": "4.51.3",
+      "torch": "2.6.0+cu124"
+    },
+    "qwen25_7b/multifieldqa_en_h2o": {
+      "output_sha256": "9f7b59ed914785c794413590e36e0355cf60ae33ed14c8c00cc1f10053e83aa7",
+      "wall_s": 407.77576446533203,
+      "transformers": "4.51.3",
+      "torch": "2.6.0+cu124"
+    },
+    "qwen25_7b/multifieldqa_en_pyramidkv": {
+      "output_sha256": "a67f2b7540efd2bc878931fcab5bb9baba8351b5f16f5d73af5a4d223ee42cbe",
+      "wall_s": 286.58522725105286,
+      "transformers": "4.51.3",
+      "torch": "2.6.0+cu124"
+    },
+    "qwen25_7b/multifieldqa_en_xqp": {
+      "output_sha256": "0bb65f3d8f826fd84f5f8f55b492956562fd955afdc36f7d1c60ca63253422be",
+      "wall_s": 361.02865624427795,
+      "transformers": "4.51.3",
+      "torch": "2.6.0+cu124"
+    },
+    "qwen25_7b/musique_adakv": {
+      "output_sha256": "29b3c0ae08d99f0651a7150e511ed68f67c936a8902e24cb6cd0d006f038e2e9",
+      "wall_s": 293.67966628074646,
+      "transformers": "4.51.3",
+      "torch": "2.6.0+cu124"
+    },
+    "qwen25_7b/musique_full": {
+      "output_sha256": "078b7b56e695f0af484d3e5bbe32038ac72293d5d60b20b489048e550f40fff2",
+      "wall_s": 121.07845282554626,
+      "transformers": "4.51.3",
+      "torch": "2.6.0+cu124"
+    },
+    "qwen25_7b/musique_h2o": {
+      "output_sha256": "44a091c696f7a09f17970fc5f2f91637c7afdd01508c786dd2ad05e0bdb89f04",
+      "wall_s": 258.340535402298,
+      "transformers": "4.51.3",
+      "torch": "2.6.0+cu124"
+    },
+    "qwen25_7b/musique_pyramidkv": {
+      "output_sha256": "73f677f972abe006cfcd38f9587dff12bf75e2bfd4813b9cdaed6092c23dca33",
+      "wall_s": 324.29710817337036,
+      "transformers": "4.51.3",
+      "torch": "2.6.0+cu124"
+    },
+    "qwen25_7b/musique_xqp": {
+      "output_sha256": "d49c19238939b6493e625931e80a7c7d22c8f2e05e2c61ba67c4b0379b50c543",
+      "wall_s": 279.73678255081177,
+      "transformers": "4.51.3",
+      "torch": "2.6.0+cu124"
+    },
+    "qwen25_7b/narrativeqa_adakv": {
+      "output_sha256": "0a4c86046452210510fe31129c480f0c74e6bc01d7ab315d32c0a0951de771ec",
+      "wall_s": 209.47194051742554,
+      "transformers": "4.51.3",
+      "torch": "2.6.0+cu124"
+    },
+    "qwen25_7b/narrativeqa_full": {
+      "output_sha256": "f801d635292df964f33aaf666da06cb73a3c4bb22fcdef4d901232e00fbe8af9",
+      "wall_s": 91.85486698150635,
+      "transformers": "4.51.3",
+      "torch": "2.6.0+cu124"
+    },
+    "qwen25_7b/narrativeqa_h2o": {
+      "output_sha256": "dfa69995d29434b37e4b187dafbd7a0c68a08997186c77d96150dac713a91bb4",
+      "wall_s": 365.70973348617554,
+      "transformers": "4.51.3",
+      "torch": "2.6.0+cu124"
+    },
+    "qwen25_7b/narrativeqa_pyramidkv": {
+      "output_sha256": "60a03d405d909cc50b32293f688c3e512751446d815713a0f11d92da54b548e0",
+      "wall_s": 210.7043068408966,
+      "transformers": "4.51.3",
+      "torch": "2.6.0+cu124"
+    },
+    "qwen25_7b/narrativeqa_xqp": {
+      "output_sha256": "c5351eaaecaf787efcec2f07ef1662ca1ec5894639a5aea607fcdbe53b4624a3",
+      "wall_s": 182.224933385849,
+      "transformers": "4.51.3",
+      "torch": "2.6.0+cu124"
+    },
+    "qwen25_7b/qasper_adakv": {
+      "output_sha256": "c14ca5ffe52a4ddba980d932b0517936dbc72bb0382b728da3ad9c32802036c7",
+      "wall_s": 233.96062397956848,
+      "transformers": "4.51.3",
+      "torch": "2.6.0+cu124"
+    },
+    "qwen25_7b/qasper_full": {
+      "output_sha256": "63e086bc83d818461beb0d1925599ae1deb916edafa5f418ccb66367fe0c9fbf",
+      "wall_s": 106.1307954788208,
+      "transformers": "4.51.3",
+      "torch": "2.6.0+cu124"
+    },
+    "qwen25_7b/qasper_h2o": {
+      "output_sha256": "3b4a35f57c64b59f23ea53a6af9662041c5ab55f974c01f578d503f96ba6d2ce",
+      "wall_s": 216.38192677497864,
+      "transformers": "4.51.3",
+      "torch": "2.6.0+cu124"
+    },
+    "qwen25_7b/qasper_pyramidkv": {
+      "output_sha256": "682b48b2a7990fd992dd8f3c3ba4e9210986a2790ee97707985a0ecd489baf98",
+      "wall_s": 391.3003833293915,
+      "transformers": "4.51.3",
+      "torch": "2.6.0+cu124"
+    },
+    "qwen25_7b/qasper_xqp": {
+      "output_sha256": "c3c4456d1b9860e7d479737cdf16fab4e15124fe67c59bfb859fed9e97c0acb8",
+      "wall_s": 233.93713903427124,
+      "transformers": "4.51.3",
+      "torch": "2.6.0+cu124"
+    },
+    "qwen25_7b/triviaqa_adakv": {
+      "output_sha256": "928c657031de5a34fc992bd7d5942025dbe3ecbf9720efefda647de2785ac398",
+      "wall_s": 166.77090740203857,
+      "transformers": "4.51.3",
+      "torch": "2.6.0+cu124"
+    },
+    "qwen25_7b/triviaqa_full": {
+      "output_sha256": "483c982f6173ad7cd84ec55277cfac72067b3a9f87f8b005f20e50bd0fb327e6",
+      "wall_s": 93.73026990890503,
+      "transformers": "4.51.3",
+      "torch": "2.6.0+cu124"
+    },
+    "qwen25_7b/triviaqa_h2o": {
+      "output_sha256": "8f32a412db9f71d2cec486627d5df0485843e94dabb6b5030c54106713e37986",
+      "wall_s": 172.80065536499023,
+      "transformers": "4.51.3",
+      "torch": "2.6.0+cu124"
+    },
+    "qwen25_7b/triviaqa_pyramidkv": {
+      "output_sha256": "3a0aa0d2d549d4824409eb9752c74e6af804be37659e63e05701daef4575f823",
+      "wall_s": 152.38432717323303,
+      "transformers": "4.51.3",
+      "torch": "2.6.0+cu124"
+    },
+    "qwen25_7b/triviaqa_xqp": {
+      "output_sha256": "66e20a705b0e6e34e8e2f5dd8f8a4711e1b8ba1bee9e26a8b2fb592e754b425a",
+      "wall_s": 238.05892157554626,
+      "transformers": "4.51.3",
+      "torch": "2.6.0+cu124"
+    }
+  }
+}

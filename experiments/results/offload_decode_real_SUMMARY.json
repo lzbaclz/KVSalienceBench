@@ -1,0 +1,32 @@
+{
+  "experiment": "REAL offloaded-KV decode microbenchmark (CPU pinned KV, PCIe fetch, CUDA-stream a-layer-ahead prefetch, real attention matmuls @ Llama-3.1-8B shapes)",
+  "measured_TPOT_ms": {
+    "16384": {
+      "gpu_resident": 50.56,
+      "fetch_all": 90.53,
+      "reactive_hot": 38.89,
+      "prefetch_hot": 30.87
+    },
+    "32768": {
+      "gpu_resident": 55.05,
+      "fetch_all": 183.46,
+      "reactive_hot": 65.96,
+      "prefetch_hot": 54.13
+    },
+    "65536": {
+      "gpu_resident": 109.44,
+      "fetch_all": 367.0,
+      "reactive_hot": 120.03,
+      "prefetch_hot": 100.99
+    }
+  },
+  "honest_findings": [
+    "MATCHED-QUALITY (prefetch_hot vs reactive_hot, both attend hot h=0.25): real TPOT -21%/-18%/-16% at 16/32/64K. The clean latency-hiding win. NOTE: smaller than my earlier analytical model (-35..-42%) -- the model overestimated stream-overlap; real sync + on-demand miss fetch eat in.",
+    "vs FlexGen fetch-all (full quality): -66%/-70%/-72% -- but hot-vs-full quality tradeoff (needs Pareto).",
+    "Real overlap works: prefetch_hot < reactive_hot at every ctx, confirming the a-layer-ahead query-free prefetch hides fetch latency."
+  ],
+  "caveats": [
+    "Faithful TPOT microbenchmark: real DMA + real attention/MLP matmuls @ real shapes + real CUDA streams, random weights (timing is shape-driven, not values). Not the full model's fused kernels (those would be faster compute -> MORE IO-bound -> prefetch helps MORE, so this is conservative).",
+    "Quality axis comes from the separate real-model LongBench F1 (hot fraction == budget)."
+  ]
+}

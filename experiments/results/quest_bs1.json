@@ -1,0 +1,37 @@
+{
+  "config": {
+    "n": 2,
+    "max_new_tokens": 32
+  },
+  "per_model": {
+    "Llama-3.1-8B-Instruct": {
+      "n_rows": 8422400,
+      "n_requests": 2,
+      "pos_rate": 0.100106380879879,
+      "single_view_auc": {
+        "f_within": 0.8634031551043432,
+        "f_cross": 0.7218710901769226,
+        "f_query": 0.6089140500593068,
+        "f_query_dotmean": 0.7379697737629989,
+        "f_query_dotmax": 0.70724695025318
+      },
+      "marginal": {
+        "f_query": {
+          "within_cross": 0.888767368977373,
+          "plus_query": 0.8343304802764131,
+          "delta": -0.05443688870095986
+        },
+        "f_query_dotmean": {
+          "within_cross": 0.888767368977373,
+          "plus_query": 0.8488199579718264,
+          "delta": -0.03994741100554655
+        },
+        "f_query_dotmax": {
+          "within_cross": 0.888767368977373,
+          "plus_query": 0.861931668749197,
+          "delta": -0.02683570022817594
+        }
+      }
+    }
+  }
+}

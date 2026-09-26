@@ -1,0 +1,104 @@
+{
+  "experiment": "consistent-code deploy sweep (all selectors, current SEER code)",
+  "setup": {
+    "model": "Llama-3.1-8B-Instruct",
+    "workload": "mooncake",
+    "ctx": 4096,
+    "N": 16,
+    "new": 48,
+    "io": "measured-dma",
+    "seed": 0
+  },
+  "rows": {
+    "guardkv_b0.20": {
+      "eps": 0.6415,
+      "tpot_p99_ms": 41.67,
+      "tpot_p999_ms": 46.17,
+      "n": 16,
+      "budget": 0.2
+    },
+    "guardkv_b0.30": {
+      "eps": 0.5988,
+      "tpot_p99_ms": 41.79,
+      "tpot_p999_ms": 45.64,
+      "n": 16,
+      "budget": 0.3
+    },
+    "h2o_b0.20": {
+      "eps": 0.5002,
+      "tpot_p99_ms": 41.35,
+      "tpot_p999_ms": 45.57,
+      "n": 16,
+      "budget": 0.2
+    },
+    "h2o_b0.30": {
+      "eps": 0.3682,
+      "tpot_p99_ms": 42.37,
+      "tpot_p999_ms": 45.28,
+      "n": 16,
+      "budget": 0.3
+    },
+    "infinigen_b0.20": {
+      "eps": 0.5491,
+      "tpot_p99_ms": 42.91,
+      "tpot_p999_ms": 46.46,
+      "n": 16,
+      "budget": 0.2
+    },
+    "infinigen_b0.30": {
+      "eps": 0.4861,
+      "tpot_p99_ms": 41.93,
+      "tpot_p999_ms": 45.8,
+      "n": 16,
+      "budget": 0.3
+    },
+    "quest_b0.20": {
+      "eps": 0.6132,
+      "tpot_p99_ms": 41.83,
+      "tpot_p999_ms": 46.15,
+      "n": 16,
+      "budget": 0.2
+    },
+    "quest_b0.30": {
+      "eps": 0.5559,
+      "tpot_p99_ms": 42.11,
+      "tpot_p999_ms": 46.4,
+      "n": 16,
+      "budget": 0.3
+    },
+    "xqp_b0.20": {
+      "eps": 0.6092,
+      "tpot_p99_ms": 41.22,
+      "tpot_p999_ms": 46.15,
+      "n": 16,
+      "budget": 0.2
+    },
+    "xqp_b0.30": {
+      "eps": 0.5469,
+      "tpot_p99_ms": 42.38,
+      "tpot_p999_ms": 47.81,
+      "n": 16,
+      "budget": 0.3
+    },
+    "xqpwithin_b0.20": {
+      "eps": 0.6145,
+      "tpot_p99_ms": 42.39,
+      "tpot_p999_ms": 48.54,
+      "n": 16,
+      "budget": 0.2
+    },
+    "xqpwithin_b0.30": {
+      "eps": 0.5555,
+      "tpot_p99_ms": 41.55,
+      "tpot_p999_ms": 45.31,
+      "n": 16,
+      "budget": 0.3
+    }
+  },
+  "findings": [
+    "cross marginal (2view-within) = -0.0053/-0.0086 at budget 0.20/0.30 -> deployable model ~= within-only (paper \"collapses to within-layer\" holds).",
+    "BUT 2-view XQP is +0.109/+0.179 eps WORSE than H2O at 0.20/0.30 -> the learned scorer LOSES to plain H2O in deployment; the paper tab:tpot \"XQP within +-0.01 of strongest heuristics, neither helps nor hurts\" is too generous.",
+    "Absolute eps levels differ from the paper tab:tpot (current H2O 0.500 vs paper 0.674): the committed deploy/ sweep mixed SEER code versions; tab:tpot eps column is STALE and should be regenerated from this consistent sweep.",
+    "TPOT still budget-bound (p99 41-43ms all selectors); no serving-latency advantage. Single seed."
+  ]
+}

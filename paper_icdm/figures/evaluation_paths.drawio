@@ -1,0 +1,59 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="Electron" version="31.4.5" type="device">
+  <diagram id="evaluation-paths" name="Evaluation paths">
+    <mxGraphModel grid="1" gridSize="2" page="0" pageWidth="364" pageHeight="188" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" value="Versioned inputs / recorded provenance" style="text;html=0;align=center;verticalAlign=middle;fontStyle=1;fontFamily=Liberation Serif;fontSize=13;fontColor=#202428;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="0" y="0" width="364" height="22" />
+        </mxCell>
+        <mxCell id="offline-0" value="Full-cache&#10;v2 traces" style="rounded=0;whiteSpace=wrap;html=0;fillColor=#edf3f8;strokeColor=#3f76a8;strokeWidth=1;fontFamily=Liberation Serif;fontSize=13;fontColor=#202428;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="0" y="30" width="108" height="42" />
+        </mxCell>
+        <mxCell id="offline-1" value="Offline&#10;predictor" style="rounded=0;whiteSpace=wrap;html=0;fillColor=#edf3f8;strokeColor=#3f76a8;strokeWidth=1;fontFamily=Liberation Serif;fontSize=13;fontColor=#202428;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="128" y="30" width="108" height="42" />
+        </mxCell>
+        <mxCell id="offline-2" value="Future-label&#10;ranking" style="rounded=0;whiteSpace=wrap;html=0;fillColor=#edf3f8;strokeColor=#3f76a8;strokeWidth=1;fontFamily=Liberation Serif;fontSize=13;fontColor=#202428;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="256" y="30" width="108" height="42" />
+        </mxCell>
+        <mxCell id="offline-arrow-0" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;endFill=1;strokeColor=#3f76a8;strokeWidth=1;" edge="1" parent="1" source="offline-0" target="offline-1">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="offline-arrow-1" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;endFill=1;strokeColor=#3f76a8;strokeWidth=1;" edge="1" parent="1" source="offline-1" target="offline-2">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="loop-0" value="Pinned&#10;masked loop" style="rounded=0;whiteSpace=wrap;html=0;fillColor=#f8eeee;strokeColor=#8c1d1d;strokeWidth=1;fontFamily=Liberation Serif;fontSize=13;fontColor=#202428;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="0" y="84" width="108" height="42" />
+        </mxCell>
+        <mxCell id="loop-1" value="Reconstructed&#10;scorer" style="rounded=0;whiteSpace=wrap;html=0;fillColor=#f8eeee;strokeColor=#8c1d1d;strokeWidth=1;fontFamily=Liberation Serif;fontSize=13;fontColor=#202428;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="128" y="84" width="108" height="42" />
+        </mxCell>
+        <mxCell id="loop-2" value="Generated-&#10;answer F1" style="rounded=0;whiteSpace=wrap;html=0;fillColor=#f8eeee;strokeColor=#8c1d1d;strokeWidth=1;fontFamily=Liberation Serif;fontSize=13;fontColor=#202428;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="256" y="84" width="108" height="42" />
+        </mxCell>
+        <mxCell id="loop-arrow-0" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;endFill=1;strokeColor=#8c1d1d;strokeWidth=1;" edge="1" parent="1" source="loop-0" target="loop-1">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="loop-arrow-1" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;endFill=1;strokeColor=#8c1d1d;strokeWidth=1;" edge="1" parent="1" source="loop-1" target="loop-2">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="physical-0" value="Physical&#10;reference" style="rounded=0;whiteSpace=wrap;html=0;fillColor=#f4f4f4;strokeColor=#666666;strokeWidth=1;fontFamily=Liberation Serif;fontSize=13;fontColor=#202428;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="0" y="138" width="108" height="42" />
+        </mxCell>
+        <mxCell id="physical-1" value="Irreversible&#10;KV compaction" style="rounded=0;whiteSpace=wrap;html=0;fillColor=#f4f4f4;strokeColor=#666666;strokeWidth=1;fontFamily=Liberation Serif;fontSize=13;fontColor=#202428;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="128" y="138" width="108" height="42" />
+        </mxCell>
+        <mxCell id="physical-2" value="Storage +&#10;parity gates" style="rounded=0;whiteSpace=wrap;html=0;fillColor=#f4f4f4;strokeColor=#666666;strokeWidth=1;fontFamily=Liberation Serif;fontSize=13;fontColor=#202428;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="256" y="138" width="108" height="42" />
+        </mxCell>
+        <mxCell id="physical-arrow-0" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;endFill=1;strokeColor=#666666;strokeWidth=1;" edge="1" parent="1" source="physical-0" target="physical-1">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="physical-arrow-1" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;endFill=1;strokeColor=#666666;strokeWidth=1;" edge="1" parent="1" source="physical-1" target="physical-2">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

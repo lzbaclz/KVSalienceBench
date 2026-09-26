@@ -1,0 +1,26 @@
+{
+  "experiment": "FlexGen REAL hot-block selective KV fetch (sink + attention-predicted HOT + recency), compact-amortized -- upgrade of the StreamingLLM (sink+window) version into the cross-layer prediction module",
+  "setup": "opt-1.3b, KV offloaded to CPU (--percent 100 0 0 100 100 0), batch 48, prompt 1024, gen 32, sink=4, window=256, hot=256. All three numbers from ONE session (directly comparable).",
+  "measured_decode_tok_s": {
+    "dense_baseline": 76.3,
+    "XQP window=256 (sink4)": 176.5,
+    "XQP hot=256 + window=256 (sink4), per-step gather (NAIVE)": 33.9,
+    "XQP hot=256 + window=256 (sink4), COMPACT-amortized": 112.6
+  },
+  "speedup_vs_dense": {
+    "window256": "2.31x",
+    "hot256+window256_compact": "1.48x",
+    "hot256+window256_naive_gather": "0.44x (SLOWER than dense)"
+  },
+  "key_finding_throughput": "The per-step gather of a non-contiguous kept-set is ~2x SLOWER than dense (33.9 vs 76.3) -- the same trap that makes FlexGen's own sparse path slow. The fix is COMPACT-AMORTIZED: gather the hot positions (fixed KV) into a contiguous pinned buffer ONCE after prefill, then fetch three contiguous runs [sink | compact_hot | recency] each step -> 112.6 tok/s = 1.48x dense. Hot-block sits between dense (fetch 1024) and window (fetch 260) because it fetches 4+256+256=516 -- it pays IO to add the long-range hot KV back.",
+  "correctness": "coherent output identical to dense on the smoke prompt ('Paris is the capital city of France...'); mask gathered at the same [sink|hot|recency] indices as the KV; last kept position = end-1 (current-token slot mha_gen overwrites with k_new). Verified.",
+  "hot_selection": "prefill exports per-position attention mass (mean over last 32 query positions, in pytorch_backend.mha, gated by FLEXGEN_KV_HOT>0); SelfAttention.forward prefill picks top-HOT positions excluding sink/recency -> self._xqp_hot_idx (sorted). SnapKV-style static selection (from prompt attention).",
+  "quality_HONEST_NEGATIVE": {
+    "result": "opt-1.3b -- FlexGen's only ready (-np) model -- is too weak to exhibit ANY measurable long-range dependence. Verified 3 ways, all with DENSE FULL CACHE at ceiling 0.00: (a) exact passcode needle retrieval; (b) fidelity-to-dense on topic prompts (dense produces an identical OFF-topic degenerate string regardless of topic); (c) shuffled-list induction copy at BOTH long (prompt 384) and short (prompt 96, list adjacent) range. dense=0.00 everywhere -> there is NO long-range signal for hot-block to recover over the recency window.",
+    "interpretation": "This is an honest negative about the HARNESS (OPT capability), NOT the method. Manufacturing a hot>window quality win on OPT would also CONTRADICT this project's own honest capstone thesis (saliency selectors tie simple baselines at matched budget on real tasks).",
+    "where_the_quality_evidence_lives": "Llama-3.1-8B + LongBench (real task F1, middle-out harness): the quality-vs-budget Pareto and transfer_gap.tex. That is the capable-model quality evidence; it is OFF the FlexGen path because FlexGen only runs OPT."
+  },
+  "refresh_status": "NOT implemented in FlexGen. Its value (re-selecting hot positions as decode-time attention drifts) is purely a long-generation QUALITY concern that cannot be validated on OPT, and a proper impl needs decode-time full-attention observation every K steps. The refresh trade-off is ALREADY characterized analytically in run_observability_derisk.py (closed-loop recall 0.95 @ refresh-every-4 vs 0.64 with no refresh). Deferred deliberately (advisor note: FlexGen is a milestone, do NOT gate ICDM on it).",
+  "what_this_proves": "The cross-layer hot-block prediction module is REAL and end-to-end in FlexGen: mechanism correct + a real throughput win (1.48x dense) once the compact-amortized fetch replaces the naive gather. The throughput physics (contiguous fast, gather slow, hot-block costs IO between dense and window) is established on real hardware.",
+  "code": "flexllmgen/flex_opt.py SelfAttention.load_cache (compact hot-block branch) + forward (mask gathered at kept_idx) + prefill hot selection; pytorch_backend.py mha (attention-mass export) + general_copy bugfix. env FLEXGEN_KV_HOT / FLEXGEN_KV_WINDOW / FLEXGEN_KV_SINK. Quality probes: needle_quality.py, quality_fidelity.py, copy_induction.py."
+}

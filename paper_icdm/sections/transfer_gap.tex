@@ -1,0 +1,138 @@
+\section{Proxy rankings and closed-loop task quality}
+\label{sec:transfer-gap}
+
+\subsection{Exp\#7: Offline and in-loop targets differ}
+The offline two-view AUC is 0.948 on the archived prediction task; on the
+served-oracle calibration set the runtime-reconstructed scorer reaches 0.643
+(prompt-bootstrap 95\% interval $[0.632,0.655]$, per-layer 0.54--0.76), but target,
+trajectory and feature realization change together (\S\ref{sec:realization}). On
+four archived LongBench tasks at 20\% retention (48 requests each), the
+accumulated-attention baseline has request-mean served-oracle miss 0.579 versus
+0.623 for the reconstructed scorer (paired difference $[0.033,0.055]$, resolved on
+every task) while the per-task F1 intervals all overlap; the confirmatory comparison
+is Exp\#8.
+
+\textbf{Capacity-forced miss and logged counts.} For request $j$, step $t$
+and layer $\ell$, the capacity floor is
+\[
+F_{jt\ell}=\max(0,1-B^{\rm actual}_{jt\ell}/K_{jt\ell}),
+\]
+where $B^{\rm actual}$ includes mandatory blocks and $K$ is the actual oracle-set
+size under the simulator's minimum-32/top-decile rule, clipped to available blocks.
+The field \texttt{per\_step\_block\_count} records $B^{\rm log}_{jt}$, the rounded
+layer mean of $B^{\rm actual}$; \texttt{per\_step\_B\_t\_oracle} records
+$K^{\rm log}_{jt}$, the rounded mean of populated layers' $K$.
+We compute $F^{\rm log}_{jt}=\max(0,1-B^{\rm log}_{jt}/K^{\rm log}_{jt})$,
+then average steps within requests and requests equally (48 per task).
+Candidate count $n$ is unlogged and unused. The pinned H2O-style and reconstructed
+policies fill a common $B$ and form a common $K$ across layers (IDs may differ),
+so scalar and layerwise floors coincide in that path. The artifact checks this
+invariant and documents block-boundary rules. The unpinned historical logs lack
+layer arrays: their reported floors are conditional recorded-count diagnostics,
+not independently verified layerwise floors. Uniform budget fractions alone
+would not establish equality.
+For the illustrative $n=128$, $B=26$, $K=32$, the floor is 0.1875;
+the actual 4K-cap records have $B=10$--26 and $K=32$, giving mean floor
+0.219 and residuals 0.360/0.404 from misses 0.579/0.623.
+All 192 paired request-mean logged-count floors match; recomputed residual
+intervals remain $[0.033,0.055]$. Floors are 0.610 of miss 0.727 at $f=0.10$, 0.022 at
+$f=0.30$ and 0.004 at $f=0.50$. Under the 16K cap, $n=512$, $B=102$, $K=51$
+would give zero, but recorded $B$ spans 7--103 and $K$ spans 32--51: the mean
+0.063 comes entirely from $K=32$, $B<32$ steps in 87/448 requests with smaller
+effective budgets. Their paired floors are not identical, so residual intervals
+are recomputed in the artifact. Absolute miss includes capacity loss; policy
+differences remain comparable under matched budget rules, including Exp\#9 at
+$f=0.10$. That budget truncates the learned policy's eight mandatory blocks on
+3.3\% of steps (minimum retained count: four). A scorer trained on the
+served-oracle target improves off-policy recall at 20\%
+retention by 0.06 (interval $[0.03,0.10]$) but worsens on-policy miss by 0.13
+(interval $[0.10,0.16]$), a reversal consistent with feedback-induced shift.
+
+\subsection{Exp\#8: Matched-retention answer quality}
+The policy evaluated here is the runtime reconstruction of
+\S\ref{sec:realization}, not the offline predictor of Table~\ref{tab:v2}.
+The main comparison uses chat-formatted LongBench QA~\cite{longbench}, seven
+datasets, two architectures (Llama-3.1-8B and Qwen2.5-7B) and 896 paired prompts at
+20\% logical retention, each policy driving its own masked decoding trajectory.
+
+\textbf{Inferential unit and margin.} The two architectures answer the same
+questions. Alongside paired TOST over 14 model--dataset cell means, we therefore
+average models within each dataset and test over seven dataset clusters (df 6).
+The pre-specified margin is two absolute F1 points, 5.4\% of the rerun baseline
+0.372: a practical tolerance, not a deployment threshold or preregistered one.
+Fig.~\ref{fig:forest} exposes task heterogeneity; mean equivalence does not imply
+equivalence on every task.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{fig_cell_forest.pdf}
+\caption{Exp\#8, pinned bfloat16 rerun (v2). Learned-minus-H2O-style F1 per
+architecture $\times$ dataset cell (64 paired requests, 95\% t intervals) and the
+pooled 14-cell estimate (90\% t interval); the band is the $\pm0.02$ margin.}
+\label{fig:forest}
+\end{figure}
+
+\begin{table}[t]
+\centering
+\caption{Exp\#8 (Matched-retention answer quality): masked-loop LongBench F1 at
+20\% retention, 896 paired prompts, every $\Delta$ and TOST against H2O-style
+accumulation. Pinned bfloat16 rerun, official LongBench scorer, all references.}
+\label{tab:perlayer}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular*}{\columnwidth}{@{\extracolsep{\fill}}lccc@{}}
+\toprule
+policy realization & F1 & $\Delta$ & $p_{\pm.02}$ \\
+\midrule
+%%PERLAYER-ROWS-BEGIN%%
+full cache & .419 & +.047 & --- \\
+H2O-style accumulation & .372 & --- & --- \\
+reconstructed two-view & .374 & +.002 & .0007 \\
+Ada-KV-style allocation & .363 & -.008 & .0080 \\
+PyramidKV-style allocation & .349 & -.023 & .582 \\
+%%PERLAYER-ROWS-END%%
+\bottomrule
+\end{tabular*}
+\end{table}
+
+\textbf{Pinned rerun.} In bfloat16 no Qwen
+full-cache output contains a run of ``!'' (0/448 versus 181/448 archived) and 34/448
+reach the 48-token cap (versus 210/448). Scored with the official LongBench scorer
+and all references, the learned scorer's mean F1 difference from the accumulator
+over the same 896 paired prompts is $+0.0017$: the 14-cell TOST gives $p=0.0007$ at
+$\pm0.02$; supplementary $\pm0.01$ tests give $p=0.045$ (14 cells) and
+$p=0.047$ (seven datasets), but that margin was not pre-specified.
+Seven-dataset clustering gives $p=0.0023$ at $\pm0.02$.
+The 14-cell t-based and cluster-bootstrap 90\% intervals are
+$[-0.0063,0.0097]$ and $[-0.0056,0.0087]$; the runner's own scorer gives $+0.0024$
+($p=0.0016$). Per architecture the difference is $+0.0052$ (Llama, $p=0.016$) and
+$-0.0018$ (Qwen, $p=0.026$). The Ada-KV-style comparator remains equivalent to the
+accumulator ($-0.0084$, $p=0.008$); the PyramidKV-style one does not
+($-0.023$, $p=0.58$ at $\pm0.02$). Both allocation comparators use shared
+within-layer selection; these findings do not cover original H2O/Ada-KV
+implementations or imply equivalence between the learned and Ada-KV-style policies.
+This is equivalence between two compressed policies, not absence of compression
+loss: their F1 remains about 0.045--0.047 below full cache.
+
+\textbf{Historical audit.} Archived Qwen float16 decoding emitted all-NaN logit
+rows, producing token~0 (``!''); a 56-prompt replay found this in 54 requests
+(687 NaN steps, 739 token-0 emissions), versus none in bfloat16/float32.
+The archived F1 difference was $+0.00511$ under a single-reference scorer
+($+0.0030$ after official all-reference rescoring). The artifact retains the
+original scores, scorer checks, historical intervals and full repair record;
+Table~\ref{tab:perlayer} reports the separate corrected rerun.
+
+
+\subsection{Exp\#9: Budget and context checks}
+Sweeping retention over $\{0.10,0.20,0.30,0.50\}$ yields no resolved per-budget
+quality gain, and the interval for the retention difference needed to reach 90\% of
+full-cache F1 includes zero; neither proves curve equivalence or zero memory saving.
+At 16K the larger Llama sample (seven datasets, 448 prompts, 20\% retention) has mean
+F1 difference $-0.0006$, request-level 95\% interval $[-0.012,0.012]$ (exploratory
+TOST $p\approx0.0009$, a different procedure from the 14-cell analysis); a 160-prompt
+pilot had suggested $+0.010$, which the expanded sample does not sustain, so we
+retract the context-growing win.
+Five alternative Llama prompt subsets give archived means between $-0.008$ and
+$+0.011$ and are not replications; a needle probe whose apparent advantages depended
+on repeated filler and lexical cues is a negative control, not proof that
+query-aware selection is unnecessary.

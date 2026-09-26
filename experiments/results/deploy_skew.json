@@ -1,0 +1,12 @@
+{
+  "model": "Llama-3.1-8B-Instruct",
+  "horizon": "h4",
+  "n_test": 150000,
+  "corr_within_cross": 0.5029,
+  "jaccard_within_topr_cross": 0.4031,
+  "p_cross_given_within_topr": 0.4645,
+  "auc_within_only": 0.9121,
+  "auc_within_plus_cross_offline": 0.9332,
+  "marginal_cross_auc": 0.0211,
+  "note": "offline redundancy of the TRUE cross view vs within; the end-to-end reconstructed-cross eps (within-only vs 2-view) comes from the SEER deploy sim, see results/deploy_consistent/"
+}

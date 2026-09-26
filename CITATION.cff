@@ -1,0 +1,29 @@
+cff-version: 1.2.0
+message: "Cite this artifact and the accepted D2AI 2026 workshop manuscript."
+title: "Mining Attention Dynamics: Auditing KV-Saliency Prediction in LLMs"
+authors:
+  - family-names: Li
+    given-names: Ziqing
+  - family-names: Guo
+    given-names: Jiawei
+  - family-names: Tang
+    given-names: Kaicheng
+  - family-names: Chen
+    given-names: Jianxi
+type: software
+version: "d2ai-camera-ready"
+repository-code: "https://github.com/lzbaclz/KVSalienceBench"
+url: "https://github.com/lzbaclz/KVSalienceBench"
+abstract: >
+  Artifact for an empirical audit of KV-saliency prediction, accepted to D2AI at
+  IEEE ICDM 2026 (DM2158). Contains version-2 and historical experiment records,
+  analysis code, tests, a pinned simulator bundle, a physical-KV reference validator,
+  paper sources and an English presentation. Masked-loop task-quality findings do
+  not imply production serving efficiency. Source datasets and model weights are
+  obtained separately. Zenodo DOI registration is deferred to the authors.
+keywords:
+  - KV cache
+  - attention prediction
+  - empirical audit
+  - physical validation
+license: Apache-2.0

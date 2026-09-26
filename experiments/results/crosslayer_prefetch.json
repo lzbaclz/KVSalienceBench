@@ -1,0 +1,12 @@
+{
+  "trace": "Llama-3.1-8B-Instruct.jsonl",
+  "r": 0.1,
+  "n_groups": 512,
+  "n_layer_pairs": 15872,
+  "prev_layer_prefetch_recall": 0.8753384178125863,
+  "newly_hot_auc_query": 0.6138857109577225,
+  "newly_hot_auc_prev_within": 0.9513546357240549,
+  "combined_recall_base": 0.937987613526075,
+  "combined_recall_query_aug": 0.8488991151298845,
+  "combined_recall_lift": -0.08908849839619049
+}

@@ -1,0 +1,84 @@
+% D2AI @ IEEE ICDM 2026, DM2158. Camera-ready revision.
+% Build: latexmk -pdf -interaction=nonstopmode -halt-on-error main.tex
+\documentclass[conference]{IEEEtran}
+\usepackage{cite,amsmath,amssymb,amsfonts,booktabs,graphicx,xcolor,url}
+\usepackage{algorithm,algorithmic,multirow,array}
+\graphicspath{{figures/}}
+\IEEEoverridecommandlockouts
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em\TeX}}
+
+\title{Mining Attention Dynamics:\\Auditing KV-Saliency Prediction in LLMs}
+\author{
+\IEEEauthorblockN{Ziqing Li}
+\IEEEauthorblockA{\textit{Huazhong University of Science and Technology}\\
+Wuhan, China \\
+d202381502@hust.edu.cn}
+\\
+\IEEEauthorblockN{Kaicheng Tang}
+\IEEEauthorblockA{\textit{The Chinese University of Hong Kong}\\
+Hong Kong, China \\
+kctang0410@link.cuhk.edu.hk}
+\and
+\IEEEauthorblockN{Jiawei Guo}
+\IEEEauthorblockA{\textit{Beihang University}\\
+Beijing, China \\
+jwguo@buaa.edu.cn}
+\\
+\IEEEauthorblockN{Jianxi Chen\thanks{Corresponding author: Jianxi Chen (chenjx@hust.edu.cn).}}
+\IEEEauthorblockA{\textit{Huazhong University of Science and Technology}\\
+Wuhan, China \\
+chenjx@hust.edu.cn}
+}
+\pdfinfo{/Title (Mining Attention Dynamics: Auditing KV-Saliency Prediction in LLMs) /Author (Ziqing Li, Jiawei Guo, Kaicheng Tang, Jianxi Chen) /Subject (D2AI at IEEE ICDM 2026 - DM2158)}
+\begin{document}
+\maketitle
+\begin{abstract}
+Selecting useful key--value (KV) state requires evaluating predictions under the
+budget and candidate set of each retention decision. KVSalienceBench audits these
+evaluation objects through future-attention labels, explicit selector semantics,
+request and source-prompt splits, and versioned collection and validation code.
+On corrected traces from two instruction-tuned models, a three-parameter logistic
+scorer achieves pooled area under the receiver operating characteristic curve
+(AUC) of 0.890, close to LightGBM's 0.896. Yet the within-layer attention signal
+recovers 0.659 of each decision's future top-decile blocks, versus 0.613 and 0.615
+for those models. This ordering difference narrows at 20\% retention, showing why
+pooled ranking and decision-level budgets must be evaluated separately. A separate,
+pinned bfloat16 masked-loop rerun over 14 model--dataset cells finds the
+runtime-reconstructed scorer and an accumulated-attention baseline equivalent in
+mean LongBench F1 within a specified tolerance of two absolute points; both remain
+below full-cache quality. Historical served-oracle diagnostics favor the baseline,
+but use a different target and experiment version; we audit capacity-forced
+misses using logged counts. A feature bridge measures reconstruction effects
+without identifying the cause of the historical proxy gap. Reference backends
+reduce physical KV storage by about 5.3 times at 20\% retention, with much smaller
+reductions in total allocated memory. Extended mask/physical tests produce logit
+discrepancies that exceed the preset numerical tolerance. These bounded findings support evaluation alignment,
+not a production serving or universal policy-equivalence claim.
+\end{abstract}
+\begin{IEEEkeywords}
+KV cache, attention prediction, empirical audit, calibration, benchmarking,
+closed-loop evaluation.
+\end{IEEEkeywords}
+
+\input{sections/intro}
+\input{sections/problem}
+\input{sections/signals}
+\input{sections/method}
+\input{sections/experiments}
+\input{sections/guardkv}
+\input{sections/deployment}
+\input{sections/transfer_gap}
+\input{sections/limitations}
+\input{sections/related}
+\input{sections/conclusion}
+\section*{Acknowledgment}
+Anthropic Claude (via Claude Code) assisted with manuscript drafting and the
+version-2 collector, physical-KV validator and audit scripts. OpenAI
+ChatGPT/Codex assisted with revisions to the abstract, introduction, evaluation diagram, statistical protocol,
+results interpretation, limitations and conclusion, and with bootstrap,
+oracle-budget, reproducibility and PDF-check code. These tools generated or
+restructured text and code; the authors are responsible for verifying the
+retained content, experiments and conclusions.
+\bibliographystyle{IEEEtran}
+\bibliography{refs,refs_dm}
+\end{document}

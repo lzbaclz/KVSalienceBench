@@ -1,0 +1,109 @@
+{
+  "workloads": [
+    "longbench",
+    "longbench_gov_report",
+    "longbench_hotpotqa",
+    "longbench_lcc",
+    "longbench_multi_news",
+    "longbench_multifieldqa_zh",
+    "mooncake",
+    "sharegpt"
+  ],
+  "matrix": {
+    "longbench": {
+      "longbench": 0.9250279494112833,
+      "longbench_gov_report": 0.9294374629004315,
+      "longbench_hotpotqa": 0.9746370676442069,
+      "longbench_lcc": 0.9484974332379152,
+      "longbench_multi_news": 0.9583419437726224,
+      "longbench_multifieldqa_zh": 0.9223517235072638,
+      "mooncake": 0.9375327574486934,
+      "sharegpt": 0.8727137029431887
+    },
+    "longbench_gov_report": {
+      "longbench": 0.9249652241313249,
+      "longbench_gov_report": 0.9294804581306246,
+      "longbench_hotpotqa": 0.9748603502786234,
+      "longbench_lcc": 0.9485965965693334,
+      "longbench_multi_news": 0.9606146971343769,
+      "longbench_multifieldqa_zh": 0.9226269780713918,
+      "mooncake": 0.9375025575249452,
+      "sharegpt": 0.8894555632540226
+    },
+    "longbench_hotpotqa": {
+      "longbench": 0.9249735709578124,
+      "longbench_gov_report": 0.9294783934498124,
+      "longbench_hotpotqa": 0.9748470854783206,
+      "longbench_lcc": 0.9485927426843188,
+      "longbench_multi_news": 0.9602985561369961,
+      "longbench_multifieldqa_zh": 0.9226144814566898,
+      "mooncake": 0.9375105570774591,
+      "sharegpt": 0.8860625847417494
+    },
+    "longbench_lcc": {
+      "longbench": 0.9248822154642675,
+      "longbench_gov_report": 0.9294247146617686,
+      "longbench_hotpotqa": 0.9749428216948951,
+      "longbench_lcc": 0.9485564982610337,
+      "longbench_multi_news": 0.9623881377324567,
+      "longbench_multifieldqa_zh": 0.9225915228298871,
+      "mooncake": 0.9373584325442852,
+      "sharegpt": 0.9039387699054616
+    },
+    "longbench_multi_news": {
+      "longbench": 0.9248492992518476,
+      "longbench_gov_report": 0.9293397929122829,
+      "longbench_hotpotqa": 0.974891183073165,
+      "longbench_lcc": 0.9485423327134671,
+      "longbench_multi_news": 0.9642717896686228,
+      "longbench_multifieldqa_zh": 0.9225558843496771,
+      "mooncake": 0.9372979179340236,
+      "sharegpt": 0.9287619097528337
+    },
+    "longbench_multifieldqa_zh": {
+      "longbench": 0.9248725074277332,
+      "longbench_gov_report": 0.9294053306018699,
+      "longbench_hotpotqa": 0.9749363279860896,
+      "longbench_lcc": 0.9485505217585858,
+      "longbench_multi_news": 0.9626731568286655,
+      "longbench_multifieldqa_zh": 0.9225765709048677,
+      "mooncake": 0.9373379681857172,
+      "sharegpt": 0.9068120113484452
+    },
+    "mooncake": {
+      "longbench": 0.924967735746811,
+      "longbench_gov_report": 0.9294816916106629,
+      "longbench_hotpotqa": 0.9748569712829994,
+      "longbench_lcc": 0.9485974239856066,
+      "longbench_multi_news": 0.9606399435174328,
+      "longbench_multifieldqa_zh": 0.9226258407657786,
+      "mooncake": 0.9375047921432281,
+      "sharegpt": 0.8902705082311047
+    },
+    "sharegpt": {
+      "longbench": 0.9248492961846886,
+      "longbench_gov_report": 0.9293280947550722,
+      "longbench_hotpotqa": 0.9748829464151734,
+      "longbench_lcc": 0.9485407455638128,
+      "longbench_multi_news": 0.9643476072240825,
+      "longbench_multifieldqa_zh": 0.9225535273264551,
+      "mooncake": 0.937293662707372,
+      "sharegpt": 0.9328561271099441
+    }
+  },
+  "diagonal": {
+    "longbench": 0.9250279494112833,
+    "longbench_gov_report": 0.9294804581306246,
+    "longbench_hotpotqa": 0.9748470854783206,
+    "longbench_lcc": 0.9485564982610337,
+    "longbench_multi_news": 0.9642717896686228,
+    "longbench_multifieldqa_zh": 0.9225765709048677,
+    "mooncake": 0.9375047921432281,
+    "sharegpt": 0.9328561271099441
+  },
+  "summary": {
+    "mean_indomain": 0.9418901588884906,
+    "mean_transfer_drop": 0.004903485688532494,
+    "max_transfer_drop": 0.035996834227543295
+  }
+}

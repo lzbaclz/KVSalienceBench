@@ -1,0 +1,152 @@
+{
+  "task": "C7 served-oracle miss per-task with paired bootstrap CIs",
+  "source_glob": "experiments/results/e2e_confirm/<dataset>_<policy>.json",
+  "datasets": [
+    "narrativeqa",
+    "qasper",
+    "hotpotqa",
+    "multifieldqa_en"
+  ],
+  "policies": {
+    "h2o": "trivial accumulator (lower=better)",
+    "xqp": "learned 2-view scorer"
+  },
+  "retention_budget": 0.2,
+  "context_length": [
+    4096
+  ],
+  "metric": "per-request mean(per_step_eps_measured) = served-oracle miss",
+  "pairing_unit": "request id (same prompt under h2o vs xqp)",
+  "bootstrap": {
+    "n_boot": 10000,
+    "seed": 1234,
+    "ci_level": 0.95,
+    "scheme": "paired percentile bootstrap, cluster unit = request",
+    "rng": "numpy default_rng"
+  },
+  "per_dataset": {
+    "narrativeqa": {
+      "n_requests": 48,
+      "h2o_eps": 0.5638492861436079,
+      "xqp_eps": 0.6328828125603243,
+      "diff_xqp_minus_h2o": 0.06903352641671645,
+      "h2o_eps_ci95": [
+        0.5464712210780078,
+        0.5815763008867528
+      ],
+      "xqp_eps_ci95": [
+        0.6151555070505021,
+        0.6505712193352922
+      ],
+      "diff_ci95": [
+        0.05028205063907227,
+        0.08855744562394295
+      ],
+      "h2o_lower_miss": true,
+      "diff_ci_excludes_zero": true,
+      "frac_requests_xqp_higher": 0.875,
+      "frac_requests_tie": 0.0
+    },
+    "qasper": {
+      "n_requests": 48,
+      "h2o_eps": 0.5950831467650607,
+      "xqp_eps": 0.6446428248677551,
+      "diff_xqp_minus_h2o": 0.04955967810269446,
+      "h2o_eps_ci95": [
+        0.5762350170578765,
+        0.613059575860262
+      ],
+      "xqp_eps_ci95": [
+        0.6285227840099317,
+        0.6605531861724137
+      ],
+      "diff_ci95": [
+        0.03039760913862497,
+        0.07127434340088236
+      ],
+      "h2o_lower_miss": true,
+      "diff_ci_excludes_zero": true,
+      "frac_requests_xqp_higher": 0.75,
+      "frac_requests_tie": 0.0
+    },
+    "hotpotqa": {
+      "n_requests": 48,
+      "h2o_eps": 0.5660500977418397,
+      "xqp_eps": 0.6013901960976402,
+      "diff_xqp_minus_h2o": 0.03534009835580054,
+      "h2o_eps_ci95": [
+        0.5478241144299494,
+        0.5836775025295649
+      ],
+      "xqp_eps_ci95": [
+        0.5876303247895377,
+        0.6146715068857613
+      ],
+      "diff_ci95": [
+        0.014724525649934152,
+        0.056589417027641545
+      ],
+      "h2o_lower_miss": true,
+      "diff_ci_excludes_zero": true,
+      "frac_requests_xqp_higher": 0.5833333333333334,
+      "frac_requests_tie": 0.0
+    },
+    "multifieldqa_en": {
+      "n_requests": 48,
+      "h2o_eps": 0.5910803615893063,
+      "xqp_eps": 0.6131794151735409,
+      "diff_xqp_minus_h2o": 0.022099053584234585,
+      "h2o_eps_ci95": [
+        0.5708415550731982,
+        0.6121738902721326
+      ],
+      "xqp_eps_ci95": [
+        0.5963500595409869,
+        0.6303001448084278
+      ],
+      "diff_ci95": [
+        -6.177910760144276e-05,
+        0.04455288710810465
+      ],
+      "h2o_lower_miss": true,
+      "diff_ci_excludes_zero": false,
+      "frac_requests_xqp_higher": 0.4791666666666667,
+      "frac_requests_tie": 0.0
+    }
+  },
+  "pooled": {
+    "n_requests": 192,
+    "h2o_eps": 0.5790157230599536,
+    "xqp_eps": 0.6230238121748152,
+    "diff_xqp_minus_h2o": 0.04400808911486154,
+    "h2o_eps_ci95": [
+      0.5695133055679811,
+      0.5886715039034358
+    ],
+    "xqp_eps_ci95": [
+      0.6147604700786454,
+      0.6315831489062844
+    ],
+    "diff_ci95": [
+      0.03338449697575223,
+      0.054687661105623814
+    ],
+    "h2o_lower_miss": true,
+    "diff_ci_excludes_zero": true,
+    "frac_requests_xqp_higher": 0.671875
+  },
+  "macro_mean_over_four_tasks": {
+    "h2o_eps": 0.5790157230599536,
+    "xqp_eps": 0.6230238121748152,
+    "diff_xqp_minus_h2o": 0.04400808911486154,
+    "rounds_to_paper_claim_0p57_vs_0p62": [
+      0.58,
+      0.62
+    ]
+  },
+  "claim_check": {
+    "paper_claim": "0.57 (h2o) vs 0.62 (xqp) at 20% retention, mean over four LongBench tasks; H2O lower at every budget/dataset",
+    "h2o_lower_miss_all_four_datasets": true,
+    "diff_ci_excludes_zero_all_four": false
+  }
+}

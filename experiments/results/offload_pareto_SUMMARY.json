@@ -1,0 +1,71 @@
+{
+  "experiment": "Matched-quality Pareto: query-free cross-layer prefetch vs FlexGen fetch-all, real TPOT + real F1",
+  "ctx": 32768,
+  "flexgen_fetch_all": {
+    "f1_full": {
+      "narrativeqa": 0.249,
+      "qasper": 0.39
+    },
+    "tpot_ms": 183.5
+  },
+  "pareto": {
+    "narrativeqa": [
+      {
+        "h": 0.2,
+        "f1": 0.212,
+        "tpot": 54
+      },
+      {
+        "h": 0.4,
+        "f1": 0.234,
+        "tpot": 100
+      },
+      {
+        "h": 0.7,
+        "f1": 0.253,
+        "tpot": 137
+      }
+    ],
+    "qasper": [
+      {
+        "h": 0.2,
+        "f1": 0.266,
+        "tpot": 54
+      },
+      {
+        "h": 0.4,
+        "f1": 0.354,
+        "tpot": 100
+      },
+      {
+        "h": 0.5,
+        "f1": 0.366,
+        "tpot": 100
+      },
+      {
+        "h": 0.7,
+        "f1": 0.377,
+        "tpot": 137
+      }
+    ]
+  },
+  "headline": {
+    "matched_quality_h0.4_ge90pct_full": {
+      "vs_flexgen_fetch_all_pct": -45,
+      "vs_reactive_pct": -16,
+      "tpot_ms": 100
+    },
+    "near_full_h0.7_ge97pct_full": {
+      "vs_flexgen_pct": -25,
+      "vs_reactive_pct": -16
+    },
+    "pure_latency_hiding_vs_reactive_any_h_pct": "-15..-18 (robust)"
+  },
+  "honest": [
+    "Matched-quality (>=90% full at h=0.4) vs FlexGen fetch-all: REAL -45% TPOT @32K, both datasets.",
+    "The h=0.25 -66..-72% number had a quality gap (68-85% of full) -- NOT the honest matched-quality figure.",
+    "Pure latency-hiding (prefetch vs reactive at the SAME h/quality): -15..-18% robustly.",
+    "Real measured (CPU pinned + PCIe + CUDA streams + real matmuls); microbenchmark, not fused-kernel model (fused -> more IO-bound -> bigger win, so conservative).",
+    "Offload regime = aggregate KV > HBM (batch/concurrency), not single long ctx (8B@64K fits HBM)."
+  ]
+}
