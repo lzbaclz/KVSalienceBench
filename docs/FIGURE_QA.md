@@ -17,7 +17,7 @@ annotations apart at that size.
 | Figure | Source / renderer | Font and artwork checks |
 |---|---|---|
 | Evaluation paths, Fig. 1 | Editable `paper_icdm/figures/evaluation_paths.drawio`; draw.io Desktop 31.4.5 CLI export | Embedded Liberation Serif; ordinary labels 9.46 pt at final column width; vector paths and text, no raster image |
-| Relevance / reliability, Fig. 2 | `experiments/fig_redund_calib.py`, frozen `icdm_v2.json` | Embedded STIXGeneral, ordinary labels approximately 9 pt at final column width; the mathematical subscript is smaller; vector PDF |
+| Offset sweep / reliability, Fig. 2 | `experiments/fig_redund_calib.py`, frozen `icdm_v2_decomposition.json` and `icdm_v2.json` | Embedded STIXGeneral, ordinary labels approximately 9 pt at final column width; the mathematical subscript is smaller; vector PDF. Since 2026-10-05 the legend of panel (b) sits in that panel's own column and panel (a) shares no colour or marker with it |
 | Per-cell forest, Fig. 3 | `experiments/fig_cell_forest.py`, frozen `expand_v2_sensitivity.json` | Embedded STIXGeneral, ordinary labels approximately 9 pt at final column width; vector PDF |
 
 `python scripts/check_figure_assets.py` proves that the draw.io PDF's embedded

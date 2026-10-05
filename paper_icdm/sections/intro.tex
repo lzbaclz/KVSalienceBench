@@ -1,29 +1,41 @@
 \section{Introduction}
-KV state grows with context while attention concentrates on a subset of
-positions. KV-management methods exploit this through
-accumulated attention~\cite{h2o}, recent-query observations~\cite{snapkv},
-query--key page bounds~\cite{quest}, cross-layer information~\cite{infinigen} and
-learned retention~\cite{locret}. Better prediction need not identify a better
-retention policy: selection changes later model states and their outputs.
-Traceable evaluation of inference state under a budget connects this study to
-D2AI's infrastructure, provenance and benchmark scope.
+Cached attention keys and values (KV state) grow with context while attention
+concentrates on few positions. KV-management methods exploit this through accumulated
+attention~\cite{h2o}, attention sinks with recent windows~\cite{streamingllm},
+recent-query observations~\cite{snapkv}, query--key page bounds~\cite{quest},
+cross-layer information~\cite{infinigen} and learned retention~\cite{locret}.
+Most rest on a prediction---that the blocks kept are the ones future queries will
+attend to---and learned predictors now target attention
+directly~\cite{attentionpredictor}. What is rarely separated is pooled ranking, the
+per-decision budget a selector imposes, the features a runtime can reconstruct, the
+candidate set and task quality. Methods are mostly compared at the end of the
+pipeline, on answer scores, where the scorer, the budget rule, the features and the
+feedback trajectory all move together, so a gain cannot be attributed to any one.
+Better prediction need not identify a better retention policy: selection changes
+later model states and their outputs.
 
-We audit which signals predict future attention, whether predictor complexity
-helps, and how proxy rankings relate to answer quality. Offline labels,
-served-oracle diagnostics and closed-loop answer scores are distinct objects;
-the runtime scorer also reconstructs its features.
+Measuring the prediction itself needs objects a task benchmark does not record: the
+candidate set and budget of each retention decision, the features available at
+runtime, and the future attention the decision is betting on. KVSalienceBench records
+them, so that a gain can be attributed to prediction rather than to a budget rule and a
+proxy ranking checked against task quality.
 
 \textbf{Contributions.} (1)~\emph{A protocol and benchmark.} KVSalienceBench fixes
 future-attention labels, selector semantics (Table~\ref{tab:protocol}), request-
-and source-prompt splits, tie-aware per-decision metrics and versioned collection.
-(2)~\emph{Controlled findings.} Two attention-magnitude views
-support a three-parameter logistic scorer within 0.006 AUC of LightGBM on v2 traces
-without a calibration step. At the per-decision top-decile budget, the within-layer
-signal recovers more future top-decile blocks than either; this reversal shrinks
-at 20\% retention. A separate pinned bfloat16 masked-loop rerun finds
-the reconstructed scorer and accumulator mean-F1 equivalent within a pre-specified
-$\pm0.02$ margin over 14 model--dataset cells (TOST $p=0.0007$).
-A bridge measures feature reconstruction (\S\ref{sec:realization}).
-(3)~\emph{An audit and its repair.} We diagnose corrupted float16 Qwen2.5
-generation, rerun with a pinned simulator, audit capacity effects from logged counts,
-and report physical-KV parity levels. Code, tests and provenance accompany the paper.
+and source-prompt splits, tie-aware per-decision metrics and versioned collection;
+its default entry point (version~2.0) scores pooled and per-decision metrics together
+from a prediction table alone.
+(2)~\emph{Controlled findings.} A three-parameter logistic scorer on two
+attention-magnitude views is within 0.006 AUC of LightGBM on v2 traces (0.008 at most
+across tree capacities) without a calibration step, yet at the per-decision
+top-decile budget the within-layer signal alone recovers more future top-decile
+blocks than either, a reversal that shrinks at 20\% retention; an exact split shows
+pooled AUC is a cross-decision statistic, which the scorer's binary cross-layer term
+raises while lowering within-decision AUC and recall. A pinned bfloat16 masked-loop
+rerun finds the reconstructed scorer and the H2O-style accumulator mean-F1 equivalent
+within a practical $\pm0.02$ margin over seven datasets (two one-sided tests, TOST,
+$p=0.0023$), and a
+bridge measures feature reconstruction (\S\ref{sec:realization}). (3)~\emph{An audit
+and its repair.} We diagnose corrupted float16 Qwen2.5 generation, rerun with a pinned
+simulator, audit capacity effects from logged counts, and report physical-KV parity
+levels.

@@ -1,0 +1,63 @@
+{
+  "protocol": "kvsaliencebench-2.0",
+  "n_rows": 5748,
+  "n_decisions": 192,
+  "n_requests": 16,
+  "n_source_prompts": 8,
+  "positive_rate": 0.11343075852470424,
+  "complete_decisions": true,
+  "pooled": {
+    "auc": 0.8883525271835965,
+    "ap": 0.530306238613171,
+    "p_at_k": 0.5373913043478261
+  },
+  "pairs": {
+    "auc_same_decision": 0.8961760907406368,
+    "auc_cross_decision": 0.8883103671254663,
+    "auc_same_decision_macro": 0.8930348208724751,
+    "share_same_decision": 0.005359971973688012
+  },
+  "per_decision": {
+    "0.10": {
+      "macro_recall": 0.5286458333333334,
+      "macro_recall_random_ties": 0.5286458333333334,
+      "boundary_tie_share": 0.0
+    },
+    "0.20": {
+      "macro_recall": 0.7521701388888888,
+      "macro_recall_random_ties": 0.7521701388888888,
+      "boundary_tie_share": 0.0
+    }
+  },
+  "ties": {
+    "tied_row_share": 0.0
+  },
+  "calibration": {
+    "ece": 0.12772129509958247,
+    "brier": 0.09139593946895476
+  },
+  "ci95": {
+    "unit": "source_prompt",
+    "n_boot": 200,
+    "auc_pooled": [
+      0.8806727740384596,
+      0.8951871253127592
+    ],
+    "auc_same_decision": [
+      0.8867667280950408,
+      0.9043543198529411
+    ],
+    "auc_cross_decision": [
+      0.8806135293582674,
+      0.8951429214397735
+    ],
+    "macro_recall_0.10": [
+      0.50693359375,
+      0.5516493055555555
+    ],
+    "macro_recall_0.20": [
+      0.7339409722222223,
+      0.7669704861111112
+    ]
+  }
+}

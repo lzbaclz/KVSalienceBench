@@ -20,8 +20,20 @@ realized miss rate (should track alpha) and the average set size |S_t| (the
 efficiency; smaller = more eviction headroom).
 
 Any object with a ``score(F) -> [0,1]`` method works as the base scorer
-(ClosedFormXQP, PairwiseXQP, a baseline, ...), so the guarantee composes with
+(ClosedFormXQP, PairwiseXQP, a baseline, ...), so the update composes with
 the low-redundancy fusion of the rest of the package.
+
+SCOPE (matches the manuscript, and narrower than the paragraphs above).
+ACI's long-run average guarantee is about the realized sequence of miss rates
+under this update; it is not a per-request or per-layer bound. The *split*
+conformal threshold used by ``xqp/budgeter.py`` has finite-sample marginal
+coverage only when calibration and test units are exchangeable, which correlated
+block/step rows from one decode trajectory do not establish, and marginal
+coverage would not imply a per-request bound even if they did. The reported
+in-distribution numbers are measurements, not certificates: against the
+served-oracle target the reconstructed scorer needs about full retention for 90%
+coverage. Read "distribution-free" above as "assumption-free about the drift of
+the score-label relationship", not as a deployable risk guarantee.
 """
 from __future__ import annotations
 

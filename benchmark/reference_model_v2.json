@@ -1,0 +1,38 @@
+{
+  "name": "within+cross logistic, refit on the version-2 request split (Table II, 'two-view logistic, refit')",
+  "protocol": "kvsaliencebench-2.0",
+  "feature_columns": [
+    "s_within",
+    "s_cross",
+    "s_query",
+    "s_pos"
+  ],
+  "used_features": [
+    "s_within",
+    "s_cross"
+  ],
+  "params": 3,
+  "score": "sigmoid(w_within*s_within + w_cross*s_cross + bias)",
+  "weights": {
+    "s_within": 97.67186737060547,
+    "s_cross": 2.4647791385650635,
+    "s_query": 0.0,
+    "s_pos": 0.0
+  },
+  "bias": -3.226759910583496,
+  "fit": {
+    "method": "Newton-IRLS + L2 ridge (l2=1e-3)",
+    "rows": "120,000 rows sampled (seed 0) from the held-in rows of the request split of experiments/run_icdm_v2.py",
+    "traces": "Llama-3.1-8B-Instruct and Qwen2.5-7B-Instruct, 128 shared LongBench QA prompts, horizon h4",
+    "note": "Frozen for scoring prediction tables without traces. benchmark/run_leaderboard.py --traces refits this model on the TRAINING rows of whichever split it evaluates, so the reference never sees a test prompt."
+  },
+  "reference_metrics_request_split": {
+    "source": "experiments/results/icdm_v2_decomposition.json",
+    "evaluation_rows": "every held-out row (7,633,988 rows, 61,184 decisions, 64 requests)",
+    "auc_pooled": 0.890209372947338,
+    "auc_same_decision": 0.9278586980824353,
+    "auc_cross_decision": 0.8902087530531217,
+    "macro_recall_0.10": 0.6129992615691491,
+    "macro_recall_0.20": 0.8378517631688397
+  }
+}

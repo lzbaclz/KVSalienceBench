@@ -1,160 +1,334 @@
-"""KVSalienceBench — frozen evaluation protocol.
+"""KVSalienceBench protocol 2.0: decision-level evaluation of retention scorers.
 
-The benchmark task: predict, per KV *block* (contiguous group of token positions,
-default 32), the probability that the block will be in the top-r most-attended set
-h steps in the future, from cheap per-block features. This module freezes the
-canonical protocol so every submission is scored identically.
+Task. For every cache-retention decision (one request, layer and decode step), score
+each candidate KV block by the probability that it lands in the top-``r`` most
+attended blocks of that decision ``h`` steps ahead (``r = 0.10``, ``h = 4`` headline,
+32-token blocks). The label is future attention among the candidates present at the
+decision, with exactly ``ceil(r * n)`` positives per decision.
 
-Design decisions that are LOAD-BEARING (do not change without versioning):
-  * REQUEST-LEVEL (group) hold-out split: whole prompts are held out, never rows.
-    Rows from one prompt are highly correlated; a row-level split leaks and
-    inflates AUC. Request ids are recovered from the deterministic emission order
-    (first row of each prompt is uniquely step==0 & layer==0 & block_idx==0).
-  * FINITE-FILTER: fp16 attention can overflow to NaN in a few last-layer rows;
-    those rows are dropped (not imputed).
-  * Headline horizon h4; top-r = 0.10 (10% of blocks are "salient").
-  * Metrics: AUC (rank), AUPRC (imbalanced rank), P@k / R@k at k=r (selection),
-    ECE + Brier (calibration). Calibration is first-class: a selector that drives
-    a memory budget must emit trustworthy probabilities, not just a good ranking.
-  * Confidence intervals: request-CLUSTERED bootstrap (resample whole prompts).
+What changed from protocol 1.0 (``benchmark.legacy_v1``). Version 1 kept only pooled
+metrics and discarded the decision identifiers, so it could not score the object a
+selector actually acts on. Version 2 keeps them and therefore reports, together:
 
-A submission is any object/callable mapping a feature matrix to probabilities in
-[0,1]; see benchmark/run_leaderboard.py and benchmark/submit_template.py.
+* pooled ranking (AUC, tie-aware AP, pooled top-k), which compares rows ACROSS
+  decisions;
+* the same pooled AUC split exactly into same-decision and cross-decision pairs;
+* per-decision top-k recall at each retention in ``RETENTIONS`` (macro over decisions),
+  with the number of decisions whose k-th place is a tie, and the recall under exact
+  random tie-breaking;
+* a bootstrap over SOURCE PROMPTS (all held-out requests of a drawn prompt move
+  together), exact for the pooled statistic.
+
+Splits. ``split='source'`` (default) holds out whole source prompts, the same ones for
+every model, so text seen by one model in training never appears in another's test.
+``split='request'`` reproduces the pooled request split of the paper's Table II
+(``experiments/run_icdm_v2.py``): a global permutation of all requests, NOT stratified
+by model.
+
+Completeness. A per-decision metric is only meaningful on complete decisions; a row
+sample leaves a few rows per decision and makes top-``ceil(r n)`` meaningless.
+``evaluate_table`` therefore refuses tables whose decisions do not each hold exactly
+``ceil(label_rate * n)`` positives unless ``strict=False``.
+
+Calibration (ECE, Brier) is reported only when the scorer declares
+``probabilistic=True``: a fixed top-k budget needs the ordering, a thresholded
+(variable-size) selector needs probabilities.
+
+Two entry points: ``evaluate_table`` scores a prediction table (a CSV with the
+columns in ``TABLE_COLUMNS``; no model weights or traces needed), and ``evaluate``
+scores a ``score(F)`` function on a version-2 trace corpus.
 """
 from __future__ import annotations
 
-import glob as _glob
-import json as _json
+import csv
+import gzip
+import hashlib
+import json
+import math
 import os
+from pathlib import Path
 import sys
 
 import numpy as np
-from scipy.stats import rankdata
 
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from xqp.features import FEATURE_NAMES  # ("s_within","s_cross","s_query","s_pos")
-from xqp.dm_metrics import (
-    average_precision, precision_at_k, recall_at_k,
-    expected_calibration_error, brier_score,
-)
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+from xqp.features import FEATURE_NAMES  # noqa: E402  ("s_within", "s_cross", "s_query", "s_pos")
+from xqp.decision_eval import (DecisionData, Ranked, RequestStats, bootstrap_statistics,  # noqa: E402
+                               cluster_multiplicities, macro_recall, pair_matrix,
+                               percentile_ci, pooled_decomposition)
+from xqp.dm_metrics import (average_precision, brier_score, expected_calibration_error,  # noqa: E402
+                            precision_at_k)
 
-# ---- frozen constants -------------------------------------------------------
+PROTOCOL_VERSION = "kvsaliencebench-2.0"
 HORIZONS = ("h1", "h4", "h16", "h64")
 HEADLINE_H = "h4"
-TOP_R = 0.10                 # label: block in top-10% attended at t+h
+TOP_R = 0.10                 # label: block in the top 10% attended at t+h, per decision
 BLOCK_SIZE = 32
-TEST_FRAC = 0.25             # request-level hold-out fraction
+RETENTIONS = (0.10, 0.20)    # per-decision budgets reported
+TEST_FRAC = 0.25
 SEED = 0
-N_BOOT = 250
-PROTOCOL_VERSION = "kvsaliencebench-1.0"
+N_BOOT = 2000
+FEATURE_COLUMNS = list(FEATURE_NAMES)
+TABLE_COLUMNS = ("model_id", "source_id", "request_id", "layer", "step", "block_idx", "label", "score")
 
 
-def roc_auc(y_true, y_score) -> float:
-    y = np.asarray(y_true, np.float64).reshape(-1)
-    s = np.asarray(y_score, np.float64).reshape(-1)
-    npos = float(y.sum()); nneg = float(y.size) - npos
-    if npos == 0 or nneg == 0:
-        return float("nan")
-    r = rankdata(s)
-    return float((r[y == 1].sum() - npos * (npos + 1) / 2.0) / (npos * nneg))
+# --------------------------------------------------------------------------- loading
+def sha256_file(path: Path) -> str:
+    h = hashlib.sha256()
+    with Path(path).open("rb") as f:
+        for chunk in iter(lambda: f.read(1 << 22), b""):
+            h.update(chunk)
+    return h.hexdigest()
 
 
-# ---- loading ----------------------------------------------------------------
-def load_trace(path: str, horizon: str = HEADLINE_H, cap: int | None = None) -> dict:
-    """Stream one JSONL trace into finite-filtered arrays + recovered request ids.
-
-    `cap` stops after that many rows (still respecting prompt boundaries for the
-    request-id recovery); used for fast fitting of the tiny reference model."""
-    fw, fc, fq, fp, y, lay, stp, blk = [], [], [], [], [], [], [], []
-    with open(path) as fh:
+def load_trace(path, horizon: str = HEADLINE_H, verify_hash: bool = False) -> dict:
+    """Stream one version-2 trace (``.meta.json`` and ``.cohort.json`` beside it are
+    required) into arrays. Rows keep their file order."""
+    path = Path(path)
+    meta = json.loads(Path(str(path) + ".meta.json").read_text())
+    cohort = json.loads(Path(str(path) + ".cohort.json").read_text())
+    if meta.get("trace_version") != 2:
+        raise ValueError(f"{path}: not a version-2 trace")
+    if verify_hash and sha256_file(path) != meta["trace_sha256"]:
+        raise ValueError(f"{path}: sha256 mismatch with its manifest")
+    if horizon not in HORIZONS:
+        raise ValueError(f"unknown horizon {horizon!r}")
+    n = int(meta["rows"])
+    rid = np.empty(n, np.int32)
+    layer = np.empty(n, np.int16)
+    step = np.empty(n, np.int16)
+    blk = np.empty(n, np.int32)
+    F = np.empty((n, 4), np.float32)
+    y = np.empty(n, np.int8)
+    i = 0
+    with path.open() as fh:
         for line in fh:
-            if not line.strip():
-                continue
-            r = _json.loads(line)
-            fw.append(r["f_within"]); fc.append(r["f_cross"])
-            fq.append(r["f_query"]); fp.append(r["f_pos"])
-            y.append(r[f"y_{horizon}"])
-            lay.append(r["layer"]); stp.append(r["step"]); blk.append(r["block_idx"])
-            if cap and len(fw) >= cap:
-                break
-    F = np.stack([np.asarray(fw, np.float32), np.asarray(fc, np.float32),
-                  np.asarray(fq, np.float32), np.asarray(fp, np.float32)], 1)
-    lay = np.asarray(lay, np.int32); stp = np.asarray(stp, np.int32); blk = np.asarray(blk, np.int32)
-    boundary = (stp == 0) & (lay == 0) & (blk == 0)
-    rid = (np.cumsum(boundary) - 1).astype(np.int32)
-    y = np.asarray(y, np.int8)
-    finite = np.isfinite(F).all(1)
-    return dict(F=F[finite], y=y[finite], rid=rid[finite],
-                n_requests=int(boundary.sum()), n_dropped=int((~finite).sum()))
+            r = json.loads(line)
+            if r.get("trace_version") != 2:
+                raise ValueError("mixed trace versions")
+            rid[i] = int(r["request_id"][1:])
+            layer[i], step[i], blk[i] = r["layer"], r["step"], r["block_idx"]
+            F[i] = (r["f_within"], r["f_cross"], r["f_query"], r["f_pos"])
+            y[i] = r[f"y_{horizon}"]
+            i += 1
+    if i != n:
+        raise ValueError(f"{path}: read {i} rows, manifest says {n}")
+    if not np.isfinite(F).all():
+        raise ValueError("non-finite features; the version-2 collector should have rejected them")
+    n_req = int(rid.max()) + 1
+    source_of = {r["trace_id"]: (r["dataset"], r["id"]) for r in cohort["ids"]}
+    if n_req != len(meta["requests"]) or n_req != len(source_of):
+        raise ValueError("request count disagrees with manifest/cohort")
+    return dict(request_id=rid, layer=layer, step=step, block_idx=blk, F=F, y=y, n_requests=n_req,
+                source=[source_of[f"p{k}"] for k in range(n_req)],
+                provenance=dict(trace=str(path), trace_sha256=meta["trace_sha256"], rows=n,
+                                collector_sha256=meta["collector_sha256"]))
 
 
-def load_corpus(traces_glob: str, horizon: str = HEADLINE_H, cap: int | None = None) -> dict:
-    """Load + pool a glob of trace files; request ids namespaced across files."""
-    Fs, ys, rids = [], [], []
-    off = 0
-    files = sorted(f for f in _glob.glob(traces_glob) if ".smoke." not in f)
-    for f in files:
-        d = load_trace(f, horizon, cap=cap)
-        Fs.append(d["F"]); ys.append(d["y"]); rids.append(d["rid"] + off)
-        off += d["n_requests"]
-    if not Fs:
-        raise FileNotFoundError(f"no traces matched {traces_glob}")
-    return dict(F=np.concatenate(Fs), y=np.concatenate(ys),
-                rid=np.concatenate(rids), n_requests=off, files=files)
-
-
-# ---- split / metrics --------------------------------------------------------
-def request_split(rid: np.ndarray, frac: float = TEST_FRAC, seed: int = SEED):
-    uniq = np.unique(rid)
-    rng = np.random.default_rng(seed)
-    test = set(rng.permutation(uniq)[: max(1, int(frac * len(uniq)))].tolist())
-    is_te = np.isin(rid, list(test))
-    return np.where(~is_te)[0], np.where(is_te)[0]
-
-
-def metrics(y, p) -> dict:
-    """The canonical metric set on (labels, probabilities)."""
-    y = np.asarray(y); p = np.asarray(p)
-    return dict(
-        auc=roc_auc(y, p),
-        auprc=average_precision(y, p),
-        p_at_k=precision_at_k(y, p, TOP_R),
-        r_at_k=recall_at_k(y, p, TOP_R),
-        ece=expected_calibration_error(y, p),
-        brier=brier_score(y, p),
-    )
-
-
-def clustered_bootstrap_ci(y, p, groups, fn=roc_auc, n_boot=N_BOOT, seed=SEED):
-    """95% CI by resampling whole REQUESTS (groups), not rows."""
-    y = np.asarray(y); p = np.asarray(p); groups = np.asarray(groups)
-    uniq = np.unique(groups)
-    idx_by_g = {g: np.where(groups == g)[0] for g in uniq}
-    rng = np.random.default_rng(seed)
-    vals = []
-    for _ in range(n_boot):
-        samp = rng.choice(uniq, size=len(uniq), replace=True)
-        rows = np.concatenate([idx_by_g[g] for g in samp])
-        vals.append(fn(y[rows], p[rows]))
-    lo, hi = np.nanpercentile(vals, [2.5, 97.5])
-    return float(np.nanmean(vals)), float(lo), float(hi)
-
-
-def evaluate(score_fn, corpus: dict, with_ci: bool = True, seed: int = SEED) -> dict:
-    """Score a submission on the held-out request split. `score_fn` maps a
-    (N,4) feature matrix (column order FEATURE_NAMES) to probabilities in [0,1]."""
-    _, te = request_split(corpus["rid"], seed=seed)
-    Fte, yte, gte = corpus["F"][te], corpus["y"][te], corpus["rid"][te]
-    p = np.asarray(score_fn(Fte), np.float64).reshape(-1)
-    if p.shape[0] != yte.shape[0]:
-        raise ValueError(f"score_fn returned {p.shape[0]} probs for {yte.shape[0]} rows")
-    out = dict(protocol=PROTOCOL_VERSION, horizon=HEADLINE_H,
-               n_test=int(yte.size), n_test_requests=int(np.unique(gte).size),
-               pos_rate=float(yte.mean()), **metrics(yte, p))
-    if with_ci:
-        m, lo, hi = clustered_bootstrap_ci(yte, p, gte)
-        out["auc_ci95"] = [lo, hi]
+def load_corpus(specs, horizon: str = HEADLINE_H, verify_hash: bool = False) -> dict:
+    """Pool several traces. ``specs`` is a list (or comma-separated string) of
+    ``NAME=path.jsonl``. Request ids become global exactly as in ``run_icdm_v2.pool``
+    (a running offset in the order given), so the paper's request split is reproducible.
+    """
+    if isinstance(specs, str):
+        specs = specs.split(",")
+    parts, names = [], []
+    for spec in specs:
+        name, _, path = spec.partition("=")
+        if not path:
+            raise ValueError(f"expected NAME=path, got {spec!r}")
+        names.append(name)
+        parts.append(load_trace(path, horizon, verify_hash))
+    sources = sorted({s for p in parts for s in p["source"]})          # tuple order, as run_icdm_v2
+    code = {s: i for i, s in enumerate(sources)}
+    offset, req_source, cols = 0, [], {k: [] for k in
+                                       ("model", "request", "layer", "step", "block_idx", "F", "y")}
+    for mi, p in enumerate(parts):
+        cols["model"].append(np.full(p["y"].shape[0], mi, np.int8))
+        cols["request"].append(p["request_id"].astype(np.int64) + offset)
+        for k in ("layer", "step", "block_idx", "F", "y"):
+            cols[k].append(p[k])
+        req_source.extend(code[s] for s in p["source"])
+        offset += p["n_requests"]
+    out = {k: np.concatenate(v) for k, v in cols.items()}
+    out.update(model_names=names, source_names=[f"{a}/{b}" for a, b in sources],
+               request_source=np.asarray(req_source, np.int32), n_requests=offset,
+               horizon=horizon, provenance=[p["provenance"] for p in parts])
     return out
 
 
-FEATURE_COLUMNS = list(FEATURE_NAMES)
+def split(corpus: dict, kind: str = "source", frac: float = TEST_FRAC, seed: int = SEED):
+    """Train/test row indices. See the module docstring for the two kinds."""
+    rng = np.random.default_rng(seed)
+    if kind == "source":
+        n = len(corpus["source_names"])
+        held = rng.permutation(n)[: max(1, int(frac * n))]
+        test_reqs = np.flatnonzero(np.isin(corpus["request_source"], held))
+    elif kind == "request":
+        uniq = np.unique(corpus["request"])
+        test_reqs = rng.permutation(uniq)[: max(1, int(frac * len(uniq)))]
+    else:
+        raise ValueError(kind)
+    is_test = np.isin(corpus["request"], test_reqs)
+    return np.flatnonzero(~is_test), np.flatnonzero(is_test)
+
+
+# ---------------------------------------------------------------------------- tables
+def read_table(path) -> dict:
+    """Read a prediction table (CSV, optionally gzipped) into column arrays."""
+    path = Path(path)
+    opener = gzip.open if path.suffix == ".gz" else open
+    with opener(path, "rt", newline="") as fh:
+        reader = csv.DictReader(fh)
+        missing = [c for c in TABLE_COLUMNS if c not in (reader.fieldnames or [])]
+        if missing:
+            raise ValueError(f"{path}: missing columns {missing}; need {list(TABLE_COLUMNS)}")
+        rows = list(reader)
+    return dict(model_id=np.array([r["model_id"] for r in rows]),
+                source_id=np.array([r["source_id"] for r in rows]),
+                request_id=np.array([int(r["request_id"]) for r in rows], np.int64),
+                layer=np.array([int(r["layer"]) for r in rows], np.int64),
+                step=np.array([int(r["step"]) for r in rows], np.int64),
+                block_idx=np.array([int(r["block_idx"]) for r in rows], np.int64),
+                label=np.array([int(r["label"]) for r in rows], np.int8),
+                score=np.array([float(r["score"]) for r in rows], np.float64))
+
+
+def write_table(path, table: dict, float_digits: int = 8):
+    path = Path(path)
+    opener = gzip.open if path.suffix == ".gz" else open
+    n = len(table["label"])
+    with opener(path, "wt", newline="") as fh:
+        w = csv.writer(fh)
+        w.writerow(TABLE_COLUMNS)
+        for i in range(n):
+            w.writerow([table["model_id"][i], table["source_id"][i], int(table["request_id"][i]),
+                        int(table["layer"][i]), int(table["step"][i]), int(table["block_idx"][i]),
+                        int(table["label"][i]), f"{float(table['score'][i]):.{float_digits}g}"])
+
+
+def corpus_table(corpus: dict, idx, scores, readable: bool = True) -> dict:
+    """Prediction table for the rows ``idx`` of a corpus under ``scores``. With
+    ``readable=False`` the model and source columns stay integer codes (faster; fine
+    for ``evaluate_table``, not for a CSV a person will read)."""
+    idx = np.asarray(idx)
+    req = corpus["request"][idx]
+    model, source = corpus["model"][idx], corpus["request_source"][req]
+    if readable:
+        model = np.array(corpus["model_names"])[model]
+        source = np.array(corpus["source_names"])[source]
+    return dict(model_id=model, source_id=source,
+                request_id=req, layer=corpus["layer"][idx].astype(np.int64),
+                step=corpus["step"][idx].astype(np.int64),
+                block_idx=corpus["block_idx"][idx].astype(np.int64),
+                label=corpus["y"][idx], score=np.asarray(scores, np.float64))
+
+
+# ------------------------------------------------------------------------- evaluation
+def _codes(*cols):
+    """Dense integer codes of the distinct rows of several equal-length columns, via a
+    mixed-radix key (a 2-D ``np.unique`` is far too slow on millions of rows)."""
+    key, radix_product = None, 1
+    for c in cols:
+        inv = np.unique(np.asarray(c), return_inverse=True)[1].reshape(-1).astype(np.int64)
+        base = int(inv.max()) + 1
+        radix_product *= base
+        if radix_product >= 2 ** 62:
+            raise ValueError("too many distinct values to encode one decision key")
+        key = inv if key is None else key * base + inv
+    return np.unique(key, return_inverse=True)[1].reshape(-1).astype(np.int64)
+
+
+def evaluate_table(table: dict, retentions=RETENTIONS, n_boot: int = N_BOOT, seed: int = SEED,
+                   label_rate: float | None = TOP_R, probabilistic: bool = False,
+                   strict: bool = True) -> dict:
+    """Score a prediction table under protocol 2.0 (see the module docstring)."""
+    for c in TABLE_COLUMNS:
+        if c not in table:
+            raise ValueError(f"table lacks column {c!r}")
+    y = (np.asarray(table["label"]) > 0).astype(np.int8)
+    score = np.asarray(table["score"], np.float64)
+    if not np.isfinite(score).all():
+        raise ValueError("non-finite scores")
+    if probabilistic and (score.min() < 0 or score.max() > 1):
+        raise ValueError("probabilistic=True needs scores in [0, 1]")
+    req = _codes(table["model_id"], table["request_id"])
+    dec = _codes(table["model_id"], table["request_id"], table["layer"], table["step"])
+    data = DecisionData.build(y, dec, req)
+    # one source prompt per request
+    src_codes = _codes(table["source_id"])
+    cluster_of_req = np.full(data.n_req, -1, np.int64)
+    cluster_of_req[data.req] = src_codes
+    if not np.array_equal(cluster_of_req[data.req], src_codes):
+        raise ValueError("a request lists more than one source_id")
+    if np.unique(_codes(dec, table["block_idx"])).size != y.size:
+        raise ValueError("duplicate (decision, block) rows")
+    complete = None
+    if label_rate is not None:
+        want = np.ceil(label_rate * data.group_size.astype(np.float64))
+        bad = int((data.npos_g != want).sum())
+        complete = bad == 0
+        if bad and strict:
+            raise ValueError(
+                f"{bad} of {data.n_groups} decisions do not hold exactly ceil({label_rate} * n) positives: "
+                "per-decision metrics need complete decisions, not a row sample "
+                "(pass strict=False to score anyway, or label_rate=None for another label rate)")
+    rk = Ranked(data, score)
+    dec_parts = pooled_decomposition(rk)
+    out = dict(protocol=PROTOCOL_VERSION, n_rows=int(y.size), n_decisions=int(data.n_groups),
+               n_requests=int(data.n_req), n_source_prompts=int(np.unique(src_codes).size),
+               positive_rate=float(y.mean()), complete_decisions=complete)
+    out["pooled"] = dict(auc=dec_parts["auc_pooled"], ap=average_precision(y.astype(np.float32), score),
+                         p_at_k=precision_at_k(y.astype(np.float32), score, TOP_R))
+    out["pairs"] = dict(auc_same_decision=dec_parts["auc_same"], auc_cross_decision=dec_parts["auc_cross"],
+                        auc_same_decision_macro=dec_parts["auc_same_macro"],
+                        share_same_decision=dec_parts["share_same"])
+    out["per_decision"] = {}
+    for r in retentions:
+        tk = rk.topk(r, ties="random")
+        out["per_decision"][f"{r:.2f}"] = dict(
+            macro_recall=macro_recall(data, tk["tp"]),
+            macro_recall_random_ties=macro_recall(data, tk["tp_random_ties"]),
+            boundary_tie_share=float(tk["boundary_tie"].mean()))
+    out["ties"] = dict(tied_row_share=rk.tied_row_share())
+    if probabilistic:
+        out["calibration"] = dict(ece=expected_calibration_error(y.astype(np.float32), score),
+                                  brier=brier_score(y.astype(np.float32), score))
+    if n_boot:
+        M = cluster_multiplicities(cluster_of_req, n_boot, seed)
+        st = RequestStats.build(rk, pair_matrix(data, score), tuple(retentions))
+        b = bootstrap_statistics(M, st)
+        out["ci95"] = dict(unit="source_prompt", n_boot=int(n_boot),
+                           auc_pooled=percentile_ci(b["auc_pooled"]),
+                           auc_same_decision=percentile_ci(b["auc_same"]),
+                           auc_cross_decision=percentile_ci(b["auc_cross"]),
+                           **{f"macro_recall_{r:.2f}": percentile_ci(b[f"recall_{r:g}"]) for r in retentions})
+    return out
+
+
+def evaluate(score_fn, corpus: dict, split_kind: str = "source", retentions=RETENTIONS,
+             n_boot: int = N_BOOT, seed: int = SEED, probabilistic: bool = False, strict: bool = True) -> dict:
+    """Score ``score_fn`` (an (N,4) feature matrix in ``FEATURE_COLUMNS`` order -> N
+    scores) on the held-out part of a version-2 corpus."""
+    _, te = split(corpus, split_kind, seed=seed)
+    s = np.asarray(score_fn(corpus["F"][te]), np.float64).reshape(-1)
+    if s.shape[0] != te.shape[0]:
+        raise ValueError(f"score_fn returned {s.shape[0]} scores for {te.shape[0]} rows")
+    res = evaluate_table(corpus_table(corpus, te, s, readable=False), retentions, n_boot, seed, TOP_R,
+                         probabilistic, strict)
+    res.update(split=split_kind, horizon=corpus["horizon"])
+    return res
+
+
+def reference_scorer(path: str | os.PathLike = ROOT / "benchmark/reference_model_v2.json"):
+    """The version-2 reference baseline: the two-view logistic of Table II, refit on
+    the request split. Returns ``(name, score_fn)``."""
+    d = json.loads(Path(path).read_text())
+    w = np.array([d["weights"][c] for c in FEATURE_COLUMNS], np.float32)
+    b = np.float32(d["bias"])
+
+    def score(F):
+        z = np.asarray(F, np.float32) @ w + b
+        return 1.0 / (1.0 + np.exp(-z.astype(np.float64)))
+    return d["name"], score

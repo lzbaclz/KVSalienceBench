@@ -1,4 +1,37 @@
-# Clean artifact release audit — 2026-09-26
+# Clean artifact release audit — 2026-10-05
+
+## Withdrawal notice for the 2026-09-26 release
+
+The 2026-09-26 export and its tarball contain `paper_icdm/sections/gated.tex`, an
+unpublished draft section on a regime-gated selective cascade that `main.tex`
+never `\input`, with internal decision comments still in it. It was shipped
+because the exporter selected every `.tex` under `paper_icdm/sections`. That
+release is superseded: the file is deleted, the exporter now derives its section
+list from the `\input` lines of `main.tex`, and the tarball and public repository
+must be re-cut. The negative result the draft described is already the manuscript's
+published position (§III-B, §IX), and the reusable cascade code stays released in
+`xqp/gated_predictor.py`; only the draft prose and its internal annotations are
+withdrawn. See `docs/ARTIFACT_POINTERS.md`.
+
+**Re-cut of 2026-10-04.** The tarball `KVSalienceBench-d2ai-camera-ready-r3.tar.gz` and
+its export directory supersede both the withdrawn 2026-09-26 release and the
+2026-09-29 `-r2` tarball: the paper, the English slides and the docs cite the new PDF
+(`VALIDATION_STATUS.md`), and the release adds the decision-level benchmark protocol 2.0
+(`benchmark/protocol.py`, a synthetic example, a reference baseline; protocol 1.0 under
+`benchmark/legacy_v1/`), the exact decision-level evaluator (`xqp/decision_eval.py`), two
+new CPU-only records (`experiments/results/icdm_v2_decomposition.json` with two CSV views
+and `icdm_v2_gbdt_capacity.json`) with their drivers, and `docs/HISTORICAL_DIAGNOSTICS.md`.
+The exporter still takes only the sections `main.tex` inputs and keeps the
+internal review-response notes out of the public tree.
+
+**Re-cut of 2026-10-05.** The tarball `KVSalienceBench-d2ai-camera-ready-r4.tar.gz` and
+its export directory supersede `-r3`. The manuscript changed in wording, one table column
+and one figure (`VALIDATION_STATUS.md`, "2026-10-05 panel revision"), so the paper PDF,
+its LaTeX sources, Figure 2 and its script, slide 6 of the deck, one test and these
+documents differ; no result record and no analysis code changed. This is the release the
+manuscript describes: it contains `docs/HISTORICAL_DIAGNOSTICS.md` and the protocol-2.0
+benchmark entry that §I, §VIII, §IX and §XI name, which the 2026-09-26 public
+repository did not.
 
 Target repository: <https://github.com/lzbaclz/KVSalienceBench>.
 The authors authorized a new public artifact repository. The old working repository
@@ -7,8 +40,9 @@ change to the working repository.
 
 ## Included material
 
-Code, numerical experiment JSON, model-generated outputs and scoring references,
-small predictor coefficients, provenance hashes, CPU tests, reproduction runbooks,
+Code, numerical experiment JSON (and two small CSV views of one record),
+model-generated outputs and scoring references, small predictor coefficients,
+provenance hashes, CPU tests, a synthetic prediction-table example, reproduction runbooks,
 the pinned simulator source bundle, paper source/PDF, a one-page change summary,
 Python chart sources, editable draw.io source/PDF and the English PPTX/PDF.
 Included result JSON is copied byte for byte: no result record is regenerated,

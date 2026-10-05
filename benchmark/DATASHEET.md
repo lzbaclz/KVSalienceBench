@@ -15,13 +15,43 @@ feature step. The recorded views are within-layer attention EMA, a previous-laye
 hot-block indicator, a cosine query proxy and block age. The dot-max control is a
 separate phase-aligned probe, not Quest's page-bound algorithm.
 
-## Splits and metrics
+## Protocol 2.0 (default benchmark entry)
 
-`experiments/run_icdm_v2.py` is the current analysis entry point. It samples
+`benchmark/protocol.py` scores a retention scorer at the object a selector acts on, the
+cache **decision** (one request, layer and decode step). It reports together: pooled AUC,
+tie-aware AP and pooled top-k; the same pooled AUC split exactly into same-decision and
+cross-decision pairs (same-decision pairs are 0.0016% of all pairs on the version-2
+corpus); per-decision top-k recall at 10% and 20% retention, with the share of decisions
+whose k-th place is a tie and the recall under exact random tie-breaking; and, only for
+scorers declared probabilistic, ECE and Brier. Uncertainty is a bootstrap over source
+prompts. The default split holds out whole source prompts, the same ones for every model;
+`split='request'` reproduces the paper's pooled request split (a global permutation, not
+stratified by model: 30 Llama and 34 Qwen requests are held out).
+
+A **prediction table** (CSV, columns `model_id, source_id, request_id, layer, step,
+block_idx, label, score`) needs no traces or model weights. Every decision must hold
+exactly ceil(0.1 n) positives; the evaluator refuses a row sample because per-decision
+metrics are meaningless on a few rows per decision.
+
+```bash
+python -m benchmark.run_leaderboard --table benchmark/example/prediction_table.csv --probabilistic
+```
+
+`benchmark/example/` ships a **synthetic** table (5,748 rows, 192 decisions) and the
+results `evaluate_table` must reproduce (`tests/test_benchmark_v2.py`); it carries no
+empirical claim. `benchmark/reference_model_v2.json` holds the paper's three-parameter
+within+cross logistic refit as the baseline to compare against; `run_leaderboard --traces`
+refits it on the training rows of the evaluated split so it never sees a test prompt.
+
+## Splits and metrics in the paper's analysis
+
+`experiments/run_icdm_v2.py` is the analysis entry point behind Table II. It samples
 120,000 training and 150,000 held-out rows for pooled metrics and evaluates all
 held-out rows at per-decision budgets. Request-disjoint and source-prompt-disjoint
 splits are both reported. Source prompts shared across models are resampled jointly
-for uncertainty estimates in `experiments/results/mentor_statistics.json`.
+for uncertainty estimates in `experiments/results/mentor_statistics.json`. The exact
+pair-count decomposition behind Table II's lower block is
+`experiments/analyze_decision_decomposition.py` (`xqp/decision_eval.py`).
 
 Report pooled AUC, threshold-based AP, pooled and per-decision top-decile
 precision/recall, and calibration (ECE/Brier). The three-parameter logistic scorer
@@ -33,10 +63,11 @@ and recalibrated tree controls are included.
 ## Separate downstream experiment
 
 The pinned bfloat16 masked-loop study covers two architectures, seven LongBench QA
-datasets and 896 paired model-requests at 20% logical retention. Its runtime scorer
+datasets and 896 model–prompt evaluations (448 source prompts × 2 models) at 20% logical retention. Its runtime scorer
 reconstructs features rather than executing the offline predictor unchanged.
 Official all-reference F1 is 0.374 versus the H2O-style accumulator's 0.372
-(difference +0.0017; 14-cell TOST p=0.0007 at ±0.02). This is separate evidence,
+(difference +0.0017; seven-dataset TOST p=0.0023 at ±0.02, the primary analysis; 14-cell
+sensitivity p=0.0007). This is separate evidence,
 not a jointly measured causal proxy-to-quality relationship. Logical masking,
 irreversible reference compaction and production serving have different semantics.
 
@@ -45,9 +76,9 @@ irreversible reference compaction and production serving have different semantic
 The 43,931,784-row v1 trace cohort spans four instruction-tuned model families.
 Workload, 14B and 16K extensions are separate historical collections. Its producer
 is unpinned; query-coordinate and terminal-label issues are documented in the
-paper's limitations. Archived JSON remains unchanged. The `benchmark/protocol.py`,
-reference weights and leaderboard helpers preserve that historical interface;
-they are not the v2 analysis driver and should not relabel old numbers as v2.
+paper's limitations. Archived JSON remains unchanged. The version-1 protocol, reference
+weights and leaderboard helpers are kept, marked legacy, in `benchmark/legacy_v1/`; they
+report pooled metrics only and must not relabel old numbers as version 2.
 
 ## Access and scope
 

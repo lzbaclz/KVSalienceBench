@@ -1,16 +1,22 @@
 #!/usr/bin/env python3
 """Print Exp#8's pinned-rerun table from the sensitivity JSON.
 
-Columns: official LongBench F1 with all references, delta and 14-cell TOST p.
-Historical v1 columns remain in the artifact and are omitted to prioritize v2.
+Columns: official LongBench F1 with all references; the difference from the H2O-style
+accumulator with its 90% t interval over the seven datasets; and the TOST p value at the
+two-point margin, p_TOST,+-.02. The seven datasets are the primary unit of inference: the
+two architectures answer the same questions, so the two models are averaged within each
+dataset (df 6). The 14 architecture-by-dataset cells treat the cells as independent and
+are reported in the text as the sensitivity analysis. Historical v1 columns remain in the
+artifact and are omitted to prioritize v2.
 """
 import json
 import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-ROWS = [("full cache", "full"), ("H2O-style accumulation", "h2o"), ("reconstructed two-view", "xqp"),
-        ("Ada-KV-style allocation", "adakv"), ("PyramidKV-style allocation", "pyramidkv")]
+ROWS = [("full cache", "full"), ("H2O-style", "h2o"), ("reconstructed", "xqp"),
+        ("Ada-KV-style", "adakv"), ("PyramidKV-style", "pyramidkv")]
+MARGIN = "0.02"
 
 
 def cols(analysis, metric):
@@ -20,11 +26,14 @@ def cols(analysis, metric):
     for _, pol in ROWS:
         f1 = means[pol][metric]["mean"]
         if pol == "h2o":
-            out[pol] = (f1, None, None)
+            out[pol] = (f1, None, None, None)
             continue
         key = f"{pol}_vs_h2o::pooled::{metric}"
-        p = analysis["contrasts"][key]["architecture_dataset_cells"]["0.02"]["p"] if key in analysis["contrasts"] else None
-        out[pol] = (f1, f1 - base, p)
+        if key in analysis["contrasts"]:
+            c = analysis["contrasts"][key]["dataset_clusters"][MARGIN]
+            out[pol] = (f1, f1 - base, c["p"], c["ci90_t"])
+        else:
+            out[pol] = (f1, f1 - base, None, None)
     return out
 
 
@@ -32,8 +41,16 @@ def fmt3(x):
     return f"{x:.3f}"[1:] if x >= 0 else "-" + f"{-x:.3f}"[1:]
 
 
-def fmt_delta(d):
-    return "---" if d is None else (("+" if d >= 0 else "-") + f"{abs(d):.3f}"[1:])
+def fmt_signed(d):
+    return ("+" if d >= 0 else "-") + f"{abs(d):.3f}"[1:]
+
+
+def fmt_delta(d, ci):
+    if d is None:
+        return "---"
+    if ci is None:
+        return fmt_signed(d)
+    return f"{fmt_signed(d)} [{fmt_signed(ci[0])}, {fmt_signed(ci[1])}]"
 
 
 def fmt_p(p):
@@ -48,8 +65,8 @@ def fmt_p(p):
 def main(v2="experiments/results/tost/expand_v2_sensitivity.json"):
     b = cols(json.loads((ROOT / v2).read_text()), "f1_longbench_all_refs")
     for label, pol in ROWS:
-        f1b, db, pb = b[pol]
-        print(f"{label} & {fmt3(f1b)} & {fmt_delta(db)} & {fmt_p(pb)} \\\\")
+        f1b, db, pb, cb = b[pol]
+        print(f"{label} & {fmt3(f1b)} & {fmt_delta(db, cb)} & {fmt_p(pb)} \\\\")
     return 0
 
 

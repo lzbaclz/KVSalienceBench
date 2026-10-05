@@ -6,6 +6,7 @@
   title = {{H2O}: Heavy-hitter oracle for efficient generative inference of large language models},
   author = {Zhang, Zhenyu and Sheng, Ying and Zhou, Tianyi and Chen, Tianlong and Zheng, Lianmin and Cai, Ruisi and Song, Zhao and Tian, Yuandong and R{\'e}, Christopher and Barrett, Clark and Wang, Zhangyang and Chen, Beidi},
   booktitle = {Proc. Advances in Neural Information Processing Systems},
+  volume = {36},
   pages = {34661--34710},
   year = {2023},
   doi = {10.52202/075280-1506}
@@ -22,6 +23,7 @@
   title = {{SnapKV}: {LLM} knows what you are looking for before generation},
   author = {Li, Yuhong and Huang, Yingbing and Yang, Bowen and Venkitesh, Bharat and Locatelli, Acyr and Ye, Hanchen and Cai, Tianle and Lewis, Patrick and Chen, Deming},
   booktitle = {Proc. Advances in Neural Information Processing Systems},
+  volume = {37},
   pages = {22947--22970},
   year = {2024},
   doi = {10.52202/079017-0722}
@@ -29,7 +31,7 @@
 
 @inproceedings{pyramidkv,
   title = {{PyramidKV}: Dynamic {KV} cache compression based on pyramidal information funneling},
-  author = {Cai, Zefan and Zhang, Yichi and Gao, Bofei and Liu, Yuliang and Liu, Tianyu and Lu, Keming and Xiong, Wayne and Dong, Yue and Chang, Baobao and Hu, Junjie and Xiao, Wen},
+  author = {Cai, Zefan and Zhang, Yichi and Gao, Bofei and Liu, Yuliang and Li, Yucheng and Liu, Tianyu and Lu, Keming and Xiong, Wayne and Dong, Yue and Hu, Junjie and Xiao, Wen},
   booktitle = {Proc. Conference on Language Modeling},
   year = {2025}
 }
@@ -38,6 +40,7 @@
   title = {{Ada-KV}: Optimizing {KV} cache eviction by adaptive budget allocation for efficient {LLM} inference},
   author = {Feng, Yuan and Lv, Junlin and Cao, Yukun and Xie, Xike and Zhou, S. Kevin},
   booktitle = {Proc. Advances in Neural Information Processing Systems},
+  volume = {38},
   pages = {125462--125498},
   year = {2025},
   doi = {10.52202/085713-3773}
@@ -60,7 +63,7 @@
 }
 
 @inproceedings{quest,
-  title = {{Quest}: Query-aware sparsity for efficient long-context {LLM} inference},
+  title = {{QUEST}: Query-aware sparsity for efficient long-context {LLM} inference},
   author = {Tang, Jiaming and Zhao, Yilong and Zhu, Kan and Xiao, Guangxuan and Kasikci, Baris and Han, Song},
   booktitle = {Proc. 41st International Conference on Machine Learning},
   volume = {235},
@@ -85,11 +88,11 @@
   year = {2025}
 }
 
-@article{tactic,
+@inproceedings{tactic,
   title = {{Tactic}: Adaptive sparse attention with clustering and distribution fitting for long-context {LLMs}},
-  author = {Zhu, Kan and Tang, Tian and Xu, Qinyu and Gu, Yile and Zeng, Zhichen and Kadekodi, Rohan and Zhao, Liangyu and Li, Ang and Krishnamurthy, Arvind and Kasikci, Baris},
-  journal = {arXiv preprint arXiv:2502.12216},
-  year = {2025}
+  author = {Zhu, Kan and Tang, Tian and Xu, Qinyu and Jin, Zhan and Gu, Yile and Zeng, Zhichen and Kadekodi, Rohan and Zhao, Liangyu and Li, Ang and Krishnamurthy, Arvind and Kasikci, Baris},
+  booktitle = {Proc. International Conference on Learning Representations},
+  year = {2026}
 }
 
 @inproceedings{pagedattention,
@@ -113,7 +116,7 @@
 
 @inproceedings{ruler,
   title = {{RULER}: What's the real context size of your long-context language models?},
-  author = {Hsieh, Cheng-Ping and Sun, Simeng and Kriman, Samuel and Acharya, Shantanu and Rekesh, Dima and Jia, Fei and Ginsburg, Boris},
+  author = {Hsieh, Cheng-Ping and Sun, Simeng and Kriman, Samuel and Acharya, Shantanu and Rekesh, Dima and Jia, Fei and Zhang, Yang and Ginsburg, Boris},
   booktitle = {Proc. Conference on Language Modeling},
   year = {2024}
 }
@@ -138,6 +141,7 @@
   title = {{AttentionPredictor}: Temporal patterns matter for {KV} cache compression},
   author = {Yang, Qingyue and Wang, Jie and Li, Xing and Wang, Zhihai and Chen, Chen and Chen, Lei and Yu, Xianzhi and Liu, Wulong and Hao, Jianye and Yuan, Mingxuan and Li, Bin},
   booktitle = {Proc. Advances in Neural Information Processing Systems},
+  volume = {38},
   pages = {153646--153678},
   year = {2025},
   doi = {10.52202/085713-4624}
@@ -162,16 +166,18 @@
 @inproceedings{gao2025rethinking,
   title = {Rethinking key-value cache compression techniques for large language model serving},
   author = {Gao, Wei and Zhou, Xinyu and Sun, Peng and Zhang, Tianwei and Wen, Yonggang},
-  booktitle = {Proc. Eighth Conference on Machine Learning and Systems},
+  booktitle = {Proc. Machine Learning and Systems},
+  volume = {7},
   year = {2025}
 }
 
 @misc{agrawal2026benchmarking,
   title = {Benchmarking {KV}-Cache optimizations across task quality and system performance for long-context serving [{Experiment}, {Analysis} \& {Benchmark}]},
   author = {Agrawal, Nikita and Mayer, Ruben},
-  howpublished = {Preprint, EPub Bayreuth},
+  howpublished = {Preprint, Univ. Bayreuth EPub},
   year = {2026},
-  doi = {10.15495/EPub\_UBT\_00009365}
+  doi = {10.15495/EPub\_UBT\_00009365},
+  url = {https://doi.org/10.15495/EPub_UBT_00009365}
 }
 
 @article{jegou2026kvzap,
@@ -179,4 +185,19 @@
   author = {J{\'e}gou, Simon and Jeblick, Maximilian},
   journal = {arXiv preprint arXiv:2601.07891},
   year = {2026}
+}
+
+@inproceedings{scbench,
+  title = {{SCBench}: A {KV} cache-centric analysis of long-context methods},
+  author = {Li, Yucheng and Jiang, Huiqiang and Wu, Qianhui and Luo, Xufang and Ahn, Surin and Zhang, Chengruidong and Abdi, Amir H. and Li, Dongsheng and Gao, Jianfeng and Yang, Yuqing and Qiu, Lili},
+  booktitle = {Proc. International Conference on Learning Representations},
+  year = {2025}
+}
+
+@article{kvpress,
+  title = {Expected attention: {KV} cache compression by estimating attention from future queries distribution},
+  author = {Devoto, Alessio and Jeblick, Maximilian and J{\'e}gou, Simon},
+  journal = {arXiv preprint arXiv:2510.00636},
+  year = {2025},
+  note = {Releases the {KVPress} compression/benchmarking library}
 }

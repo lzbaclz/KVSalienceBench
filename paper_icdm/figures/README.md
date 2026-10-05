@@ -5,8 +5,8 @@ The manuscript includes exactly these three vector PDFs:
 | Figure | Editable source | Renderer |
 |---|---|---|
 | Evaluation paths | `evaluation_paths.drawio` | draw.io Desktop 31.4.5 PDF export |
-| Relevance and reliability, v2 | `../../experiments/fig_redund_calib.py` | Python / Matplotlib |
-| Per-cell F1 differences, v2 | `../../experiments/fig_cell_forest.py` | Python / Matplotlib |
+| Cross-layer offset sweep and reliability, v2 (file name is historical) | `../../experiments/fig_redund_calib.py` | Python / Matplotlib |
+| Per-cell F1 differences with seven-dataset (primary) and 14-cell (sensitivity) summaries, v2 | `../../experiments/fig_cell_forest.py` | Python / Matplotlib |
 
 From the repository root:
 

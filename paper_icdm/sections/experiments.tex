@@ -1,82 +1,89 @@
 \section{Prediction measurements}
 \label{sec:exp}
 
-\textbf{Data and comparators.} Corrected version-2 traces carry the main offline
-evidence; historical extensions are labeled separately. Single-signal rows score
-one recorded feature and are not
-reimplementations of the papers that motivate them; learned comparators are LightGBM
-with 150 trees (a tree count, not a parameter count), a fitted MLP, a one-pass
-online logistic baseline and the compact family.
+\textbf{Data and comparators.} Corrected version-2 traces carry the offline
+evidence; version-1 diagnostics are in \S\ref{sec:historical}. Single-signal rows
+score one recorded feature and do not reimplement the papers that motivate them;
+the learned comparators are LightGBM on all four views (150 trees of depth 3) and the
+two-view logistic fit, with larger logistic, MLP and online fits left to the
+artifact. Every fit, including the isotonic
+control's calibration split, uses held-in requests only, and no held-out request
+enters a fit or a threshold; the two-view subset was fixed from version-1
+diagnostics, so the version-2 relevance estimates below are descriptive.
 
 \subsection{Exp\#1: Ranking and calibration}
 \label{sec:exp-relevance}
-\textbf{Version-2 corpus.} Table~\ref{tab:v2} uses checksum-verified traces:
-phase-aligned queries, the prefill-predicted first token,
-genuine 64-step lookahead labels, 32 feature steps, and the same 128 LongBench QA
-prompts (64 Qasper, 64 NarrativeQA) for Llama-3.1-8B and Qwen2.5-7B, giving
-30.4M rows and 256 model-requests. We sample 120K training rows and 150K held-out
-rows for pooled metrics; per-decision metrics use every held-out row, and AUPRC
-is threshold-based. A source-prompt-level split, holding out the same 32
-prompts for both models, agrees with the request-level AUCs to three decimals for
-the two-view fit and LightGBM and within 0.006 for every method; this split control
-shows no substantial change, not proof of independence. The two-view fit reaches
-AUC 0.890 (source-prompt bootstrap $[0.882,0.898]$) against 0.896
-for LightGBM, a paired deficit of $-0.0057$ $[-0.0068,-0.0046]$, larger than the
-archived $-0.0010$ but still small; the archived two-view weights, applied frozen
-to the version-2 features, achieve the same rounded AUC (0.890), with different
-top-$k$ values (Table~\ref{tab:v2}), and are slightly
-less calibrated (ECE 0.019 versus 0.006). The four-view fit is worse (0.873):
-dropping its cosine query proxy \emph{raises} AUC by 0.012, and the phase-aligned
-dot-max probe adds 0.001 to the two views (0.891), a pooled near-zero that averages
-over opposite signs in the tested configurations (\S\ref{sec:limits}). At the per-decision operating point
-the ordering changes: the raw within-layer EMA recovers 0.659 of each decision's
-future top-decile blocks against 0.613 for the two-view fit and 0.615 for LightGBM,
-though its pooled top-decile precision (0.542) and AUC (0.873) are lower. Paired
-over the 64 held-out requests the gaps are $+0.046$ $[0.043,0.049]$ and $+0.044$
-$[0.041,0.047]$, positive on every request. These intervals use 10,000 joint
-draws of 57 source prompts. On the source-disjoint split (32 prompts, both models
-held out), the respective gaps are $+0.047$ $[0.044,0.050]$ and
-$+0.045$ $[0.043,0.048]$. The reversal belongs to the operating
-point, not the scorers: at the 20\% the closed loop budgets, per-decision recall is
-0.840, 0.838 and 0.830 and the gaps fall to $+0.002$ $[0.002,0.003]$ (52/64
-requests) and $+0.010$ $[0.009,0.011]$. A pooled ranking spends the budget unevenly
-across decisions and rewards cross-decision calibration a per-step budget never
-uses; the cost of that depends on the budget, which is why we report the operating
-point a policy imposes. The smaller gap at 20\% is consistent with, but does not
-explain, Exp\#8's downstream mean-F1 equivalence. Relevance
-and reliability are in Fig.~\ref{fig:redundcalib}: the magnitude views carry
-$I(X_i;Z)$ of 0.104 and 0.099, the query proxies 0.007 (cosine) and 0.025
-(dot-max), the age proxy under 0.001; the class-balanced LightGBM has ECE 0.208
-while the unweighted (0.005) and isotonic (0.003) variants match the two-view fit
-(0.006) on identical test rows. For the tree calibration controls, 48 of the
-192 training model-requests are reserved for isotonic fitting; the base trees
-use the other 144. The two-view fit uses all 192 training requests; the 64 test
-requests are excluded from both fitting stages. This is request-level calibration
-separation, not source-level independence within the training set.
+\textbf{Version-2 corpus.} Table~\ref{tab:v2} uses checksum-verified traces of the same
+128 LongBench QA prompts (64 Qasper, 64 NarrativeQA) for Llama-3.1-8B and Qwen2.5-7B:
+30.4M rows and 256 model-requests. Pooled metrics use 120K training and 150K held-out
+rows; per-decision metrics use every held-out row. Refitting both models on the same split, seed and test rows at up to all 22.8M held-in
+rows (190-fold) lifts LightGBM by 0.0005 AUC (0.8961 to 0.8966), widens the paired
+deficit only from $-0.0057$ to $-0.0062$ $[-0.0073,-0.0051]$, and its per-decision recall
+holds at 0.615, so the gap is stable to training size; six LightGBM capacities (depth
+3--8, 150--600 trees, balanced or not) at 120K and 1.92M rows keep its AUC lead between
+0.0005 and 0.0076 and its per-decision recall between 0.615 and 0.622, never reaching
+the raw EMA's 0.659. A source-prompt split holding out the same 32 prompts for both
+models agrees with the request-level AUCs within 0.006 for every method: a control, not
+proof of independence. The two-view fit reaches AUC 0.890 (source-prompt bootstrap
+$[0.882,0.898]$) against LightGBM's 0.896, a paired deficit of $-0.0057$
+$[-0.0068,-0.0046]$, larger than the version-1 $-0.0010$ but still small. At the
+per-decision operating point the ordering changes: the raw within-layer EMA
+recovers 0.659 of each decision's future top-decile blocks against 0.613 for the two-view
+fit and 0.615 for LightGBM, though its pooled top-decile precision (0.542) and AUC
+(0.873) are lower. Over the 64 held-out requests the paired gaps are $+0.046$
+$[0.043,0.049]$ and $+0.044$ $[0.041,0.047]$, positive on every request (10,000 joint
+draws of 57 source prompts; $+0.047$ $[0.044,0.050]$ and $+0.045$ $[0.043,0.048]$ on the
+source-disjoint split). The reversal's size depends on the operating point: at
+the closed loop's 20\% budget, per-decision recall is 0.840, 0.838 and 0.830 and the gaps
+fall to $+0.002$ $[0.002,0.003]$ (52/64 requests) and $+0.010$ $[0.009,0.011]$,
+consistent with, but not explaining, Exp\#8's mean-F1 equivalence.
 
-\textbf{Historical context.} The unpinned v1 corpus contains 43,931,784 rows
-from four instruction-tuned families, 32 chat prompts each, with positive rate
-0.105; 32 requests are held out. Its two-view AUC is 0.948 $[0.942,0.954]$
-against LightGBM's 0.949 (paired deficit $-0.0010$ $[-0.0016,-0.0003]$).
-The full historical tables, calibration and repair details remain in the artifact;
-they are not additional v2 evidence.
+\textbf{Where the reversal comes from.} Within one decision the within-layer view is a
+monotone rescaling of the raw EMA (its denominator $\max_{b'}\bar a_{\ell,b',t}$ is shared
+by the candidates), so $\sigma(w_1x_{\rm wl}+w_2x_{\rm cl}+b)$ reorders the raw view
+through exactly one term, the \emph{binary} cross-layer indicator: a fixed offset
+$w_2/w_1=0.025$ ($w_1=97.7$, $w_2=2.46$) against a corpus mean $x_{\rm wl}$ of 0.015. The
+lower block of Table~\ref{tab:v2} splits pooled AUC exactly on every held-out row.
+Same-decision pairs are 0.0016\% of all (positive, negative) pairs, so pooled AUC is a
+cross-decision statistic: the indicator raises it by $+0.017$ $[0.015,0.019]$ but lowers
+pair-weighted within-decision AUC by 0.0025 $[0.0023,0.0028]$ and top-decile recall by
+0.046; Fig.~\ref{fig:redundcalib}(a) shows one eighth of the offset already gives 83\% of
+the first and 65\% of the second. At the top-decile boundary the term swaps in 22\% of the
+selected blocks, all previous-layer-hot: 20\% are positive, against 41\% of the blocks
+they displace. The indicator is informative overall (61\% of previous-layer-hot blocks
+are future top-decile blocks, 4\% of the rest) but not at the margin; every decision
+holds exactly $\lceil0.1n\rceil$ positives, so it cannot be flagging salient-rich
+decisions, and why it makes scores comparable across decisions is untested. LightGBM
+moves the same way ($+0.022$ pooled AUC, $-0.005$ within-decision AUC, $-0.044$ recall).
+
+Relevance and reliability: the magnitude views carry $I(X_i;Z)$ of 0.104 and 0.099 nats,
+the query proxies 0.007 (cosine) and 0.025 (dot-max), the age proxy under 0.001, on a
+400K-row sample of all pooled rows (from held-in rows only they move by at most 0.0011).
+The class-balanced LightGBM has ECE 0.208 (Fig.~\ref{fig:redundcalib}(b)) while the
+unweighted (0.005) and isotonic (0.003) variants match the two-view fit (0.006). The
+isotonic control reserves 48 of the 192 training model-requests, its trees use the other
+144, and the 64 test requests are excluded from both fitting stages: request-level
+calibration separation, not source-level independence.
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{fig_redund_calib.pdf}
-\caption{Exp\#1 on the version-2 corpus. (a) Per-view relevance on the 400K-row
-MI sample. (b) Reliability on the held-out sample for the two-view logistic fit,
-the class-balanced LightGBM control, an unweighted LightGBM and an
-isotonic-recalibrated one; ECE in parentheses.}
+\caption{Exp\#1, version-2 corpus. (a) The fitted cross-layer offset scaled from 0 (raw
+within-layer EMA) to twice its value, on every held-out row: pooled AUC and per-decision
+top-decile recall as changes from the raw EMA. (b) Reliability of the two-view fit and
+of class-balanced, unweighted and isotonic LightGBM in 10 equal-width bins; ECE in
+parentheses.}
 \label{fig:redundcalib}
 \end{figure}
 
 \begin{table}[t]
 \centering
-\caption{Exp\#1: version-2 ranking and calibration, horizon 4, request split.
-The dec.\ column is top-decile precision macro-averaged over every cache decision,
-beside the pooled column. AP is tie-aware AUPRC; historical tables remain in the
-artifact (Sec.~\ref{sec:limits}).}
+\caption{Exp\#1: version-2 ranking and calibration, horizon 4, request split. Upper
+block: AP is tie-aware AUPRC; dec.\ is top-decile precision (equal to recall there),
+macro-averaged over cache decisions; ECE only for probability outputs. Lower block,
+every held-out row (7.6M rows, 61,184 decisions): pooled AUC (LightGBM .895 against
+.896 on the 150K sample), AUC over same- and cross-decision pairs, per-decision recall
+at 10\% and 20\% retention. Further rows are in the artifact.}
 \label{tab:v2}\label{tab:main}
 \footnotesize
 \setlength{\tabcolsep}{2pt}
@@ -85,40 +92,22 @@ artifact (Sec.~\ref{sec:limits}).}
 method & AUC & AP & P@$k$ pool & P@$k$ dec. & ECE \\
 \midrule
 %%V2-ROWS-BEGIN%%
-age proxy & .502 & .102 & .102 & .208 & .691 \\
-query proxy (cosine) & .599 & .135 & .147 & .415 & .258 \\
-prev-layer indicator & .783 & .412 & .609 & .610 & .080 \\
-within-layer EMA & .873 & .609 & .542 & .659 & .087 \\
+age proxy & .502 & .102 & .102 & .208 & --- \\
+query proxy (cosine) & .599 & .135 & .147 & .415 & --- \\
+prev-layer indicator & .783 & .412 & .609 & .610 & --- \\
+within-layer EMA & .873 & .609 & .542 & .659 & --- \\
 LightGBM, balanced & .896 & .674 & .626 & .615 & .208 \\
-fitted MLP & .874 & .658 & .621 & .613 & .005 \\
 two-view logistic, refit & .890 & .667 & .624 & .613 & .006 \\
 two-view, archived weights & .890 & .667 & .622 & .611 & .019 \\
-two-view + dot-max & .891 & .667 & .624 & .613 & .005 \\
-four-view logistic & .873 & .657 & .621 & .613 & .005 \\
 %%V2-ROWS-END%%
+\midrule
+method & pooled & same & cross & rec.\,10\% & rec.\,20\% \\
+\midrule
+%%DEC-ROWS-BEGIN%%
+within-layer EMA & .873 & .930 & .873 & .659 & .840 \\
+two-view logistic, refit & .890 & .928 & .890 & .613 & .838 \\
+LightGBM, balanced & .895 & .925 & .895 & .615 & .830 \\
+%%DEC-ROWS-END%%
 \bottomrule
 \end{tabular*}
 \end{table}
-
-\subsection{Exp\#2: Workload extensions and transfer}
-\label{sec:exp-extval}
-The archived workload extension (chat, multi-/single-document QA, code completion,
-summarization; English and Chinese; 128 prompts per workload from each of the four
-families) keeps both magnitude views useful (single-view AUC about 0.88--0.90 and
-0.81--0.86), with pooled AUC 0.929 against 0.934 for LightGBM (AUPRC 0.777 versus
-0.803 under the archived row-order tie rule; the original rows are unavailable,
-so tie-aware AP cannot be recomputed) and a gap of about 0.016 AUC on short multi-turn chat. A shared
-standardized four-weight predictor has mean cross-model AUC 0.920 against 0.921
-within model (drop 0.0012), an offline transfer measurement only.
-
-\subsection{Exp\#3: Temporal variation and threshold behavior}
-\label{sec:exp-drift}\label{sec:exp-coverage}
-In the archived within-generation split (fit on steps 0--77, test on 102--127) a
-frozen scorer keeps AUC 0.948, about the same as an oracle refit, whereas the online
-IRLS update reaches 0.919 (evidence against that update, not against online
-learning); across forced topic switches, salient-set Jaccard falls to about 0.35
-from 0.83 within a turn. At target miss 0.1 a fixed threshold of 0.5 gives
-second-half miss 0.274 at retention 0.095, an offline-calibrated split-conformal
-threshold 0.087 at retention 0.264 and the adaptive update 0.100 at the same
-retention: the calibrated static threshold carries the result, and no long-horizon
-trend is claimed from the old collector.

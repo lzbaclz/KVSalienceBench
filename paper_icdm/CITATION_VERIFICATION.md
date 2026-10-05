@@ -39,3 +39,14 @@ bolukbasi2017adaptive, elkan2001foundations, ftrl, halo, orchkv, ruler, seer.
   retain in bib only for de-anonymized camera-ready self-citation if desired.
 
 Method: 24 parallel web-verifier agents (workflow citation-verify), 108 web tool-uses.
+
+## Addendum, 2026-10-05
+
+The table above is the 24-entry verification of the original submission and is kept as it
+was. The camera-ready bibliography compiles 27 entries. Two records were re-checked on
+2026-10-05:
+
+| key | record (verified) | evidence |
+|---|---|---|
+| zhou2018din (new, [14]) | G. Zhou, X. Zhu, C. Song, Y. Fan, H. Zhu, X. Ma, Y. Yan, J. Jin, H. Li, K. Gai, "Deep interest network for click-through rate prediction," Proc. 24th ACM SIGKDD, 2018, pp. 1059--1068 | Crossref, DOI 10.1145/3219819.3219823; the user-weighted AUC it is cited for is defined in its Section 6.3 |
+| peng2005mrmr ([13]) | title printed with a colon: "...mutual information: Criteria of max-dependency, max-relevance, and min-redundancy" | PubMed PMID 16119262 prints the colon; Crossref's deposited metadata (DOI 10.1109/TPAMI.2005.159) does not. Volume 27, number 8, pages 1226--1238, 2005 agree in both |

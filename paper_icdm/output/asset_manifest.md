@@ -4,6 +4,6 @@ All architecture artwork comes from the draw.io PDF. Charts come from Python.
 
 | Slide | Paper PDF source | SHA256 |
 |---|---|---|
-| 2 | `figures/evaluation_paths.pdf` | `93165093abba675578009e1dbd0ebc174e748f635d888f93044077d534654789` |
-| 6 | `figures/fig_redund_calib.pdf` | `0098b7decdbe25fbd090906461d70cf0b537fdd1d0a51c67588e05693c63cbc7` |
-| 10 | `figures/fig_cell_forest.pdf` | `753bda947e9146e8746d61a3fdc145ed3bcf385b94f1fca523d21c96f4c0f65a` |
+| 2 | `figures/evaluation_paths.pdf` | `b607c5ebf8c158edf3c31fa1b7081dbab11c189e193d3f0ac3906d48bc13ab73` |
+| 6 | `figures/fig_redund_calib.pdf` | `ff65d63185a124c361289a265f108ef016203cd4343e4dfb080ac9e0ab086523` |
+| 10 | `figures/fig_cell_forest.pdf` | `8cce8b1b631ee4879182423526c5a6b6a02d2f3947daccf7077703f557afe658` |

@@ -9,7 +9,8 @@ metrics explain downstream answer quality. It is a measurement artifact, not a
 claim of a faster production serving system.
 
 **Start here:** [paper](paper_icdm/main.pdf) · [English slides](paper_icdm/output/final_presentation_en.pdf) ·
-[physical-KV runbook](docs/PHYSICAL_KV_VALIDATION.md) · [validation status](docs/VALIDATION_STATUS.md).
+[physical-KV runbook](docs/PHYSICAL_KV_VALIDATION.md) · [validation status](docs/VALIDATION_STATUS.md) ·
+[artifact pointers](docs/ARTIFACT_POINTERS.md).
 
 ## Overview
 
@@ -18,17 +19,24 @@ Llama-3.1-8B-Instruct and Qwen2.5-7B-Instruct. A three-parameter two-view logist
 scorer achieves pooled AUC **0.890**, versus **0.896** for LightGBM. At each
 decision's top-decile budget, the within-layer signal recovers **0.659** of future
 top-decile blocks, versus **0.613** for the logistic scorer and **0.615** for
-LightGBM. The ranking depends on the evaluation budget and aggregation.
+LightGBM. The ranking depends on the evaluation budget and aggregation: pooled AUC
+is 99.998% cross-decision pairs, and the logistic scorer's binary cross-layer term
+raises it by **+0.017** while lowering within-decision AUC (**−0.0025**) and
+top-decile recall (**−0.046**); the exact split is in
+[`icdm_v2_decomposition.json`](experiments/results/icdm_v2_decomposition.json).
 
 A separate **pinned bfloat16 masked-loop rerun (v2)** evaluates the
-**runtime-reconstructed** scorer over 896 paired prompts in 14 model–dataset
-cells. Official all-reference LongBench F1 is **0.374** versus **0.372** for the
-H2O-style accumulator (unrounded difference **+0.0017**); paired cell-level TOST
-gives **p=0.0007** at a ±0.02 margin, with a 14-cell 90% t interval
-**[−0.0063, +0.0097]**. Seven-dataset clustering gives **p=0.0023**.
-Both policies remain below full-cache
-F1 **0.419**. This is mean equivalence within a tolerance on these tasks;
-it is not per-task equivalence or a physical-eviction performance result.
+**runtime-reconstructed** scorer over 448 source prompts on two models (896
+model–prompt evaluations, seven datasets). Official all-reference LongBench F1 is
+**0.374** versus **0.372** for the H2O-style accumulator (unrounded difference
+**+0.0017**). The primary analysis averages the two models within each dataset and
+runs a paired TOST over the seven datasets: **p=0.0023** at a ±0.02 margin, 90% t
+interval **[−0.0064, +0.0098]**; the 14-cell sensitivity analysis gives **p=0.0007**,
+**[−0.0063, +0.0097]**. The margin is a practical tolerance, not pre-registered.
+Both policies remain below full-cache F1 **0.419**. This is mean equivalence
+between two complete runtime policy realizations on these tasks; it is not a
+scorer-only intervention, per-task equivalence or a physical-eviction performance
+result.
 
 These numbers are read from [`icdm_v2.json`](experiments/results/icdm_v2.json)
 and [`expand_v2_sensitivity.json`](experiments/results/tost/expand_v2_sensitivity.json).
@@ -152,7 +160,12 @@ sensitivity. `xqp.dm_metrics.average_precision` is now tie-aware (threshold-base
 and top-decile metrics are reported pooled *and* per cache decision. The offline
 analysis is repeated on checksum-verified version-2 traces by
 `experiments/run_icdm_v2.py`, with a source-prompt-level split shared across
-models. Legacy launchers live under `scripts/legacy/`; `scripts/collect_v2_traces.sh`
+models, and `experiments/analyze_train_size_sensitivity.py` refits both the compact
+scorer and the LightGBM comparator at training budgets from the headline 120K rows
+up to all 22.8M held-in rows, so the small AUC deficit between them cannot be read
+as an under-trained tree. `docs/ARTIFACT_POINTERS.md` names the file behind every
+"in the artifact" sentence in the manuscript.
+Legacy launchers live under `scripts/legacy/`; `scripts/collect_v2_traces.sh`
 is the fail-closed version-2 entry point.
 
 ### CPU tests and paper build
@@ -185,17 +198,32 @@ and run `python paper_icdm/build_deck.py`. With LibreOffice installed:
 libreoffice --headless --convert-to pdf --outdir paper_icdm/output paper_icdm/output/final_presentation_en.pptx
 ```
 
+## Score a prediction table
+
+The default benchmark entry scores pooled and per-decision metrics together from a
+prediction table (columns `model_id, source_id, request_id, layer, step, block_idx,
+label, score`), with no traces or model weights. Every decision must be complete
+(exactly ⌈0.1·n⌉ positives); the evaluator refuses a row sample. The shipped example is
+synthetic.
+
+```bash
+python -m benchmark.run_leaderboard --table benchmark/example/prediction_table.csv --probabilistic
+python -m benchmark.run_leaderboard --traces Llama=…jsonl,Qwen=…jsonl --submission my_method.py
+```
+
+See [`benchmark/DATASHEET.md`](benchmark/DATASHEET.md) and `benchmark/submit_template.py`.
+
 ## Content
 
 | Path | Purpose |
 |---|---|
-| `benchmark/` | Historical protocol, reference weights and dataset notes |
+| `benchmark/` | Decision-level protocol 2.0 (default), prediction-table example, reference baseline and data card; protocol 1.0 kept in `legacy_v1/` |
 | `xqp/` | Predictors, statistics, corrected collector and physical-KV backend |
 | `experiments/` | Archived analyses, prospective validation and paired analysis |
 | `scripts/run_physical_kv_matrix.sh` | Serial matched-input GPU matrix |
 | `tests/` | CPU correctness, provenance and failure-path tests |
 | `paper_icdm/` | LaTeX, figures, compiled paper and reviewer response |
-| `docs/` | Evidence audit, operator runbook and validation status |
+| `docs/` | Evidence audit, operator runbook, artifact pointers and validation status |
 
 ## License
 

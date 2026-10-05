@@ -1,0 +1,41 @@
+\section{Historical diagnostics}
+\label{sec:historical}
+Every measurement here comes from the unpinned version-1 pipeline, whose
+defects---float16 Qwen2.5 NaN logits, a query extractor that never formed the
+attention-space product, an AUPRC that credited tied scores for row order---are in
+\S\ref{sec:limits}. Its raw rows are gone, so none of these numbers is version-2
+evidence and none can be recomputed; we keep them because they motivated the audit,
+and \texttt{docs/HISTORICAL\_DIAGNOSTICS.md} lists every one with its source;
+identifiers follow the artifact's order.
+
+\textbf{Exp\#1--5: offline, thresholds and cost.} The corpus holds 43,931,784 rows from
+four instruction-tuned families; its two-view AUC is 0.948 $[0.942,0.954]$ against
+LightGBM's 0.949 (paired deficit $-0.0010$ $[-0.0016,-0.0003]$), the ordering the
+corrected corpus shows at a wider margin. Workload extensions keep that ordering and
+cross-model transfer loses little (their AUPRC used the row-order tie rule and the rows
+are gone, so we do not restate it); within a generation a frozen scorer keeps AUC 0.948
+while the online IRLS update reaches 0.919, evidence against that update, not against
+online learning. GuardKV---our name for a risk-target thresholding rule, not a
+published system---tracks its target miss within 0.007 in distribution, with
+retention near 34\% and 14\% at targets 0.05 and 0.20, but against the served-oracle
+target the reconstructed scorer needs about full retention for 90\% coverage, so
+version 2 does not build on it\label{sec:guardkv}. Scoring one 4096-vector
+batch with the four-weight kernel takes 28.7\,$\mu$s at P99.9, excluding extraction,
+selection and compaction.
+
+\textbf{Exp\#7: Offline and in-loop targets differ.} The archived offline two-view
+AUC is 0.948, while on the served-oracle calibration set the reconstructed scorer
+reaches 0.643 ($[0.632,0.655]$, per-layer 0.54--0.76). We report the drop but do not
+rely on it: the bridge of \S\ref{sec:realization} reproduces neither its size nor its
+direction on version-2 traces, and target, trajectory and feature realization change
+together here, so its cause is unidentified. On four LongBench tasks at 20\% retention
+(48 requests each) the H2O-style accumulator has request-mean served-oracle miss 0.579
+against 0.623 for the reconstructed scorer (paired difference $[0.033,0.055]$) while
+the per-task F1 intervals all overlap; the confirmatory comparison is Exp\#8. Part of
+any served-oracle miss is arithmetic, since a budget below the oracle set cannot be
+met: from logged per-step counts the 4K-cap mean floor is 0.219, leaving residuals
+0.360 and 0.404 and a paired residual interval still $[0.033,0.055]$, so the policy
+difference survives the correction. The feedback-shift check (a scorer trained on the
+served-oracle target gains 0.06 $[0.03,0.10]$ off-policy recall but loses 0.13
+$[0.10,0.16]$ on-policy miss) and the other caps and budget fractions are in the
+artifact.

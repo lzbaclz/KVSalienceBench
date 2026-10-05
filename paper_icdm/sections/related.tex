@@ -4,30 +4,41 @@ Streaming learning studies evolving examples and distribution
 shift~\cite{gama2014drift}; multi-view learning and relevance--redundancy analysis
 motivate comparing information sources~\cite{blummitchell,peng2005mrmr}, which we
 apply to recorded attention dynamics without treating a small information estimate
-as a sufficiency proof. Calibration and conformal
+as a sufficiency proof. Our pooled-versus-within-decision split parallels
+user-weighted (grouped) AUC in click-through prediction~\cite{zhou2018din}, which
+averages AUC within users because pooled AUC also rewards cross-user order.
+Calibration and conformal
 prediction~\cite{guo2017calibration,angelopoulos2023gentle,gibbs2021aci} provide
 tools whose guarantees do not transfer to dependent runtime observations unchecked.
 
-KV-management methods use heavy hitters, recent observations, cross-layer signals,
-query bounds, adaptive allocation and learned retention~\cite{h2o,snapkv,quest,infinigen,adakv,pyramidkv,locret};
-PagedAttention~\cite{pagedattention} addresses physical serving. Our archived feature
-probes and shared-selection allocation comparators are not interchangeable with those
-systems; the contribution is an audit of the links between intermediate prediction
-and task-quality measurements, not a claim that these methods are unnecessary.
+KV-management methods use heavy hitters, attention sinks with recent windows,
+recent observations, cross-layer signals, query bounds, adaptive allocation and
+learned retention~\cite{h2o,streamingllm,snapkv,quest,infinigen,adakv,pyramidkv,locret};
+PagedAttention~\cite{pagedattention} addresses physical serving. Our probes and
+allocation comparators are not interchangeable with those systems; this is an audit of
+the links between intermediate prediction and task quality, not a claim that these
+methods are unnecessary.
 
-Closest to our question are evaluation studies of KV compression. Gao et
-al.~\cite{gao2025rethinking} audit compression from the serving side: unmeasured
-throughput costs, longer outputs, and per-sample quality variation hidden by
-averages. Agrawal and Mayer~\cite{agrawal2026benchmarking} benchmark task quality,
-throughput, time-to-first-token and realized compression ratio jointly. KVzap~\cite{jegou2026kvzap}
-is a recent learned pruning method evaluated on such a suite, and Locret~\cite{locret}
-trains retaining heads on a causal-importance target and validates them by end-task
-quality. Task-level benchmarks such as LongBench and RULER~\cite{longbench,ruler} score
-answers; KVSalienceBench records intermediate features and attention-derived
-labels, a complementary level. Those works ask whether a method is worth deploying;
-we ask a narrower question they do not isolate, whether the saliency label, its
-feature realization and the feedback trajectory each preserve a proxy ranking, with
-controls that fix the scorer and the label while the feature realization and the
-candidate set change (\S\ref{sec:realization}, Exp\#7--8). The negative findings
-concern how proxies transfer to task quality in the tested implementations, not the
-value of learned or value-dependent selection~\cite{vatp}.
+Closest to our question are prediction-first methods and evaluation suites for KV
+compression. AttentionPredictor~\cite{attentionpredictor} learns a lightweight
+model of next-token attention and uses it to identify critical tokens; we do not
+compare against it, and ask a different question: which of pooled ranking, the
+per-decision budget, runtime features, the candidate set and task quality a proxy's
+ranking survives. Gao et al.~\cite{gao2025rethinking} audit compression from the
+serving side (unmeasured throughput costs, longer outputs, per-sample quality
+variation hidden by averages), and Agrawal and Mayer~\cite{agrawal2026benchmarking}
+benchmark task quality, throughput, time-to-first-token and compression ratio
+jointly. SCBench~\cite{scbench} evaluates the whole KV-cache lifecycle, including
+shared-context reuse, and reports attention-distribution shift in long generation;
+KVPress~\cite{kvpress} standardizes more than twenty compression methods;
+KVzap~\cite{jegou2026kvzap} is a recent learned pruning method evaluated on such a
+suite, and Locret~\cite{locret} trains retaining heads on a causal-importance target
+and validates them by end-task quality. Task-level benchmarks such as LongBench and
+RULER~\cite{longbench,ruler} score answers;
+KVSalienceBench records intermediate features and attention-derived labels, a
+complementary level: those suites fix a common harness and ask whether a method is
+worth deploying, whereas we fix the scorer and the label and vary the feature
+realization and the candidate set, to ask which link a proxy ranking survives
+(\S\ref{sec:realization}, Exp\#7--8). The negative findings concern how proxies
+transfer to task quality in the tested implementations, not the value of learned or
+value-dependent selection~\cite{vatp}.

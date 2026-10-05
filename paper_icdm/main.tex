@@ -33,27 +33,27 @@ chenjx@hust.edu.cn}
 \begin{document}
 \maketitle
 \begin{abstract}
-Selecting useful key--value (KV) state requires evaluating predictions under the
-budget and candidate set of each retention decision. KVSalienceBench audits these
-evaluation objects through future-attention labels, explicit selector semantics,
-request and source-prompt splits, and versioned collection and validation code.
-On corrected traces from two instruction-tuned models, a three-parameter logistic
-scorer achieves pooled area under the receiver operating characteristic curve
-(AUC) of 0.890, close to LightGBM's 0.896. Yet the within-layer attention signal
-recovers 0.659 of each decision's future top-decile blocks, versus 0.613 and 0.615
-for those models. This ordering difference narrows at 20\% retention, showing why
-pooled ranking and decision-level budgets must be evaluated separately. A separate,
-pinned bfloat16 masked-loop rerun over 14 model--dataset cells finds the
-runtime-reconstructed scorer and an accumulated-attention baseline equivalent in
-mean LongBench F1 within a specified tolerance of two absolute points; both remain
-below full-cache quality. Historical served-oracle diagnostics favor the baseline,
-but use a different target and experiment version; we audit capacity-forced
-misses using logged counts. A feature bridge measures reconstruction effects
-without identifying the cause of the historical proxy gap. Reference backends
-reduce physical KV storage by about 5.3 times at 20\% retention, with much smaller
-reductions in total allocated memory. Extended mask/physical tests produce logit
-discrepancies that exceed the preset numerical tolerance. These bounded findings support evaluation alignment,
-not a production serving or universal policy-equivalence claim.
+Deciding which cached attention keys and values (KV) to retain requires evaluating
+predictions under the budget and candidate set of each retention decision.
+KVSalienceBench audits these evaluation objects through future-attention labels,
+explicit selector semantics, source-prompt splits and versioned code, and scores
+pooled and per-decision metrics together.
+On corrected $\le$4K-token traces from two instruction-tuned models, a
+three-parameter logistic scorer reaches pooled area under the receiver operating
+characteristic curve (AUC) 0.890 against LightGBM's 0.896, a gap of at most 0.008 across tree capacities and
+training sizes. Yet the within-layer attention signal recovers 0.659 of each
+decision's future top-decile blocks, versus 0.613 and 0.615 for those models.
+Pooled AUC is almost entirely cross-decision pairs: the logistic scorer's binary
+cross-layer term raises it by 0.017 but lowers within-decision AUC and recall, and
+the reversal narrows at 20\% retention. A pinned bfloat16 masked-loop rerun finds
+a runtime-reconstructed scorer and an H2O-style accumulator equivalent in mean LongBench
+F1 within a practical margin of two absolute points over seven datasets, both
+below full cache. A feature bridge leaves a historical served-oracle gap
+unexplained, and its on-policy arm ranks only surviving blocks. A physical
+reference backend stores only the retained KV, but extended mask-versus-compaction
+replay exceeds its numerical tolerance, so no serving equivalence is claimed. These
+bounded findings support evaluating prediction at the selector's operating point,
+not a serving or per-task equivalence claim.
 \end{abstract}
 \begin{IEEEkeywords}
 KV cache, attention prediction, empirical audit, calibration, benchmarking,
@@ -65,20 +65,20 @@ closed-loop evaluation.
 \input{sections/signals}
 \input{sections/method}
 \input{sections/experiments}
-\input{sections/guardkv}
 \input{sections/deployment}
 \input{sections/transfer_gap}
+\input{sections/historical}
 \input{sections/limitations}
 \input{sections/related}
 \input{sections/conclusion}
 \section*{Acknowledgment}
 Anthropic Claude (via Claude Code) assisted with manuscript drafting and the
-version-2 collector, physical-KV validator and audit scripts. OpenAI
-ChatGPT/Codex assisted with revisions to the abstract, introduction, evaluation diagram, statistical protocol,
-results interpretation, limitations and conclusion, and with bootstrap,
-oracle-budget, reproducibility and PDF-check code. These tools generated or
-restructured text and code; the authors are responsible for verifying the
-retained content, experiments and conclusions.
+version-2 collector, physical-KV validator, audit scripts and decision-level benchmark
+protocol. OpenAI ChatGPT/Codex assisted with revisions to the abstract, introduction,
+evaluation diagram, statistical protocol, results text, limitations and conclusion, and
+with bootstrap, oracle-budget, reproducibility and PDF-check code. These tools generated
+or restructured text and code; the authors are responsible for verifying the retained
+content, experiments and conclusions.
 \bibliographystyle{IEEEtran}
 \bibliography{refs,refs_dm}
 \end{document}
