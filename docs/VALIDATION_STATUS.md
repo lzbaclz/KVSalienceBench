@@ -8,12 +8,14 @@ email `jwguo@buaa.edu.cn`. No funding acknowledgment was requested. The standard
 IEEEtran body font, margins and line spacing were retained. The final PDF SHA256 is:
 
 ```
-f6e4033c2a45ca79c5825cdf4acbf3604fbac425a5709bb0f48c6ae3130d5634
+b48b7cebb20e3e0c41990f1090043f2527b015188505b6219196609c140db34d
 ```
 
 This identifies the locally validated upload candidate, not a CPS upload receipt. It
 **supersedes the 2026-10-04 candidate** (`3d96b3504b95...`) and the 2026-09-29 one
-(`b7a80e8b62d3...`), both described below: upload this PDF, not those, and run PDF
+(`b7a80e8b62d3...`), both described below, and a first 2026-10-05 build
+(`f6e4033c2a45...`, the PDF of release `d2ai-camera-ready-r4`) that differs from it only
+in lacking the corresponding-author mark: upload this PDF, not those, and run PDF
 eXpress on this exact file. If the authors subsequently add a copyright line or DOI,
 rerun the sequence below and replace this hash with the exact PDF submitted to the
 workshop. The last column of page 8 ends about six text lines above the bottom margin,
@@ -83,6 +85,10 @@ No experiment was run and no result JSON was rewritten.
 - **Reference [13]** (Peng, Long and Ding, TPAMI 2005) is printed with the colon again
   ("...mutual information: Criteria of..."), as on the article and in PubMed
   (PMID 16119262); Crossref's deposited metadata has no colon.
+- **Corresponding author.** Jianxi Chen's name in the title block now carries an
+  asterisk that the first-page footnote repeats ("*Corresponding author: ..."); before,
+  the footnote had no mark tying it to the name. Pages 2--8 are pixel-identical to the
+  build without the mark.
 - **Page budget.** The removals above paid for the additions; about ten sentences were
   tightened (none drops a number or a caveat) so that section X's heading stays at the
   foot of its column instead of leaving a stretched one.

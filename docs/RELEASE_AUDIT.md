@@ -24,8 +24,9 @@ and `icdm_v2_gbdt_capacity.json`) with their drivers, and `docs/HISTORICAL_DIAGN
 The exporter still takes only the sections `main.tex` inputs and keeps the
 internal review-response notes out of the public tree.
 
-**Re-cut of 2026-10-05.** The tarball `KVSalienceBench-d2ai-camera-ready-r4.tar.gz` and
-its export directory supersede `-r3`. The manuscript changed in wording, one table column
+**Re-cut of 2026-10-05.** The tarball `KVSalienceBench-d2ai-camera-ready-r5.tar.gz` and
+its export directory supersede `-r3`, and also `-r4`, a first cut of the same day whose
+paper lacks only the corresponding-author mark on the title block. The manuscript changed in wording, one table column
 and one figure (`VALIDATION_STATUS.md`, "2026-10-05 panel revision"), so the paper PDF,
 its LaTeX sources, Figure 2 and its script, slide 6 of the deck, one test and these
 documents differ; no result record and no analysis code changed. This is the release the
