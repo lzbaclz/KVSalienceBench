@@ -8,17 +8,54 @@ confirmed email `jwguo@buaa.edu.cn`. No funding acknowledgment was requested. Th
 IEEEtran body font, margins and line spacing were retained. The final PDF SHA256 is:
 
 ```
-b63616e391df580bb81470bc998d08a03676f426ea87d6518f65c6325a3e9229
+6fe487fedaa34a1346c7ec084daf082ea35c1490b172ebe2ae6d4a2faf45f7d0
 ```
 
 This identifies the locally validated upload candidate, not a CPS upload receipt. It
-**supersedes the 2026-10-05 candidate** (`b48b7cebb20e...`, the PDF of release
-`d2ai-camera-ready-r5`), the 2026-10-04 one (`3d96b3504b95...`) and the 2026-09-29 one
-(`b7a80e8b62d3...`), all described below: upload this PDF, not those, and run PDF
-eXpress on this exact file. If the authors subsequently add a copyright line or DOI,
+**supersedes the earlier 2026-10-06 build** (`b63616e391df...`, the PDF of release
+`d2ai-camera-ready-r6`, whose title block listed the authors by columns), the 2026-10-05
+candidate (`b48b7cebb20e...`, release `-r5`), the 2026-10-04 one (`3d96b3504b95...`) and
+the 2026-09-29 one (`b7a80e8b62d3...`), all described below: upload this PDF, not those,
+and run PDF eXpress on this exact file. If the authors subsequently add a copyright line or DOI,
 rerun the sequence below and replace this hash with the exact PDF submitted to the
 workshop. The last column of page 8 ends 58 pt (about five text lines) above the bottom
 margin, which is the room a first-page copyright notice would need.
+
+## 2026-10-06 template check and title block
+
+The author asked whether the manuscript uses the ICDM workshop template, the author
+information in particular. What was checked, and what changed:
+
+- **Template: correct.** The D2AI call and the ICDM 2026 author instructions both ask for
+  the IEEE two-column conference format with the templates of
+  `ieee.org/conferences/publishing/templates.html`. The manuscript is
+  `\documentclass[conference]{IEEEtran}`; the bundled `IEEEtran.cls` is V1.8b
+  (2015/08/26) and identical to the published class apart from line endings (hash pinned in
+  `tests/test_title_block.py`); the preamble changes no page dimension, margin or font
+  size; the page is US Letter; there are no page numbers, running heads, bookmarks, links
+  or form fields; every font is embedded. The bundled `IEEEtran.bst` is 1.12 (2007); the
+  current 1.14 produces a byte-identical reference list for these 28 entries.
+- **Author block: one real defect, fixed.** The IEEE template says of authors: "Author
+  names should be listed starting from left to right and then moving down to the next
+  line. This is the author sequence that will be used in future citations and by
+  indexing services. Names should not be listed in columns nor group by affiliation."
+  Since 2026-09-21 the 2x2 title block had been drawn by stacking two authors in each
+  IEEEtran column, and on 2026-09-26 the template's ordinals were removed. The page then
+  looked right row by row, but its content stream read Li, Tang, Guo, Chen, against the
+  registered order Li, Guo, Tang, Chen (PDF metadata, `CITATION.cff`, `.zenodo.json`).
+  The block is now four `\and`-separated author blocks in the registered order, with the
+  row break after the second, and at the author's decision the template ordinals
+  (1st-4th) are restored. The content stream reads Li, Guo, Tang, Chen.
+- **Unchanged by choice.** No department line (the template asks for succinct
+  affiliations; the author kept it out); the corresponding-author asterisk and first-page
+  footnote stay.
+- **Nothing else moved.** Pages 2-8 are pixel-identical to the `-r6` PDF and no word of
+  page 1 below the title block moved; the four blocks are centred on the same two axes
+  in both rows.
+- **Guard.** `scripts/check_camera_ready.py` now checks the author order in
+  content-stream order (`pdftotext -raw`) and the page size, and would have failed the
+  `-r6` PDF; `tests/test_title_block.py` (5 tests) keeps the source row-major, the
+  ordinals, the class file and every record of the author list in step.
 
 ## 2026-10-06 round-2 review revision
 
@@ -301,15 +338,16 @@ every figure change is a regeneration from committed source.
 
 ## Executed checks
 
-- **298 tests passed, no skips** in the Python 3.11 pinned runtime with CUDA hidden
+- **303 tests passed, no skips** in the Python 3.11 pinned runtime with CUDA hidden
   (278 after the 2026-10-05 revision, plus 9 benchmark-protocol tests, 5 frozen-config
-  tests and 6 new paper-number tests).
-- The clean public export (re-cut 2026-10-06, `-r6`) was validated independently; the
+  tests, 6 new paper-number tests and 5 title-block tests).
+- The clean public export (re-cut 2026-10-06, `-r7`) was validated independently; the
   outcome is recorded in `RELEASE_AUDIT.md`. It contains no raw JSONL input files,
   pretrained model payloads, internal review directories or the 2026-09-29 draft sections.
 - `check_camera_ready.py` was re-run after the final clean rebuild of 2026-10-06 and
-  passes: 8 pages, 230-word abstract, **no overfull boxes**, no undefined references,
-  28 BibTeX entries and no BibTeX warnings. (An overfull box in Table II's new lower block was caught by this check
+  passes: 8 pages, 230-word abstract, US Letter, the registered author order in the
+  content stream, **no overfull boxes**, no undefined references, 28 BibTeX entries and
+  no BibTeX warnings. (An overfull box in Table II's new lower block was caught by this check
   and fixed; inspect logs with a tool that does not honour `.gitignore`.)
 - All **65 bundled simulator Python source hashes** match all **70** v2 cell
   provenance records. The original MIT notice is retained.

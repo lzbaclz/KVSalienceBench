@@ -53,6 +53,17 @@ were replayed in it locally (pinned-simulator smoke run, byte-identical count-ma
 audit, oracle-budget and physical-summary re-derivations, figure regeneration, paper
 build, both checkers).
 
+**Re-cut of 2026-10-06 (second, `-r7`).** The tarball
+`KVSalienceBench-d2ai-camera-ready-r7.tar.gz` supersedes `-r6`, cut the same morning.
+The only manuscript change is the title block: the authors are listed row by row with
+the IEEE template's ordinals, so the PDF's content stream carries the registered author
+order (`VALIDATION_STATUS.md`, "2026-10-06 template check and title block"). Pages 2-8 of
+the paper are pixel-identical to `-r6`. The release adds `tests/test_title_block.py` and
+an author-order and page-size check in `scripts/check_camera_ready.py`; no result record
+and no analysis code changed. Validation of this export: 303 CPU tests pass in the
+extracted tree with no skips; its figure assets pass; and its LaTeX sources rebuild to an
+8-page PDF whose text is identical to the shipped PDF's.
+
 Target repository: <https://github.com/lzbaclz/KVSalienceBench>.
 The authors authorized a new public artifact repository. The old working repository
 and its history stay private. This export is a new Git history, not a visibility

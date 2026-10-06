@@ -44,8 +44,18 @@ def main(argv=None):
     text=subprocess.check_output(['pdftotext', str(root/'main.pdf'), '-'], text=True)
     for token in ('??', 'withheld for', 'Anonymous Author'):
         if token in text: failures.append(f'unresolved/anonymous text: {token}')
-    for name in ('Ziqing Li', 'Jiawei Guo', 'Kaicheng Tang', 'Jianxi Chen'):
+    authors=('Ziqing Li', 'Jiawei Guo', 'Kaicheng Tang', 'Jianxi Chen')   # registered order
+    for name in authors:
         if name not in text: failures.append(f'missing author: {name}')
+    # IEEE conference template: names run left to right, then down to the next row, "not
+    # in columns"; that is the sequence indexing services read. A 2x2 block stacked by
+    # columns looks right and reads wrong, so check the CONTENT-STREAM order of page 1.
+    raw=subprocess.check_output(['pdftotext', '-raw', '-f', '1', '-l', '1', str(root/'main.pdf'), '-'], text=True)
+    found=[raw.find(name) for name in authors]
+    if -1 in found or found != sorted(found):
+        failures.append('author order in the PDF content stream differs from the registered order '+', '.join(authors))
+    if not re.search(r'^Page size:\s+612 x 792 pts \(letter\)', info, flags=re.M):
+        failures.append('page size is not US Letter')
     # IEEE PDF eXpress rejects Type 3 fonts (bitmap glyphs from matplotlib defaults).
     fonts=subprocess.check_output(['pdffonts', str(root/'main.pdf')], text=True)
     type3=[ln.split()[0] for ln in fonts.splitlines()[2:] if ln.split()[1:3]==['Type','3']]
@@ -53,7 +63,7 @@ def main(argv=None):
     unembedded=[ln.split()[0] for ln in fonts.splitlines()[2:] if ln.rsplit(None, 5)[1] != 'yes']
     if unembedded: failures.append(f'fonts not embedded: {unembedded}')
     if failures: raise SystemExit('PDF checks failed: '+', '.join(failures))
-    print(f'PASS: {match[1]} pages <= {args.max_pages}; abstract {abstract_words} words; authors, log, references, encryption and embedded fonts checked. Visual inspection still required.')
+    print(f'PASS: {match[1]} pages <= {args.max_pages}; abstract {abstract_words} words; authors and their order, US Letter, log, references, encryption and embedded fonts checked. Visual inspection still required.')
 
 
 if __name__=='__main__': main()

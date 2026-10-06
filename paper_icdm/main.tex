@@ -8,25 +8,32 @@
 \def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em\TeX}}
 
 \title{Mining Attention Dynamics:\\Auditing KV-Saliency Prediction in LLMs}
+% Title block: the IEEE conference template's per-author blocks in the registered order.
+% Authors run left to right and then down to the next row, as the template requires
+% ("Names should not be listed in columns"): that is the sequence indexing services
+% read, and the ordinals state it. Every author is one \and-separated block; the optional
+% argument of the second \and ends the first row. \authorbox gives the four blocks one
+% width so that the two rows line up.
+\newcommand{\authorbox}[1]{\makebox[0.44\textwidth]{#1}}
 \author{
-\IEEEauthorblockN{Ziqing Li}
+\IEEEauthorblockN{\authorbox{1\textsuperscript{st} Ziqing Li}}
 \IEEEauthorblockA{\textit{Huazhong University of Science and Technology}\\
-Wuhan, China \\
+Wuhan, China\\
 d202381502@hust.edu.cn}
-\\
-\IEEEauthorblockN{Kaicheng Tang}
+\and
+\IEEEauthorblockN{\authorbox{2\textsuperscript{nd} Jiawei Guo}}
+\IEEEauthorblockA{\textit{Beihang University}\\
+Beijing, China\\
+jwguo@buaa.edu.cn}
+\and[\hfill\mbox{}\par\mbox{}\hfill]
+\IEEEauthorblockN{\authorbox{3\textsuperscript{rd} Kaicheng Tang}}
 \IEEEauthorblockA{\textit{The Chinese University of Hong Kong}\\
-Hong Kong, China \\
+Hong Kong, China\\
 kctang0410@link.cuhk.edu.hk}
 \and
-\IEEEauthorblockN{Jiawei Guo}
-\IEEEauthorblockA{\textit{Beihang University}\\
-Beijing, China \\
-jwguo@buaa.edu.cn}
-\\
-\IEEEauthorblockN{Jianxi Chen$^{\ast}$\thanks{$^{\ast}$Corresponding author: Jianxi Chen (chenjx@hust.edu.cn).}}
+\IEEEauthorblockN{\authorbox{4\textsuperscript{th} Jianxi Chen$^{\ast}$\thanks{$^{\ast}$Corresponding author: Jianxi Chen (chenjx@hust.edu.cn).}}}
 \IEEEauthorblockA{\textit{Huazhong University of Science and Technology}\\
-Wuhan, China \\
+Wuhan, China\\
 chenjx@hust.edu.cn}
 }
 \pdfinfo{/Title (Mining Attention Dynamics: Auditing KV-Saliency Prediction in LLMs) /Author (Ziqing Li, Jiawei Guo, Kaicheng Tang, Jianxi Chen) /Subject (D2AI at IEEE ICDM 2026 - DM2158)}

@@ -60,5 +60,10 @@ on its line, the table notes and captions fit their columns, there are no overfu
 and the two columns that an intermediate build left with stretched paragraph gaps (page 1
 right, page 4 left) are filled. The last column of page 8 ends 58 pt above the margin.
 
+**2026-10-06, title block.** The four author blocks are set row by row with the template's
+ordinals (1st-4th); all eight lines of each column are centred on one axis (x = 182.6 pt
+and 429.4 pt) in both rows. Page 1 of the final build was rendered at 110 dpi and
+inspected; pages 2-8 are pixel-identical to the previous build.
+
 These are local layout and typography checks, not an IEEE PDF eXpress certificate.
 The final manuscript SHA256 is recorded in `VALIDATION_STATUS.md`.
