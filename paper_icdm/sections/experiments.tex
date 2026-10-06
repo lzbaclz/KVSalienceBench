@@ -20,34 +20,42 @@ rows; per-decision metrics use every held-out row. Refitting both models on the 
 rows (190-fold) lifts LightGBM by 0.0005 AUC (0.8961 to 0.8966), widens the paired
 deficit only from $-0.0057$ to $-0.0062$ $[-0.0073,-0.0051]$, and its per-decision recall
 holds at 0.615, so the gap is stable to training size; six LightGBM capacities (depth
-3--8, 150--600 trees, balanced or not) at 120K and 1.92M rows keep its AUC lead between
+3--8, 150--600 trees, one leaf-limited, balanced or not) at 120K and 1.92M rows keep its AUC lead between
 0.0005 and 0.0076 and its per-decision recall between 0.615 and 0.622, never reaching
-the raw EMA's 0.659. A source-prompt split holding out the same 32 prompts for both
-models agrees with the request-level AUCs within 0.006 for every method: a control, not
-proof of independence. The two-view fit reaches AUC 0.890 (source-prompt bootstrap
+the raw EMA's 0.659. The split holds out 64 model-requests, so Table~\ref{tab:v2}
+measures transfer to new model-requests, not to unseen text: 50 of their 57 source
+prompts also occur in training through the other model. A source-disjoint split (the
+same 32 prompts held out for both models; the benchmark's default) agrees within 0.006
+AUC for every method and reproduces every entry of the lower block within 0.004
+(top-decile recall 0.656, 0.610 and 0.612). The two-view fit reaches AUC 0.890 (source-prompt bootstrap
 $[0.882,0.898]$) against LightGBM's 0.896, a paired deficit of $-0.0057$
 $[-0.0068,-0.0046]$, larger than the version-1 $-0.0010$ but still small. At the
 per-decision operating point the ordering changes: the raw within-layer EMA
 recovers 0.659 of each decision's future top-decile blocks against 0.613 for the two-view
 fit and 0.615 for LightGBM, though its pooled top-decile precision (0.542) and AUC
-(0.873) are lower. Over the 64 held-out requests the paired gaps are $+0.046$
-$[0.043,0.049]$ and $+0.044$ $[0.041,0.047]$, positive on every request (10,000 joint
-draws of 57 source prompts; $+0.047$ $[0.044,0.050]$ and $+0.045$ $[0.043,0.048]$ on the
-source-disjoint split). The reversal's size depends on the operating point: at
+(0.873) are lower. The decision-macro gaps are $+0.046$ $[0.042,0.049]$ and $+0.044$
+$[0.041,0.047]$ (source-cluster bootstrap of the decision-macro statistic, 10,000 joint
+draws of 57 source prompts), and $+0.046$ $[0.043,0.049]$ and $+0.045$ $[0.042,0.048]$ on
+the source-disjoint split; the gap is positive within each of the 64 held-out requests
+on both, and the ordering holds in each model (recall 0.652, 0.616 and 0.616 on Llama;
+0.665, 0.610 and 0.614 on Qwen). The reversal's size depends on the operating point: at
 the closed loop's 20\% budget, per-decision recall is 0.840, 0.838 and 0.830 and the gaps
-fall to $+0.002$ $[0.002,0.003]$ (52/64 requests) and $+0.010$ $[0.009,0.011]$,
-consistent with, but not explaining, Exp\#8's mean-F1 equivalence.
+fall to $+0.002$ $[0.002,0.003]$ (positive in 52/64 requests) and $+0.010$
+$[0.009,0.011]$, consistent with, but not explaining, Exp\#8's mean-F1 equivalence.
 
 \textbf{Where the reversal comes from.} Within one decision the within-layer view is a
 monotone rescaling of the raw EMA (its denominator $\max_{b'}\bar a_{\ell,b',t}$ is shared
 by the candidates), so $\sigma(w_1x_{\rm wl}+w_2x_{\rm cl}+b)$ reorders the raw view
 through exactly one term, the \emph{binary} cross-layer indicator: a fixed offset
 $w_2/w_1=0.025$ ($w_1=97.7$, $w_2=2.46$) against a corpus mean $x_{\rm wl}$ of 0.015. The
-lower block of Table~\ref{tab:v2} splits pooled AUC exactly on every held-out row.
-Same-decision pairs are 0.0016\% of all (positive, negative) pairs, so pooled AUC is a
-cross-decision statistic: the indicator raises it by $+0.017$ $[0.015,0.019]$ but lowers
-pair-weighted within-decision AUC by 0.0025 $[0.0023,0.0028]$ and top-decile recall by
-0.046; Fig.~\ref{fig:redundcalib}(a) shows one eighth of the offset already gives 83\% of
+lower block of Table~\ref{tab:v2} evaluates Eq.~(\ref{eq:split}) on every held-out row.
+Its weight $\omega$ depends on the decision sizes, not on the scorer: 0.0016\% here,
+about one over the 61,184 decisions. That pooled AUC is a cross-decision statistic is
+therefore arithmetic; the finding is what one fitted term does to the two parts. The
+indicator raises pooled AUC by $+0.017$ $[0.015,0.019]$ but lowers pair-weighted
+within-decision AUC by 0.0025 $[0.0023,0.0028]$ and top-decile recall by 0.046;
+scaling the offset by $\lambda$ (Fig.~\ref{fig:redundcalib}(a); $\lambda=0$ is the raw
+EMA order, $\lambda=1$ the fit) shows one eighth of the offset already gives 83\% of
 the first and 65\% of the second. At the top-decile boundary the term swaps in 22\% of the
 selected blocks, all previous-layer-hot: 20\% are positive, against 41\% of the blocks
 they displace. The indicator is informative overall (61\% of previous-layer-hot blocks
@@ -68,9 +76,9 @@ calibration separation, not source-level independence.
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{fig_redund_calib.pdf}
-\caption{Exp\#1, version-2 corpus. (a) The fitted cross-layer offset scaled from 0 (raw
-within-layer EMA) to twice its value, on every held-out row: pooled AUC and per-decision
-top-decile recall as changes from the raw EMA. (b) Reliability of the two-view fit and
+\caption{Exp\#1, version-2 corpus. (a) The fitted cross-layer offset scaled by $\lambda$
+from 0 (raw within-layer EMA order) through 1 (the fit) to 2, on every held-out row: pooled
+AUC and per-decision top-decile recall as changes from the raw EMA. (b) Reliability of the two-view fit and
 of class-balanced, unweighted and isotonic LightGBM in 10 equal-width bins; ECE in
 parentheses.}
 \label{fig:redundcalib}
@@ -78,12 +86,7 @@ parentheses.}
 
 \begin{table}[t]
 \centering
-\caption{Exp\#1: version-2 ranking and calibration, horizon 4, request split. Upper
-block: AP is tie-aware AUPRC; dec.\ is top-decile precision (equal to recall there),
-macro-averaged over cache decisions; ECE only for probability outputs. Lower block,
-every held-out row (7.6M rows, 61,184 decisions): pooled AUC (LightGBM .895 against
-.896 on the 150K sample), AUC over same- and cross-decision pairs, per-decision recall
-at 10\% and 20\% retention. Further rows are in the artifact.}
+\caption{Exp\#1: version-2 ranking and calibration, horizon 4, request split.}
 \label{tab:v2}\label{tab:main}
 \footnotesize
 \setlength{\tabcolsep}{2pt}
@@ -92,7 +95,7 @@ at 10\% and 20\% retention. Further rows are in the artifact.}
 method & AUC & AP & P@$k$ pool & P@$k$ dec. & ECE \\
 \midrule
 %%V2-ROWS-BEGIN%%
-age proxy & .502 & .102 & .102 & .208 & --- \\
+age proxy & .502 & .102 & .102 & .109$^{\dagger}$ & --- \\
 query proxy (cosine) & .599 & .135 & .147 & .415 & --- \\
 prev-layer indicator & .783 & .412 & .609 & .610 & --- \\
 within-layer EMA & .873 & .609 & .542 & .659 & --- \\
@@ -101,7 +104,7 @@ two-view logistic, refit & .890 & .667 & .624 & .613 & .006 \\
 two-view, archived weights & .890 & .667 & .622 & .611 & .019 \\
 %%V2-ROWS-END%%
 \midrule
-method & pooled & same & cross & rec.\,10\% & rec.\,20\% \\
+method & pooled & within & cross & rec.\,10\% & rec.\,20\% \\
 \midrule
 %%DEC-ROWS-BEGIN%%
 within-layer EMA & .873 & .930 & .873 & .659 & .840 \\
@@ -110,4 +113,14 @@ LightGBM, balanced & .895 & .925 & .895 & .615 & .830 \\
 %%DEC-ROWS-END%%
 \bottomrule
 \end{tabular*}
+\par\smallskip
+\begin{minipage}{\columnwidth}\footnotesize
+Upper block, 150K sampled held-out rows: AP is tie-aware AUPRC; ECE only for
+probability outputs; P@$k$ dec.\ is top-decile precision (equal to recall there),
+decision-macro over the 61,184 decisions of all 7.6M held-out rows.
+$^{\dagger}$Expectation under random tie-breaking (.208 by row order,
+\S\ref{sec:problem}). Lower block, every held-out row (LightGBM .895 pooled against
+.896 on the sample): pair-weighted AUC over within- and cross-decision pairs
+(Eq.~(\ref{eq:split})); decision-macro recall. Further rows are in the artifact.
+\end{minipage}
 \end{table}

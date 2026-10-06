@@ -10,7 +10,7 @@ claim of a faster production serving system.
 
 **Start here:** [paper](paper_icdm/main.pdf) · [English slides](paper_icdm/output/final_presentation_en.pdf) ·
 [physical-KV runbook](docs/PHYSICAL_KV_VALIDATION.md) · [validation status](docs/VALIDATION_STATUS.md) ·
-[artifact pointers](docs/ARTIFACT_POINTERS.md).
+[artifact pointers](docs/ARTIFACT_POINTERS.md) · [frozen configuration](docs/FROZEN_CONFIG.md).
 
 ## Overview
 
@@ -23,7 +23,10 @@ LightGBM. The ranking depends on the evaluation budget and aggregation: pooled A
 is 99.998% cross-decision pairs, and the logistic scorer's binary cross-layer term
 raises it by **+0.017** while lowering within-decision AUC (**−0.0025**) and
 top-decile recall (**−0.046**); the exact split is in
-[`icdm_v2_decomposition.json`](experiments/results/icdm_v2_decomposition.json).
+[`icdm_v2_decomposition.json`](experiments/results/icdm_v2_decomposition.json). Table II
+holds out model-requests (transfer to new requests, not to unseen text); the same
+analysis on a source-disjoint split reproduces every entry within 0.004
+([`icdm_v2_decomposition_source.json`](experiments/results/icdm_v2_decomposition_source.json)).
 
 A separate **pinned bfloat16 masked-loop rerun (v2)** evaluates the
 **runtime-reconstructed** scorer over 448 source prompts on two models (896
@@ -33,7 +36,8 @@ model–prompt evaluations, seven datasets). Official all-reference LongBench F1
 runs a paired TOST over the seven datasets: **p=0.0023** at a ±0.02 margin, 90% t
 interval **[−0.0064, +0.0098]**; the 14-cell sensitivity analysis gives **p=0.0007**,
 **[−0.0063, +0.0097]**. The margin is a practical tolerance, not pre-registered.
-Both policies remain below full-cache F1 **0.419**. This is mean equivalence
+Both policies remain below full-cache F1 **0.419** (full minus H2O-style **+0.047**,
+90% t interval **[+0.015, +0.078]**). This is mean equivalence
 between two complete runtime policy realizations on these tasks; it is not a
 scorer-only intervention, per-task equivalence or a physical-eviction performance
 result.
@@ -202,16 +206,26 @@ libreoffice --headless --convert-to pdf --outdir paper_icdm/output paper_icdm/ou
 
 The default benchmark entry scores pooled and per-decision metrics together from a
 prediction table (columns `model_id, source_id, request_id, layer, step, block_idx,
-label, score`), with no traces or model weights. Every decision must be complete
-(exactly ⌈0.1·n⌉ positives); the evaluator refuses a row sample. The shipped example is
-synthetic.
+label, score`), with no traces or model weights. The shipped example is synthetic.
 
 ```bash
 python -m benchmark.run_leaderboard --table benchmark/example/prediction_table.csv --probabilistic
+python -m benchmark.run_leaderboard --table benchmark/example/prediction_table.csv \
+    --manifest benchmark/example/candidate_manifest.json
 python -m benchmark.run_leaderboard --traces Llama=…jsonl,Qwen=…jsonl --submission my_method.py
 ```
 
-See [`benchmark/DATASHEET.md`](benchmark/DATASHEET.md) and `benchmark/submit_template.py`.
+What it verifies: labels must be exactly 0 or 1; every decision must hold exactly
+⌈0.1·n⌉ positives (`label_count_consistent`), which catches a row sample but is **not** a
+completeness proof; with `--manifest` every decision's candidate set is checked against a
+recorded inventory (`candidates.verified`). What it cannot verify: how a scorer was
+trained. It is an evaluator for a stated protocol, not a closed leaderboard. The default
+split holds out source prompts; the paper's Table II uses `--split request` (new
+model-requests whose source prompt usually occurs in training through the other model).
+Both held-out sets are in `benchmark/splits/paper_v2_splits.json`.
+
+See [`benchmark/DATASHEET.md`](benchmark/DATASHEET.md), `benchmark/submit_template.py` and
+[`docs/FROZEN_CONFIG.md`](docs/FROZEN_CONFIG.md) for every frozen constant.
 
 ## Content
 

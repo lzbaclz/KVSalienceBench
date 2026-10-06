@@ -1,32 +1,24 @@
 \section{Signals and empirical feature selection}
 \label{sec:signals}
 
-\subsection{Recorded views}
 The feature family contains a normalized within-layer exponential moving average
 (EMA) of attention
 $x_{\rm wl}=\bar a_{\ell,b,t}/\max_{b'}\bar a_{\ell,b',t}$, a previous-layer
 hot-block indicator $x_{\rm cl}=\mathbf 1[\bar a_{\ell-1,b,t}\text{ is in the top-}r]$,
 a query-derived proxy $x_{\rm q}=(1+\cos(\tilde q_t,\tilde K_{\ell,b}))/2$ and a
-temporal-age feature $x_{\rm age}=\exp(-(t-p_b)/w)$.
+temporal-age feature $x_{\rm age}=\exp(-(t-p_b)/w)$, $w=64$ steps.
 Here $\bar a$ is an EMA and $p_b$ the block-creation step, so $x_{\rm age}$ is an
 age proxy, not an LRU access-recency measurement; the tildes mark the archived
 query representation, whose coordinate-space audit in \S\ref{sec:limits} limits
 conclusions about that view. The cross-layer signal is an attention-magnitude
-carry-over, not InfiniGen's query-based mechanism, and the offline extractor falls
-back to the current layer's own EMA at layer 0 where runtime realizations need
-explicit fallback and alignment rules (Table~\ref{tab:protocol}).
+carry-over, not InfiniGen's query-based mechanism; at layer 0 the offline extractor
+takes the same top-$r$ indicator from the layer's own EMA, where runtime realizations
+need explicit fallback and alignment rules (Table~\ref{tab:protocol}).
 
-\subsection{Relevance diagnostics}
-\label{sec:redundancy}
-We estimate relevance $I(X_i;Z)$ with quantile-binned plug-in estimators, in nats.
-On the version-2 corpus, within-layer EMA and the cross-layer indicator have $I(X_i;Z)$
-of 0.104 and 0.099 nats, versus 0.007 for the cosine query proxy and under 0.001 for age
-(\S\ref{sec:exp-relevance}); raw-probe AUCs are in Table~\ref{tab:v2}.
-
-Archived conditional-information diagnostics $U_i=I(X_i;Z\mid X_{-i})$ agree that
-the magnitude views carry what the proxies do not ($\le0.006$ nats): within-layer
-is $0.133$--$0.155$ on every binning grid and the binary cross-layer estimate
-$0.048$--$0.084$ on the finer ones, collapsing to zero under the coarsest, so the
-artifact reports its grid sensitivity. These estimates motivate a candidate subset,
-evaluated on held-out requests; they are not a sufficiency certificate, and the
-evidence for the compact model is its measured predictive performance.
+We estimate relevance $I(X_i;Z)$ with quantile-binned plug-in estimators, in nats;
+the version-2 estimates are in \S\ref{sec:exp-relevance} and raw-probe AUCs in
+Table~\ref{tab:v2}. Archived estimates of the conditional information
+$I(X_i;Z\mid X_{-i})$, grid-sensitive for the cross-layer view, agree that the
+magnitude views carry what the proxies do not. They motivated the two-view subset; they
+are not a sufficiency certificate, and the evidence for the compact model is its
+measured predictive performance.

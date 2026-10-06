@@ -1,0 +1,4 @@
+scorer,auc_pooled,auc_same,auc_cross,auc_same_macro,recall_0.10,recall_0.20,recall_0.10_random_ties,recall_0.20_random_ties,boundary_tie_share_0.10,boundary_tie_share_0.20,tied_row_share
+within-layer EMA,0.874209,0.929098,0.874208,0.930207,0.656436,0.837416,0.656436,0.837416,0.000000,0.000000,0.000005
+two-view logistic (refit),0.890231,0.926596,0.890231,0.927710,0.610290,0.835258,0.610290,0.835257,0.000000,0.000033,0.015164
+"LightGBM, balanced",0.896046,0.923904,0.896046,0.925035,0.611642,0.828255,0.611641,0.828150,0.002995,0.269206,0.478813

@@ -13,9 +13,8 @@ ranking is restricted to blocks present at $t$. We use $r=0.1$ and report $h=4$;
 horizons 1, 16 and 64 are recorded only.
 
 A scorer $f(\mathbf x_{\ell,b,t})$ estimates the label probability from recorded
-features; examples arrive in decode order, positives are a small fraction of blocks,
-drift is a hypothesis to test, and serial dependence means millions of block rows are
-not millions of independent observations.
+features; positives are a small fraction of blocks, and serial dependence means
+millions of block rows are not millions of independent observations.
 
 \subsection{Three different evaluation targets}
 Fig.~\ref{fig:paths} locates the evaluation paths. Offline prediction scores
@@ -41,16 +40,28 @@ score and, for scorers that emit probabilities only, expected calibration error
 (ECE). Pooled
 metrics rank rows \emph{across} decisions; top-$k$ metrics are reported pooled over
 test rows \emph{and} per cache decision (request, layer, step) at the label's own
-$\lceil r\,n\rceil$, and pooled AUC is split exactly into same-decision and
+$\lceil r\,n\rceil$, averaged over decisions (decision-macro). With $n_d^{+}$
+positives and $n_d^{-}$ negatives in decision $d$, pooled AUC splits exactly by pair
+origin:
+\begin{equation}
+\label{eq:split}
+\mathrm{AUC}_{\rm pool}=\omega\,\mathrm{AUC}_{\rm in}+(1-\omega)\,\mathrm{AUC}_{\rm x},
+\end{equation}
+where $\omega=\sum_d n_d^{+}n_d^{-}/(\sum_d n_d^{+}\sum_d n_d^{-})$ is the share of
+same-decision (positive, negative) pairs, $\mathrm{AUC}_{\rm in}$ the AUC over them
+(pair-weighted, not a mean of per-decision AUCs) and $\mathrm{AUC}_{\rm x}$ that over
 cross-decision pairs. Training and testing use disjoint requests and paired
 bootstrap intervals resample requests, not block rows. Unless marked otherwise,
 intervals are 95\%; equivalence intervals are 90\%. A 10,000-draw sensitivity analysis jointly resamples held-out model-requests that
 share a source prompt, on both splits.
-Top-$k$ score ties use a stable descending sort, and v2 label boundaries keep the
-collector's \texttt{argpartition} rule with exactly $\lceil rn\rceil$ positives;
-neither is randomized, the artifact states both orders exactly, and recomputing
-every per-decision recall under exact random tie-breaking moves none by more than
-$2\times10^{-5}$.
+Top-$k$ score ties use a stable descending sort (row order: the block index inside a
+decision), and v2 label boundaries keep the collector's \texttt{argpartition} rule with
+exactly $\lceil rn\rceil$ positives; the artifact states both orders exactly. Taking
+instead the exact expectation under uniform random tie-breaking changes the
+decision-macro recall of Table~\ref{tab:v2}'s three main scorers by less than
+$2\times10^{-5}$ at 10\% and 20\% retention, and alters no other printed cell but the
+age proxy's: 99.9\% of its rows tie, so row order picks its blocks (0.208), and the
+table prints the expectation, 0.109. Label ties are not randomized.
 The main downstream comparison aggregates paired request scores into
 architecture--dataset cells and averages the two architectures within each dataset;
 a TOST analysis~\cite{schuirmann1987tost,lakens2017equivalence} asks whether the

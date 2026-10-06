@@ -12,6 +12,12 @@ request-level split. ECE is printed only for scorers that emit probabilities: th
 single-signal rows are raw scores, so an ECE for them would compare a quantity that was
 never meant to be a probability with fitted models, and prints ``---``.
 
+Tie rule of the per-decision column. The stored value uses the stable row-order rule. A
+cell whose value that rule decides (it moves at the printed precision under exact random
+tie-breaking, experiments/results/icdm_v2_tie_sensitivity.json) is printed as the
+random-tie EXPECTATION and marked with a dagger. Only the age proxy qualifies: its prompt
+blocks share one creation step, so 99.9% of its rows tie and row order picked the blocks.
+
 Block dec columns: pooled AUC, AUC over same-decision pairs, AUC over cross-decision
 pairs, and per-decision recall at 10% and 20% retention, each on EVERY held-out row.
 """
@@ -42,6 +48,18 @@ def fmt(x):
     return f"{x:.3f}"[1:] if 0 <= x < 1 else f"{x:.3f}"
 
 
+def decision_cell(label, stored):
+    """The per-decision top-decile cell: the stored (stable-rule) value, or the random-tie
+    expectation with a dagger when the tie rule decides the printed digits."""
+    t = json.loads((ROOT / "experiments/results/icdm_v2_tie_sensitivity.json").read_text())
+    row = t["splits"]["request"]["rows"][label]
+    if abs(row["recall_0.10"] - stored) > 5e-4:
+        raise ValueError(f"{label}: tie-sensitivity record disagrees with icdm_v2.json")
+    if abs(row["delta_0.10"]) >= t["config"]["print_tolerance"]:
+        return fmt(row["recall_0.10_random_ties"]) + "$^{\\dagger}$"
+    return fmt(stored)
+
+
 def v2_rows():
     d = json.loads((ROOT / "experiments/results/icdm_v2.json").read_text())
     req = {r["method"]: r for r in d["pooled_request_split"]["table"]}
@@ -50,7 +68,7 @@ def v2_rows():
         r = req[key]
         ece = "---" if key in RAW_SCORES else fmt(r["ece"])
         out.append(f"{label} & {fmt(r['auc'])} & {fmt(r['auprc'])} & "
-                   f"{fmt(r['p_at_10_pooled'])} & {fmt(r['p_at_10_grouped_macro'])} & {ece} \\\\")
+                   f"{fmt(r['p_at_10_pooled'])} & {decision_cell(label, r['p_at_10_grouped_macro'])} & {ece} \\\\")
     return out
 
 

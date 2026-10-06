@@ -1,9 +1,9 @@
 {
-  "source_revision": "f7916964c55da36627eaba0a429f617c282c2001",
+  "source_revision": "2c2d5fe8588f7da6bca48abfc041bec2bfbdba95",
   "source_has_uncommitted_changes": false,
-  "files": 1495,
-  "result_json_copied_without_changes": 1211,
-  "excluded_file_count": 294,
+  "files": 1509,
+  "result_json_copied_without_changes": 1215,
+  "excluded_file_count": 295,
   "raw_jsonl_included": false,
   "private_git_history_included": false
 }

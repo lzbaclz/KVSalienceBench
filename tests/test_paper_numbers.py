@@ -106,16 +106,22 @@ def test_corpus_scale_and_split(sources, hist):
     assert len(load("icdm_full.json")["models"]) == 4
 
 
-def test_two_view_interval_and_operating_point(sources):
+def test_two_view_interval_and_operating_point(sources, hist):
+    """Version 1: the paper keeps the two AUCs and the deficit; the intervals moved to the
+    artifact doc on 2026-10-06 (historical content gave way to the pooled-AUC split)."""
     table = {r["method"]: r for r in load("icdm_full.json")["pooled"]["headline"]["table"]}
     two, gbdt = table["within+cross(2)"], table["GBDT(LightGBM)"]
-    check(sources, "0.942", two["auc_lo"], 3, "two-view CI lo")
-    check(sources, "0.954", two["auc_hi"], 3, "two-view CI hi")
+    check(tex("historical"), "0.948", two["auc"], 3, "version-1 two-view AUC")
+    check(tex("historical"), "0.949", gbdt["auc"], 3, "version-1 LightGBM AUC")
+    check(hist, "0.942", two["auc_lo"], 3, "two-view CI lo (artifact doc)")
+    check(hist, "0.954", two["auc_hi"], 3, "two-view CI hi (artifact doc)")
     a11 = load("revision_analysis.json")["A11_A12_A27"]["A11"]["auc"]
     check(sources, "-0.0010", a11["delta_2view_minus_gbdt"], 4, "paired AUC delta")
-    check(sources, "-0.0016", a11["ci95_lo"], 4, "paired AUC delta lo")
-    check(sources, "-0.0003", a11["ci95_hi"], 4, "paired AUC delta hi")
+    check(tex("historical"), "0.0010", -a11["delta_2view_minus_gbdt"], 4, "version-1 deficit in the historical section")
+    check(hist, "-0.0016", a11["ci95_lo"], 4, "paired AUC delta lo (artifact doc)")
+    check(hist, "-0.0003", a11["ci95_hi"], 4, "paired AUC delta hi (artifact doc)")
     assert two["auc"] < gbdt["auc"], "the paper describes a small deficit, not a tie"
+    assert "at a wider margin" in sources and "narrower margin" not in hist
 
 
 def test_single_view_and_baseline_probe_aucs_are_distinct_objects():
@@ -129,17 +135,21 @@ def test_single_view_and_baseline_probe_aucs_are_distinct_objects():
     assert abs(table["H2O/attn-EMA"]["auc"] - views["s_within"]["auc"]) < 1e-3
 
 
-def test_relevance_table_and_conditional_information(sources):
+def test_relevance_table_and_conditional_information(sources, hist):
+    """Archived (version-1) grids: the paper says the cross-layer estimate is grid-sensitive
+    and points to the artifact doc, which holds the values."""
     sweep = load("revision_analysis.json")["A9_ucmi"]["ucmi_sweep"].values()
     within = [c["s_within"] for c in sweep]
     cross = [c["s_cross"] for c in sweep]
     other = [c[k] for c in sweep for k in ("s_query", "s_pos")]
-    check(sources, "0.133", min(within), 3, "within-layer U_i lower")
-    check(sources, "0.155", max(within), 3, "within-layer U_i upper")
-    check(sources, "0.048", min(c for c in cross if c > 0), 3, "cross-layer U_i lower (finer grids)")
-    check(sources, "0.084", max(cross), 3, "cross-layer U_i upper")
-    assert min(cross) == 0.0, "the paper states the coarsest grid collapses to zero"
+    check(hist, "0.133", min(within), 3, "within-layer U_i lower")
+    check(hist, "0.155", max(within), 3, "within-layer U_i upper")
+    check(hist, "0.048", min(c for c in cross if c > 0), 3, "cross-layer U_i lower (finer grids)")
+    check(hist, "0.084", max(cross), 3, "cross-layer U_i upper")
+    assert min(cross) == 0.0 and sum(c == 0.0 for c in cross) == 3 and len(cross) == 9
+    assert "collapses to zero under the three coarsest" in hist
     assert max(other) <= 0.006, "remaining proxies are claimed to stay at or below 0.006"
+    assert "grid-sensitive for the cross-layer view" in sources
 
 
 def test_calibration_split_is_disclosed(sources):
@@ -161,8 +171,11 @@ def test_workload_extension_and_transfer(sources, hist):
     assert f'{ext["GBDT"]["auprc"]:.3f}' == "0.803"
     assert "0.777" not in sources and "0.803" not in sources, \
         "the biased-tie AUPRC pair must stay out of the manuscript"
-    assert "row-order tie rule and the rows are gone" in sources, \
+    # the 8-page text no longer describes the workload extensions at all (2026-10-06);
+    # the artifact doc states the withdrawal
+    assert "row-order tie rule and the rows are gone" in hist, \
         "the withdrawal must be stated, not silent"
+    assert "workload-extension" in sources
     chat = {r["method"]: r["auc"] for r in load("icdm_full_sharegpt.json")["pooled"]["headline"]["table"]}
     check(hist, "0.016", chat["GBDT(LightGBM)"] - chat["within+cross(2)"], 3, "chat AUC gap")
     # "Each of the four model families contributes 128 prompts per workload."
@@ -177,8 +190,9 @@ def test_workload_extension_and_transfer(sources, hist):
 def test_drift_and_threshold_behaviour(sources, hist):
     drift = load("icdm_full.json")["pooled"]["drift"]
     assert drift["train_steps"] == [0, 77] and drift["test_steps"] == [102, 127]
-    check(sources, "0.948", drift["auc_static"], 3, "frozen scorer AUC")
-    check(sources, "0.919", drift["auc_online"], 3, "online IRLS AUC")
+    check(hist, "0.948", drift["auc_static"], 3, "frozen scorer AUC (artifact doc)")
+    check(hist, "0.919", drift["auc_online"], 3, "online IRLS AUC (artifact doc)")
+    assert "0.919" not in sources and "online-update" in sources
     multiturn = load("drift_multiturn.json")
     check(hist, "0.35", multiturn["drift_jaccard_boundary_mean"], 2, "boundary Jaccard")
     check(hist, "0.83", multiturn["drift_jaccard_within_turn_mean"], 2, "within-turn Jaccard")
@@ -194,23 +208,27 @@ def test_drift_and_threshold_behaviour(sources, hist):
     check(hist, "0.264", conformal["adaptive_g10"]["mean_set_size_2nd_half"], 3, "adaptive retention")
 
 
-def test_guardkv_coverage(sources):
+def test_guardkv_coverage(sources, hist):
+    """The risk-target thresholding rule is archived: the paper names it once
+    ("risk-threshold") and the artifact doc keeps the numbers."""
     rows = {r["target_alpha"]: r for r in load("coverage_budget.json")["by_alpha"]}
     assert max(abs(a - r["realized_miss"]) for a, r in rows.items()) <= 0.007
-    assert "0.007" in sources
-    check(sources, "34", 100 * rows[0.05]["emergent_budget"], 0, "alpha=0.05 retention")
-    check(sources, "14", 100 * rows[0.20]["emergent_budget"], 0, "alpha=0.20 retention")
+    assert "within 0.007 in distribution" in hist
+    assert round(100 * rows[0.05]["emergent_budget"]) == 34 and round(100 * rows[0.20]["emergent_budget"]) == 14
+    assert "near 34% and 14%" in hist
+    assert "GuardKV" not in sources and "risk-threshold" in sources
     served = {r["target_alpha"]: r for r in load("serving_calib/SUMMARY.json")["by_alpha"]}
     assert served[0.1]["emergent_budget"] == 1.0, "paper claims ~full retention for 90% coverage"
 
 
-def test_scoring_only_microbenchmark(sources):
+def test_scoring_only_microbenchmark(sources, hist):
     fp16 = load("wcet_gpu.json")["results"]["fp16"]
-    assert load("wcet_gpu.json")["batch"] == 4096 and "4096" in sources
-    # The manuscript now prints only the four-weight kernel (page budget); the
-    # pairwise/tiny-MLP percentiles remain in the tracked JSON.
+    assert load("wcet_gpu.json")["batch"] == 4096 and "4096-vector" in hist
+    # The scoring microbenchmark left the manuscript on 2026-10-06 (it times the
+    # four-view comparator, not the model the findings are about); the doc keeps it.
     g = fp16["closed"]["cuda_graph_us"]
-    check(sources, "28.7", g["p999"], 1, "scoring-only P99.9 batch time")
+    check(hist, "28.7", g["p999"], 1, "scoring-only P99.9 batch time (artifact doc)")
+    assert "28.7" not in sources and "scoring-cost" in sources
     assert f"{g['p50']:.1f}" == "20.5" and f"{g['p99']:.1f}" == "24.6"   # in the artifact, not the manuscript
 
 
@@ -232,7 +250,7 @@ def test_masked_loop_task_quality(sources):
         assert f"{value:.3f}"[1:] == printed, f"archived {label} F1 changed"
 
 
-def test_served_oracle_diagnostics(sources):
+def test_served_oracle_diagnostics(sources, hist):
     c3 = load("served_oracle_ci/c3_served_auc.json")["overall"]
     check(sources, "0.643", c3["auc_point"], 3, "served-oracle AUC")
     check(sources, "0.632", c3["cluster_bootstrap_prompt"]["ci95_lo"], 3, "served-oracle CI lo")
@@ -247,13 +265,18 @@ def test_served_oracle_diagnostics(sources):
     check(sources, "0.055", c7["diff_ci95"][1], 3, "miss difference hi")
     c6 = load("served_oracle_ci/c6_onpolicy_reversal.json")
     llama = c6["off_policy_recall20"]["per_model"]["llama"]
-    check(sources, "0.06", llama["gain_point"], 2, "off-policy recall gain")
-    check(sources, "0.03", llama["gain_ci95"][0], 2, "recall gain lo")
-    check(sources, "0.10", llama["gain_ci95"][1], 2, "recall gain hi")
+    # The feedback-shift check is in the artifact doc, with the direction of each change
+    # stated: miss is lower-is-better, so the on-policy change is a deterioration.
+    check(hist, "0.06", llama["gain_point"], 2, "off-policy recall gain")
+    check(hist, "0.03", llama["gain_ci95"][0], 2, "recall gain lo")
+    check(hist, "0.10", llama["gain_ci95"][1], 2, "recall gain hi")
     on_policy = c6["on_policy_eps"]["per_config"]["llama_b0.20"]
-    check(sources, "0.13", on_policy["delta_native_minus_h2o"], 2, "on-policy miss penalty")
-    check(sources, "0.10", on_policy["delta_ci95"][0], 2, "on-policy penalty lo")
-    check(sources, "0.16", on_policy["delta_ci95"][1], 2, "on-policy penalty hi")
+    assert c6["on_policy_eps"]["lower_is_better"] is True and on_policy["delta_native_minus_h2o"] > 0
+    check(hist, "0.13", on_policy["delta_native_minus_h2o"], 2, "on-policy miss penalty")
+    check(hist, "0.10", on_policy["delta_ci95"][0], 2, "on-policy penalty lo")
+    check(hist, "0.16", on_policy["delta_ci95"][1], 2, "on-policy penalty hi")
+    assert "by 0.06 [0.03, 0.10] but worsens on-policy miss by 0.13 [0.10, 0.16]" in hist
+    assert "loses 0.13" not in sources and "feedback-shift check" in sources
 
 
 def test_budget_sweep_and_long_context(sources):
@@ -281,14 +304,15 @@ def test_budget_sweep_and_long_context(sources):
     check(sources, "0.010", mean(pilot), 3, "16K pilot advantage")
 
 
-def test_large_model_side_check(sources):
+def test_large_model_side_check(sources, hist):
     base = ROOT / "experiments/results/largemodel/qwen2_5-14b-instruct/b0.20"
     values = {}
     for policy, printed in [("h2o", "0.301"), ("xqp", "0.307"), ("adakv", "0.301")]:
         rows = [r["f1"] for p in sorted(base.glob(f"*_{policy}.json"))
                 for r in json.loads(p.read_text())["results"]]
         values[policy] = mean(rows)
-        check(sources, printed, values[policy], 3, f"Qwen2.5-14B {policy}")
+        check(hist, printed, values[policy], 3, f"Qwen2.5-14B {policy} (artifact doc)")
+    assert "0.301 / 0.307 / 0.301" in hist and "Qwen2.5-14B runs are separate" in sources
     assert json.loads(next(base.glob("*_h2o.json")).read_text())["context_length"] == 2048
 
 
@@ -444,15 +468,24 @@ def test_v2_table_rows_are_printed_from_the_json(sources):
     d = _v2()
     req = {r["method"]: r for r in d["pooled_request_split"]["table"]}
     src = {r["method"]: r for r in d["pooled_source_split"]["table"]}
+    tie = load("icdm_v2_tie_sensitivity.json")["splits"]["request"]["rows"]
+    daggered = []
     for label, key in V2_ROWS.items():
         r, s = req[key], src[key]
         assert abs(r["auc"] - s["auc"]) < 6.5e-3, "request- and source-split AUCs are described as agreeing within 0.006"
         if key in ("within+cross(2)", "GBDT(LightGBM)"):
             assert abs(r["auc"] - s["auc"]) < 5e-4, "described as agreeing to three decimals"
         cells = [f"{v:.3f}"[1:] for v in (r["auc"], r["auprc"], r["p_at_10_pooled"], r["p_at_10_grouped_macro"])]
+        # a per-decision cell that the row-order tie rule decides is printed as the
+        # random-tie expectation, with a dagger
+        assert abs(tie[label]["recall_0.10"] - r["p_at_10_grouped_macro"]) < 5e-4
+        if abs(tie[label]["delta_0.10"]) >= 5e-4:
+            cells[3] = f"{tie[label]['recall_0.10_random_ties']:.3f}"[1:] + "$^{\\dagger}$"
+            daggered.append(label)
         cells.append("---" if key in RAW_SCORE_ROWS else f"{r['ece']:.3f}"[1:])
         row = f"{label} & " + " & ".join(cells) + " \\\\"
         assert row in sources, f"tab:v2 row drifted: {row}"
+    assert daggered == ["age proxy"], "only the age proxy's cell depends on the tie rule"
     for label, key in V2_ROWS_IN_ARTIFACT_ONLY.items():
         assert f"{label} & " not in sources, f"{label} was moved out of the paper"
         assert key in req and key in src, f"{label} must stay in the result JSON"
@@ -508,7 +541,7 @@ def test_v2_prose(sources, hist):
     check(sources, "0.104", mi["s_within"], 3, "v2 within MI")
     check(sources, "0.099", mi["s_cross"], 3, "v2 cross MI")
     check(sources, "0.007", mi["s_query"], 3, "v2 query MI")
-    check(sources, "0.000", mi["s_pos"], 3, "v2 age MI")
+    assert mi["s_pos"] < 0.001 and "the age proxy under 0.001" in sources
     check(sources, "0.025", d["pooled_per_view"]["by_horizon"]["h4"]["f_query_dotmax"]["relevance_mi"], 3, "dot-max MI")
     assert d["pooled_summary"]["n_rows"] == 30445332 and "30.4M rows" in sources
     assert d["n_model_requests"] == 256 and "256 model-requests" in sources
@@ -582,8 +615,10 @@ def test_exp8_rerun_prose(sources, hist):
     assert main["k_cells"] == 14 and main["n_items"] == 896
     check(sources, "+0.0017", main["grand_mean"], 4, "rerun delta (official scorer)")
     check(sources, "0.0007", main["architecture_dataset_cells"]["0.02"]["p"], 4, "rerun TOST at .02")
-    check(sources, "0.045", main["architecture_dataset_cells"]["0.01"]["p"], 3, "rerun TOST at .01")
-    check(tex("transfer_gap"), "0.047", main["dataset_clusters"]["0.01"]["p"], 3, "rerun 7-dataset TOST at .01")
+    check(hist, "0.045", main["architecture_dataset_cells"]["0.01"]["p"], 3, "rerun TOST at .01 (artifact doc)")
+    check(hist, "0.047", main["dataset_clusters"]["0.01"]["p"], 3, "rerun 7-dataset TOST at .01 (artifact doc)")
+    assert "p=0.047 over the seven datasets and p=0.045 over the 14 cells" in hist
+    assert "Supplementary" not in tex("transfer_gap")
     assert main["dataset_clusters"]["0.01"]["equivalent_at_005"] is True
     assert "14-cell $t$-based and cell-bootstrap 90\\% intervals" in tex("transfer_gap")
     # the primary analysis is the seven-dataset TOST; the 14 cells are the sensitivity analysis
@@ -610,6 +645,14 @@ def test_exp8_rerun_prose(sources, hist):
     check(sources, "0.016", llama["architecture_dataset_cells"]["0.02"]["p"], 3, "rerun Llama TOST")
     check(sources, "-0.0018", qwen["grand_mean"], 4, "rerun Qwen delta")
     check(sources, "0.026", qwen["architecture_dataset_cells"]["0.02"]["p"], 3, "rerun Qwen TOST")
+    # per-architecture p values are TOST p values at the same margin over that model's seven
+    # datasets, and are labelled as such: a bare "p=0.016" beside "+0.0052" reads as a gain
+    for c in (llama, qwen):
+        t = c["architecture_dataset_cells"]["0.02"]
+        assert t["n_clusters"] == 7 and t["df"] == 6 and t["margin"] == 0.02 and t["equivalent_at_005"]
+    gap = tex("transfer_gap")
+    assert "$p_{\\mathrm{TOST}}=0.016$ and $0.026$: equivalence tests, not tests of a gain or a loss" in gap
+    assert "$p=0.016$" not in gap and "$p=0.026$" not in gap
     ada = v2["contrasts"]["adakv_vs_h2o::pooled::f1_longbench_all_refs"]
     check(sources, "-0.0084", ada["grand_mean"], 4, "rerun Ada delta")
     check(sources, "0.015", ada["dataset_clusters"]["0.02"]["p"], 3, "rerun Ada TOST (seven datasets)")
@@ -618,6 +661,9 @@ def test_exp8_rerun_prose(sources, hist):
     check(sources, "-0.023", pyr["grand_mean"], 3, "rerun Pyramid delta")
     check(sources, "0.58", pyr["dataset_clusters"]["0.02"]["p"], 2, "rerun Pyramid TOST (seven datasets)")
     assert pyr["dataset_clusters"]["0.02"]["p"] > 0.05
+    # a TOST that does not reject is "equivalence not established", never "not equivalent"
+    assert "equivalence is not established ($-0.023$, $p_{\\mathrm{TOST}}=0.58$), which does not show it is worse" in gap
+    assert "one does not" not in gap
     # the corrupted-output signature is gone in the rerun
     import glob
     bang = long = n = 0
@@ -655,7 +701,8 @@ def test_feature_bridge_qwen(sources):
     ba = s["B_minus_A_feature_realization"]
     check(sources, "-0.002", ba["mean"], 3, "Qwen bridge B-A")
     check(sources, "-0.003", ba["ci95"][0], 3, "Qwen bridge B-A lo")
-    check(sources, "-0.000", ba["ci95"][1], 3, "Qwen bridge B-A hi")
+    check(sources, "-0.0004", ba["ci95"][1], 4, "Qwen bridge B-A hi (one more decimal: not a signed zero)")
+    assert not re.search(r"-0?\.000(?!\d)", sources), "no bound is printed as a signed zero"
     assert ba["n_negative"] == 75 and "75/128" in sources
     check(sources, "+0.098", s["C_minus_B_trajectory"]["mean"], 3, "Qwen bridge C-B")
     assert s["C_minus_B_trajectory"]["n_positive"] == 128
@@ -688,6 +735,21 @@ def test_served_oracle_budget_decomposition(sources):
             assert f'{d["policies"]["h2o"]["measured_miss"]["mean"]:.3f}' == miss, f"{tag} miss"
     assert "the other caps and budget fractions are in the" in sources, \
         "the manuscript must say where the per-budget floors went"
+    # Table I points to Exp#7 for K, so Exp#7 must define it, the kept-set size and the floor
+    hist_tex = tex("historical")
+    assert "$K=\\min\\{n,\\max(32,\\lfloor0.1n\\rfloor)\\}$" in hist_tex
+    assert "$B=\\max(1,\\mathrm{round}(0.2n))$ blocks, mandatory blocks included" in hist_tex
+    assert "$F=\\max(0,1-B/K)$" in hist_tex
+    assert head["policies"]["h2o"]["oracle_set_size"]["min"] == head["policies"]["h2o"]["oracle_set_size"]["max"] == 32.0
+    assert head["policies"]["h2o"]["kept_blocks"]["max"] == 26.0 and "($K=32$ at every step, $B\\le26$)" in hist_tex
+    # the floor is the same for both policies on every request, so the paired contrast is
+    # unchanged by algebra: an interpretation aid, not an independent robustness check
+    paired = load("served_oracle_ci/mentor_e2e_confirm.json")["paired_second_minus_first"]
+    assert paired["floors_equal_per_request"] is True and paired["max_abs_request_floor_delta"] == 0.0
+    assert paired["miss_delta"]["ci95"] == pytest.approx(paired["residual_delta"]["ci95"], abs=1e-12)
+    assert "unchanged algebraically" in hist_tex and "not an independent robustness check" in hist_tex
+    assert "survives the correction" not in sources
+    assert load("served_oracle_ci/mentor_longctx.json")["paired_second_minus_first"]["floors_equal_per_request"] is False
 
 
 def test_training_size_sensitivity(sources):
@@ -733,30 +795,47 @@ def test_per_decision_operating_point(sources):
     for key, printed in [("within", "0.659"), ("two", "0.613"), ("gbdt", "0.615")]:
         check(sources, printed, at10["per_scorer"][label[key]]["macro_recall_mean"], 3,
               f"per-decision recall at 10% ({key})")
+    # Table II's per-decision values are decision-macro, and the printed gap intervals are a
+    # source-cluster bootstrap of THAT statistic (the two decomposition records), on the
+    # request split and on the source-disjoint split.
+    two_key = "two-view logistic (refit) minus within-layer EMA"
+    gb_key = "LightGBM, balanced minus within-layer EMA"
+    records = {"request": load("icdm_v2_decomposition.json"), "source": load("icdm_v2_decomposition_source.json")}
+    fragments = {}
+    for kind, rec in records.items():
+        assert rec["config"]["split"] == kind and rec["config"]["n_boot"] == 10000
+        assert rec["config"]["bootstrap"] == "source prompts"
+        parts = []
+        for key in (two_key, gb_key):
+            e = rec["paired"][key]["recall_0.10"]
+            assert e["share_positive"] == 0.0, "the EMA is ahead in every bootstrap draw"
+            parts.append(f"$+{-e['delta']:.3f}$ $[{-e['ci95'][1]:.3f},{-e['ci95'][0]:.3f}]$")
+        fragments[kind] = " and ".join(parts)
+        assert fragments[kind] in sources, f"{kind}-split recall gaps drifted: {fragments[kind]}"
+    assert fragments["request"] == "$+0.046$ $[0.042,0.049]$ and $+0.044$ $[0.041,0.047]$"
+    assert fragments["source"] == "$+0.046$ $[0.043,0.049]$ and $+0.045$ $[0.042,0.048]$"
+    assert "source-cluster bootstrap of the decision-macro statistic" in sources
+    assert records["request"]["data"]["n_source_prompts_heldout"] == 57 and "57 source prompts" in sources
+    # the request-level view is a directional supplement: positive within every held-out request
     sensitivity = load("mentor_statistics.json")
-    assert sensitivity["n_boot"] == 10000
-    for other, printed, lo, hi in [("two", "0.046", "0.043", "0.049"),
-                                   ("gbdt", "0.044", "0.041", "0.047")]:
-        v = sensitivity["request"]["operating_points"]["0.10"]["source_prompt"][label[other]]
-        assert v["n_positive"] == v["n_requests"], "claimed positive on every request"
-        check(sources, printed, v["mean"], 3, f"10% gap vs {other}")
-        check(sources, lo, v["ci95"][0], 3, f"10% gap lo vs {other}")
-        check(sources, hi, v["ci95"][1], 3, f"10% gap hi vs {other}")
-    for other, printed, lo, hi in [("two", "0.047", "0.044", "0.050"),
-                                   ("gbdt", "0.045", "0.043", "0.048")]:
-        v = sensitivity["source"]["operating_points"]["0.10"]["source_prompt"][label[other]]
-        assert v["n_clusters"] == 32 and v["n_requests"] == 64
-        for printed_value, value in zip((printed, lo, hi), (v["mean"], *v["ci95"])):
-            check(sources, printed_value, value, 3, "source-disjoint sensitivity")
+    assert sensitivity["n_boot"] == 10000 and "request-macro" in sensitivity["estimand"]
+    for kind in ("request", "source"):
+        for other in ("two", "gbdt"):
+            v = sensitivity[kind]["operating_points"]["0.10"]["source_prompt"][label[other]]
+            assert v["n_positive"] == v["n_requests"] == 64, "claimed positive within every request on both splits"
+    assert "positive within each of the 64 held-out requests on both" in sources
     at20 = d["operating_points"]["0.20"]
     for key, printed in [("within", "0.840"), ("two", "0.838"), ("gbdt", "0.830")]:
         check(sources, printed, at20["per_scorer"][label[key]]["macro_recall_mean"], 3,
               f"per-decision recall at 20% ({key})")
     shrunk = at20["paired"][f"{label['within']} minus {label['two']} (recall)"]
-    assert shrunk["n_positive"] == 52 and "52/64" in sources
-    check(sources, "0.002", shrunk["mean"], 3, "20% gap vs two-view")
-    check(sources, "0.010", at20["paired"][f"{label['within']} minus {label['gbdt']} (recall)"]["mean"],
-          3, "20% gap vs LightGBM")
+    assert shrunk["n_positive"] == 52 and "positive in 52/64 requests" in sources
+    parts20 = []
+    for key in (two_key, gb_key):
+        e = records["request"]["paired"][key]["recall_0.20"]
+        parts20.append(f"$+{-e['delta']:.3f}$ $[{-e['ci95'][1]:.3f},{-e['ci95'][0]:.3f}]$")
+    assert parts20 == ["$+0.002$ $[0.002,0.003]$", "$+0.010$ $[0.009,0.011]$"]
+    assert all(part in sources for part in parts20)
     assert at10["per_scorer"][label["within"]]["macro_recall_mean"] - \
            at10["per_scorer"][label["two"]]["macro_recall_mean"] > \
            at20["per_scorer"][label["within"]]["macro_recall_mean"] - \
@@ -823,9 +902,28 @@ def test_decision_decomposition_record(sources):
     assert s["net_positives"] < 0
     # every decision holds exactly ceil(0.1 n) positives: no decision-level prior to flag
     # (benchmark.protocol enforces the same rule; the corpus passed it)
-    # ties: stable versus exact random tie-breaking changes no per-decision recall by more than 2e-5
+    # ties: for these THREE scorers, the exact expectation under random tie-breaking changes the
+    # decision-macro recall by less than 2e-5 (the claim for every Table II row is
+    # test_tie_rule_of_the_per_decision_column)
     worst = max(abs(r[f"recall_{k}_random_ties"] - r[f"recall_{k}"]) for r in d["scorers"].values() for k in ("0.10", "0.20"))
     assert worst < 2e-5 and "$2\\times10^{-5}$" in sources
+    # the weight of same-decision pairs depends on decision sizes only: about 1 / #decisions
+    share, n_dec = d["pairs"]["share_same_decision"], d["data"]["n_decisions"]
+    assert abs(share * n_dec - 1.0) < 0.02 and "about one over the 61,184 decisions" in sources
+    assert d["pairs"]["pairs_same_decision"] == 87483880.0 and d["pairs"]["pairs_total"] == 5313427979136.0
+    for row in d["scorers"].values():      # Eq. (1) holds exactly
+        assert abs(share * row["auc_same"] + (1 - share) * row["auc_cross"] - row["auc_pooled"]) < 1e-12
+    assert "\\label{eq:split}" in tex("problem") and "is therefore arithmetic" in sources
+    # the ordering holds in each model separately (EMA, two-view, LightGBM)
+    order = ("within-layer EMA", "two-view logistic (refit)", "LightGBM, balanced")
+    per_model = {m: [f"{d['per_model'][m][n]['recall_0.10']:.3f}" for n in order] for m in d["per_model"]}
+    assert per_model == {"Llama-3.1-8B-Instruct": ["0.652", "0.616", "0.616"],
+                         "Qwen2.5-7B-Instruct": ["0.665", "0.610", "0.614"]}
+    assert "(recall 0.652, 0.616 and 0.616 on Llama; 0.665, 0.610 and 0.614 on Qwen)" in sources
+    for m in d["per_model"]:
+        ema = d["per_model"][m]["within-layer EMA"]
+        assert all(ema["recall_0.10"] > d["per_model"][m][n]["recall_0.10"] for n in order[1:])
+        assert all(ema["auc_pooled"] < d["per_model"][m][n]["auc_pooled"] for n in order[1:])
     # relevance estimates: recomputed from held-in rows only they barely move
     mi = d["relevance_mi"]
     drift = max(abs(mi["train_rows_only"][k] - mi["published_all_rows_sample"][k]) for k in mi["train_rows_only"])
@@ -845,7 +943,7 @@ def test_gbdt_capacity_record(sources):
     lead = [r["auc_150k_sample"] - two[r["n_train"]]["auc_150k_sample"] for r in gb]
     check(sources, "0.0005", min(lead), 4, "smallest LightGBM AUC lead over the compact fit")
     check(sources, "0.0076", max(lead), 4, "largest LightGBM AUC lead")
-    assert max(lead) < 0.008 and "0.008 at most" in sources and "at most 0.008" in sources
+    assert max(lead) < 0.008 and "0.008 at most" in sources
     check(sources, "0.615", min(r["recall_0.10"] for r in gb), 3, "lowest LightGBM per-decision recall")
     check(sources, "0.622", max(r["recall_0.10"] for r in gb), 3, "highest LightGBM per-decision recall")
     raw = c["raw_within_layer_ema"]["recall_0.10"]
@@ -855,6 +953,9 @@ def test_gbdt_capacity_record(sources):
     head = next(r for r in gb if r["n_train"] == 120000 and r["config"].startswith("depth3_150_balanced"))
     check(sources, "0.8961", head["auc_150k_sample"], 4, "headline LightGBM AUC (Table II)")
     assert "depth 3--8, 150--600 trees" in sources
+    # one of the six configurations limits leaves (63) instead of depth; the text says so
+    assert sum(cfg.get("max_depth") == -1 for cfg in c["config"]["lightgbm_configs"].values()) == 1
+    assert "one leaf-limited" in sources
 
 
 def test_retained_blocks_are_matched_in_counts(sources, hist):
@@ -879,6 +980,175 @@ def test_retained_blocks_are_matched_in_counts(sources, hist):
         assert f"{means[pol]:.2f}" == printed, (pol, means[pol])
     assert "average 25.02 for the H2O-style, reconstructed and Ada-KV-style policies and 25.01 for the PyramidKV-style" in sources
     assert "median 26, range 7--26" in sources
+    # the logged quantity is the layer-mean size of the set chosen at the last decision;
+    # equal active-token counts per step were not logged and are not claimed
+    assert "Logged selected-set sizes" in sources and "active-token counts are not claimed" in sources
+    assert "the policies are matched in selected blocks" in sources
     # only one prompt per architecture dips below the eight mandatory blocks; every policy keeps 7 there
     assert all(low == {("llama31_8b", "2wikimqa", 18), ("qwen25_7b", "2wikimqa", 18)} for low in below_mandatory.values())
     assert "7 blocks on one prompt per model" in sources and "2WikiMQA id 18" in hist
+
+
+# ------------------------- 2026-10-06 round-2 review: ties, splits, scorers, wording -------------
+def test_tie_rule_of_the_per_decision_column(sources, hist):
+    """`experiments/analyze_tie_sensitivity.py`: every Table II row under the exact expectation
+    of uniform random tie-breaking. The earlier text claimed "no per-decision recall moves by
+    more than 2e-5"; that holds for the three main scorers, not for the age proxy."""
+    t = load("icdm_v2_tie_sensitivity.json")
+    pub = {r["method"]: r for r in _v2()["pooled_request_split"]["table"]}
+    req, src = t["splits"]["request"], t["splits"]["source"]
+    assert set(req["rows"]) == set(V2_ROWS) and req["n_decisions"] == 61184
+    for label, key in V2_ROWS.items():      # gate: the stable values are the published ones
+        assert abs(req["rows"][label]["recall_0.10"] - pub[key]["r_at_10_grouped_macro"]) < 5e-4
+    assert req["main_scorers_max_abs_delta"] < 2e-5
+    assert src["main_scorers_max_abs_delta"] < 1.1e-4 and "1.1e-4" in hist
+    age = req["rows"]["age proxy"]
+    check(sources, "0.208", age["recall_0.10"], 3, "age proxy, row-order tie rule")
+    check(sources, "0.109", age["recall_0.10_random_ties"], 3, "age proxy, random-tie expectation")
+    assert round(100 * age["tied_row_share"], 1) == 99.9 and "99.9\\% of its rows tie" in sources
+    assert age["boundary_tie_share_0.10"] == 1.0
+    # at the printed precision and budget nothing else in the upper block depends on the rule
+    changed10 = [c["row"] for c in req["cells_changed_at_three_decimals"] if c["k_frac"] == 0.1]
+    assert changed10 == ["age proxy"] and "alters no other printed cell but the age proxy's" in sources
+    # the indicator is tie-free in the top decile and tie-decided at 20%, which the paper does not print
+    ind = req["rows"]["prev-layer indicator"]
+    assert ind["boundary_tie_share_0.10"] == 0.0 and ind["boundary_tie_share_0.20"] == 1.0
+    assert f"{ind['recall_0.20']:.3f}" == "0.677" and f"{ind['recall_0.20_random_ties']:.3f}" == "0.653"
+    assert "0.677 against an" in hist and "0.653" in hist
+    # scope stated: an expectation of the macro statistic, score ties only
+    assert "exact expectation under uniform random tie-breaking" in sources
+    assert "Label ties are not randomized" in sources
+    assert max(r["max_abs_decision_delta_0.10"] for r in req["rows"].values()) > 0.5, \
+        "single decisions move far more than the macro statistic: the check is not a per-decision bound"
+    assert "moves none by more than" not in sources
+    assert "Expectation under random tie-breaking (.208 by row order" in sources
+
+
+def test_source_disjoint_split_reproduces_the_pair_split(sources, hist):
+    """`analyze_decision_decomposition.py --split source`: the request split of Table II is
+    transfer to new model-requests; the same analysis on unseen source prompts agrees."""
+    req, src, v2 = load("icdm_v2_decomposition.json"), load("icdm_v2_decomposition_source.json"), _v2()
+    pub = {r["method"]: r for r in v2["pooled_source_split"]["table"]}
+    for name, key in [("within-layer EMA", "H2O/attn-EMA"), ("two-view logistic (refit)", "within+cross(2)"),
+                      ("LightGBM, balanced", "GBDT(LightGBM)")]:
+        assert abs(src["gate"][name]["auc_150k_sample"] - pub[key]["auc"]) < 5e-4, name
+        assert abs(src["scorers"][name]["recall_0.10"] - pub[key]["r_at_10_grouped_macro"]) < 5e-4, name
+    assert src["data"]["n_source_prompts_heldout"] == 32 and src["data"]["n_requests_heldout"] == 64
+    assert src["data"]["heldout_requests_by_model"] == {"llama": 32, "qwen": 32}
+    assert src["data"]["n_heldout_source_prompts_also_in_training"] == 0
+    # what the request split holds out: 57 source prompts, 50 of them also in training
+    counts = {}
+    for source in load("mentor_statistics.json")["request"]["source_of_request"].values():
+        counts[source] = counts.get(source, 0) + 1
+    assert len(counts) == 57 and sum(v == 1 for v in counts.values()) == 50 and sum(v == 2 for v in counts.values()) == 7
+    assert "50 of their 57 source" in sources and "not to unseen text" in sources
+    # every entry of the lower block is reproduced within 0.004
+    keys = ("auc_pooled", "auc_same", "auc_cross", "recall_0.10", "recall_0.20")
+    worst = max(abs(req["scorers"][n][k] - src["scorers"][n][k]) for n in req["scorers"] for k in keys)
+    assert 0.003 < worst < 0.004 and "every entry of the lower block within 0.004" in sources
+    rec = [f"{src['scorers'][n]['recall_0.10']:.3f}" for n in ("within-layer EMA", "two-view logistic (refit)", "LightGBM, balanced")]
+    assert rec == ["0.656", "0.610", "0.612"] and "(top-decile recall 0.656, 0.610 and 0.612)" in sources
+    assert abs(src["pairs"]["share_same_decision"] - req["pairs"]["share_same_decision"]) < 1e-6
+    swaps = src["swaps_at_top_decile"]
+    assert [round(100 * swaps[k]) for k in ("swapped_share_of_selected", "positive_rate_swapped_in",
+                                            "positive_rate_swapped_out")] == [22, 20, 41]
+    assert "0.874 | 0.929 | 0.874 | 0.656 | 0.837" in hist
+
+
+def test_physical_table_uses_the_official_all_reference_scorer(sources, hist):
+    """Table III names its scorer. `experiments/analyze_physical_scorer.py` rescored every stored
+    generation with Exp#8's function: no request differs, so the two tables share a scorer and
+    differ in cohort. (The earlier text attributed part of the gap to all-reference scoring.)"""
+    rec = load("physical_kv/scorer_check.json")
+    assert rec["all_stored_equal_official_all_refs"] is True
+    for run in ("llama3.1-v1", "qwen25-v1"):
+        cells = rec["runs"][run]["cells"]
+        summary = json.loads((RESULTS / "physical_kv" / run / "summary.json").read_text())["cells"]
+        assert len(cells) == 9 and rec["runs"][run]["requests_with_several_references"] == 46
+        for name, c in cells.items():
+            assert c["n"] == 128 and c["requests_differing"] == 0 and c["max_abs_difference"] < 1e-12
+            assert abs(c["f1_stored_mean"] - summary[name]["f1_mean"]) < 1e-12
+            assert c["f1_official_single_ref_mean"] < c["f1_official_all_refs_mean"], "the check is not vacuous"
+    dep = tex("deployment")
+    assert "F1: official LongBench scorer, all references." in dep
+    assert "rescoring its stored generations with Exp\\#8's code changes no request" in dep
+    assert "two hardest" not in sources and "is half of" not in sources and "0.355" not in sources
+    # the cohort difference that the paragraph does state
+    gap = load("tost/expand_v2_full_cache_gap.json")["contrasts"]["full_vs_h2o::pooled::f1_longbench_all_refs"]
+    by_ds = {}
+    for cell in gap["cells"]:
+        by_ds.setdefault(cell["dataset"], []).append(cell["mean_a"])
+    full = {ds: mean(v) for ds, v in by_ds.items()}
+    check(dep, "0.41", full["qasper"], 2, "Exp#8 full-cache F1 on Qasper")
+    check(dep, "0.19", full["narrativeqa"], 2, "Exp#8 full-cache F1 on NarrativeQA")
+    check(dep, "0.419", mean(full.values()), 3, "Exp#8 full-cache F1 over the seven datasets")
+    assert sorted(full, key=full.get)[:2] == ["narrativeqa", "musique"], "Qasper is not among the two lowest"
+    assert "128- instead of 48-token" in dep and "at most 128 new tokens" in dep
+    # when the frozen cohort is present (private working copy), recompute from the generations
+    cohort = RESULTS / "physical_kv/physical-qa-llama-v1.jsonl"
+    if cohort.exists():
+        import sys
+        sys.path.insert(0, str(ROOT / "experiments"))
+        from analyze_expand_sensitivity import longbench_f1
+        refs = {r["id"]: (r["dataset"], r["answers"]) for r in map(json.loads, cohort.read_text().splitlines())}
+        rows = json.loads((RESULTS / "physical_kv/llama3.1-v1/full.r0.json").read_text())["results"]
+        assert all(abs(longbench_f1(r["prediction"], refs[r["id"]][1], refs[r["id"]][0]) - r["f1"]) < 1e-12 for r in rows)
+
+
+def test_full_cache_row_carries_the_interval_its_caption_promises(sources):
+    gap = load("tost/expand_v2_full_cache_gap.json")
+    v2 = load("tost/expand_v2_sensitivity.json")
+    assert gap["provenance"]["rows"] == 4480 and gap["provenance"]["reference_row_mismatches"] == 0
+    means = {p: v["f1_longbench_all_refs"]["mean"] for p, v in v2["policy_means"].items()}
+    for pol in ("h2o", "xqp", "adakv", "pyramidkv"):
+        c = gap["contrasts"][f"full_vs_{pol}::pooled::f1_longbench_all_refs"]
+        assert abs(c["grand_mean"] - (means["full"] - means[pol])) < 1e-12
+        assert c["dataset_clusters"]["n_clusters"] == 7 and c["dataset_clusters"]["df"] == 6
+    lo, hi = gap["contrasts"]["full_vs_h2o::pooled::f1_longbench_all_refs"]["dataset_clusters"]["ci90_t"]
+    assert f"{lo:.3f}" == "0.015" and f"{hi:.3f}" == "0.078"
+    assert "full cache & .419 & +.047 [+.015, +.078] & --- \\\\" in sources
+    assert "Ada-KV-style & .363 & -.008 [-.016, -.0004] & .015 \\\\" in sources
+    lo_x = means["full"] - means["h2o"], means["full"] - means["xqp"]
+    assert sorted(f"{v:.3f}" for v in lo_x) == ["0.045", "0.047"] and "0.045--0.047 below full cache" in sources
+    assert "none for full cache" in tex("transfer_gap")
+
+
+def test_round2_wording_fixes(sources):
+    """Statements the 2026-10-05 round-2 review found stronger than the evidence, or reversed."""
+    # R6: the loop's mandatory blocks are subject to the budget cap (7 < 4 sink + 4 recent on one prompt)
+    assert "always keeps" not in sources and "reserves subject to its budget cap" in sources
+    assert "keeps recent blocks, then sinks" in sources
+    # R12: the pooled training objective is a candidate explanation, stated as untested
+    assert "a decision-balanced or within-decision ranking loss is untested" in sources
+    # R15: the bridge's B arm is the reference backend's feature realization, one label RULE
+    assert "one label rule" in sources and "reference backend's feature realization costs" in sources
+    assert "reference-backend feature reconstruction" in sources
+    # R16: the abstract states the cap as a collection setting, and the constants have one home
+    assert "collected with a 4K-token input cap" in tex("main") and "$\\le$4K-token" not in tex("main")
+    assert "docs/FROZEN\\_CONFIG.md" in sources and (ROOT / "docs/FROZEN_CONFIG.md").exists()
+    assert "takes the same top-$r$ indicator from the layer's own EMA" in sources
+    # R2/R22: what the public evaluator does and does not verify
+    assert "verifies candidate sets only against a supplied manifest" in sources
+    assert "cannot check how a scorer was trained" in sources
+    # R9/R21: the pair split is related to, and distinguished from, user-weighted AUC
+    assert "Eq.~(\\ref{eq:split}) weights by pairs instead" in sources
+    assert "itself a prediction of future attention" in sources
+
+
+def test_bibliography_fixes_of_the_reference_audit():
+    """reference_audit_27.md (2026-10-05): three field fixes; plus the LightGBM record the review
+    asked for, checked against the NeurIPS proceedings page (its BibTeX gives no pages)."""
+    refs, dm = (TEX / "refs.bib").read_text(), (TEX / "refs_dm.bib").read_text()
+    assert "Song, Chengru" in dm and "Song, Chenru" not in dm
+    assert "doi = {10.15495/EPub_UBT_00009365}" in refs and "EPub\\_UBT" not in refs
+    kvpress = refs[refs.index("@article{kvpress,"):]
+    kvpress = kvpress[:kvpress.index("\n}") + 2]
+    assert "note" not in kvpress and "arXiv:2510.00636" in kvpress
+    light = refs[refs.index("@inproceedings{ke2017lightgbm,"):]
+    light = light[:light.index("\n}") + 2]
+    assert "Ke, Guolin and Meng, Qi and Finley, Thomas and Wang, Taifeng and Chen, Wei and Ma, Weidong and Ye, Qiwei and Liu, Tie-Yan" in light
+    assert "volume = {30}" in light and "year = {2017}" in light and "pages" not in light
+    assert "\\cite{ke2017lightgbm}" in norm((TEX / "sections/intro.tex").read_text())
+    bbl = TEX / "main.bbl"
+    if bbl.exists():
+        assert bbl.read_text().count("\\bibitem{") == 28

@@ -5,7 +5,31 @@
   "n_requests": 16,
   "n_source_prompts": 8,
   "positive_rate": 0.11343075852470424,
-  "complete_decisions": true,
+  "label_count_consistent": true,
+  "candidates": {
+    "manifest_decisions": 192,
+    "missing_decisions": 0,
+    "unexpected_decisions": 0,
+    "decisions_with_wrong_candidate_count": 0,
+    "decisions_with_wrong_candidate_ids": 0,
+    "verified": true
+  },
+  "config": {
+    "label_rate": 0.1,
+    "retentions": [
+      0.1,
+      0.2
+    ],
+    "n_boot": 200,
+    "seed": 0,
+    "probabilistic": true,
+    "strict": true,
+    "block_size": 32
+  },
+  "not_checked": [
+    "that the scorer was fit without the scored rows",
+    "which split and horizon a prediction table was built from"
+  ],
   "pooled": {
     "auc": 0.8883525271835965,
     "ap": 0.530306238613171,
@@ -39,6 +63,7 @@
   "ci95": {
     "unit": "source_prompt",
     "n_boot": 200,
+    "statistic": "the pooled and decision-macro statistics recomputed on each draw of source prompts",
     "auc_pooled": [
       0.8806727740384596,
       0.8951871253127592

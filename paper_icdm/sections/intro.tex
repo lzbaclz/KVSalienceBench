@@ -24,18 +24,20 @@ proxy ranking checked against task quality.
 future-attention labels, selector semantics (Table~\ref{tab:protocol}), request-
 and source-prompt splits, tie-aware per-decision metrics and versioned collection;
 its default entry point (version~2.0) scores pooled and per-decision metrics together
-from a prediction table alone.
+from a prediction table alone and verifies candidate sets against a manifest when one
+is supplied.
 (2)~\emph{Controlled findings.} A three-parameter logistic scorer on two
-attention-magnitude views is within 0.006 AUC of LightGBM on v2 traces (0.008 at most
-across tree capacities) without a calibration step, yet at the per-decision
-top-decile budget the within-layer signal alone recovers more future top-decile
-blocks than either, a reversal that shrinks at 20\% retention; an exact split shows
-pooled AUC is a cross-decision statistic, which the scorer's binary cross-layer term
-raises while lowering within-decision AUC and recall. A pinned bfloat16 masked-loop
-rerun finds the reconstructed scorer and the H2O-style accumulator mean-F1 equivalent
-within a practical $\pm0.02$ margin over seven datasets (two one-sided tests, TOST,
-$p=0.0023$), and a
-bridge measures feature reconstruction (\S\ref{sec:realization}). (3)~\emph{An audit
+attention-magnitude views is within 0.006 AUC of LightGBM~\cite{ke2017lightgbm} on v2
+traces (0.008 at most across tree capacities) without a calibration step, yet at the
+per-decision top-decile budget the within-layer signal alone recovers more future
+top-decile blocks than either, on request- and source-disjoint splits, a reversal that
+shrinks at 20\% retention; an exact split shows pooled AUC is a cross-decision
+statistic, which the scorer's binary cross-layer term raises while lowering
+within-decision AUC and recall. A pinned bfloat16 masked-loop rerun finds the
+reconstructed scorer and the H2O-style accumulator mean-F1 equivalent within a
+practical $\pm0.02$ margin over seven datasets (two one-sided tests, TOST,
+$p=0.0023$), and a bridge measures reference-backend feature reconstruction
+(\S\ref{sec:realization}). (3)~\emph{An audit
 and its repair.} We diagnose corrupted float16 Qwen2.5 generation, rerun with a pinned
-simulator, audit capacity effects from logged counts, and report physical-KV parity
-levels.
+simulator, audit capacity effects from logged counts, tie rules and scorer provenance,
+and report physical-KV parity levels.

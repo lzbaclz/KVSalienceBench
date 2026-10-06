@@ -4,6 +4,9 @@
   (TrueType fonts embedded, 13 pages of 960 x 540 pt).
 - 13 English 16:9 slides; 13 sets of speaker notes; no out-of-bounds shapes
   (asserted by `../build_deck.py`).
+- Not rebuilt on 2026-10-06: the round-2 review revision changes no figure, and the slide
+  numbers are loaded from result records that revision did not change. The slide text and
+  notes in `../build_deck.py` were read against the revised manuscript; none is contradicted.
 - Rebuilt on 2026-10-05 after Figure 2 was regenerated (its legend now sits in panel
   (b)'s own column; panel (a) shares no colour or marker with it). Only slide 6 changed;
   it was visually inspected after export, and `asset_manifest.md` carries the new

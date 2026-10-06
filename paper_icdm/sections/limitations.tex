@@ -4,17 +4,15 @@
 \textbf{External validity.} Historical traces cover four instruction-tuned 7--8B
 families; corrected v2 traces and the pinned rerun cover two, at up to about 4K
 context. The archived 16K Llama and short-context Qwen2.5-14B runs are separate
-checks, not v2 replications (14B F1 0.301/0.307/0.301 for the accumulator,
-reconstructed scorer and adaptive allocation). Nothing is extrapolated to MoE, base
-checkpoints, 32K contexts or sampling; decoding is greedy.
+checks, not v2 replications. Nothing is extrapolated to MoE, base checkpoints, 32K
+contexts or sampling; decoding is greedy.
 
 \textbf{Query-coordinate audit.} The legacy extractor hooks \texttt{q\_proj} before
 rotary transformation but reads post-rotation keys, so it never computed the
-attention-space query--key product (its revision is unpinned); the old dot-max
-probe is no faithful Quest control and we claim no intrinsic query redundancy.
-Version 2 aligns queries and keys after RoPE, with a one-head test that its
-scaled dot products reproduce the attention probabilities; even so a dot-max
-probe is not Quest's page-bound algorithm. Adding it to the two magnitude views changes
+attention-space query--key product; the old dot-max probe is no faithful Quest control
+and we claim no intrinsic query redundancy. Version 2 aligns queries and keys after
+RoPE (a one-head test reproduces the attention probabilities from its scaled dot
+products); even so a dot-max probe is not Quest's page-bound algorithm. Adding it to the two magnitude views changes
 held-out \emph{request-mean} AUC by $-0.0070$ on the 128 Llama prompts (32 test
 requests, all negative; $[-0.0082,-0.0058]$; two-view mean 0.899) and by $+0.0020$ on
 the matched Qwen prompts (31/32 positive; $[0.0016,0.0024]$; mean 0.884): small,
@@ -23,15 +21,13 @@ model-dependent, opposite in sign.
 \textbf{Generation, labels and the archived loop.} The legacy collector refed the final
 prompt token and clamped unavailable horizons to the last recorded step; version 2
 consumes the prefill-predicted token and generates genuine lookahead, so archived
-long-horizon results are not evidence for long-horizon generalization (no archived
-number was silently changed). The archived cells came from an unpinned float16
+long-horizon results are not evidence for long-horizon generalization. The archived cells came from an unpinned float16
 simulator whose
 Qwen2.5 path emits all-NaN logit rows (\S\ref{sec:transfer-gap}), scored against one
 reference with articles removed before punctuation; the rerun pins the revision by hash,
-uses bfloat16 for both architectures and applies one memory patch (each layer's
-already-ingested attention weights replaced by a placeholder in the tuple returned to the
-decoder layer), verified on a tiny model to change no statistic, mask or token. No rerun
-latency is reported; the GPUs were shared.
+uses bfloat16 for both architectures and applies one memory patch (ingested attention
+weights replaced by a placeholder), verified on a tiny model to change no statistic,
+mask or token. No rerun latency is reported; the GPUs were shared.
 
 \textbf{Tied scores and shared prompts.} The archived AUPRC integrated one row at a time
 after a stable sort, crediting tied scores for row order; the two discrete probes cannot
@@ -47,10 +43,12 @@ attention with equal weight over all query heads and over a block's actual membe
 whereas the loop averages head groups and pads ragged tail blocks
 (Table~\ref{tab:protocol}), a difference we did not measure. The label is the attention
 four steps ahead while the loop re-decides every eight steps; a window target is
-untested. Both learned scorers minimize a pooled loss (a per-decision ranking objective
-is untested); a budget shared across layers or requests makes cross-decision ordering
-the operating point; and offline candidates include sink and recent blocks the loop
-always keeps.
+untested. Both learned scorers minimize a pooled loss, so the reversal may belong to
+that objective and not to the cross-layer feature: a decision-balanced or
+within-decision ranking loss is untested. A budget shared across layers or requests
+makes cross-decision ordering the operating point, and offline candidates include the
+sink and recent blocks the loop reserves subject to its budget cap
+(Table~\ref{tab:protocol}).
 
 \textbf{Parity levels of the reference backend.} The committed gates (1024 tokens, four
 decode steps) pass their numeric tolerance. Extending them to four prompts from both
@@ -64,14 +62,13 @@ test fails that tolerance. The four-order fall with precision fits floating-poin
 ordering over 40 evictions but does not exclude a semantic difference; settling it needs
 a layer-by-layer comparison of retained indices, positions and K/V values against a
 higher-precision reference. Top-1 agreement is 972/984 gated steps in bfloat16 and 984/984 in float32.
-Tolerances were not raised. The old physical-memory probe, which swallowed decode
-exceptions and put full prefill in its peak statistic, is retired, its source and
-results kept.
+Tolerances were not raised.
 
 \textbf{Availability.} The artifact contains LaTeX, result JSON, analysis code,
 predictor weights, tests, the version-2 collector, the reference validator and the
-rerun's exact simulator source, bundled with its MIT notice and verified against all 70
-cells' provenance hashes, plus a CPU example; model weights
-remain separately licensed. Code, records and figure sources are at
+rerun's exact simulator source (MIT notice kept, verified against all 70 cells'
+provenance hashes); model weights remain separately licensed. Code, records and figure sources are at
 \url{https://github.com/lzbaclz/KVSalienceBench}; the default benchmark entry scores a
-prediction table without traces or weights, and raw traces are available on request.
+prediction table without traces or weights. It always checks label counts, verifies
+candidate sets only against a supplied manifest, and cannot check how a scorer was
+trained. Raw traces are available on request.

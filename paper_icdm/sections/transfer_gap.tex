@@ -35,8 +35,8 @@ filled) and 14 cells (sensitivity, hollow); the band is the $\pm0.02$ margin.}
 \caption{Exp\#8: masked-loop LongBench F1 at 20\% retention, 896 model--prompt
 evaluations. $\Delta$ is the difference from the H2O-style accumulator with a 90\% $t$
 interval over the seven datasets (df 6); $p_{\mathrm{TOST}}$ is the TOST $p$ at
-$\pm.02$ over the same datasets. Pinned bfloat16 rerun, official scorer, all
-references.}
+$\pm.02$ over the same datasets (none for full cache: the question there is the
+loss). Pinned bfloat16 rerun, official scorer, all references.}
 \label{tab:perlayer}
 \footnotesize
 \setlength{\tabcolsep}{3pt}
@@ -45,10 +45,10 @@ references.}
 policy realization & F1 & $\Delta$ [90\% CI] & $p_{\mathrm{TOST}}$ \\
 \midrule
 %%PERLAYER-ROWS-BEGIN%%
-full cache & .419 & +.047 & --- \\
+full cache & .419 & +.047 [+.015, +.078] & --- \\
 H2O-style & .372 & --- & --- \\
 reconstructed & .374 & +.002 [-.006, +.010] & .0023 \\
-Ada-KV-style & .363 & -.008 [-.016, -.000] & .015 \\
+Ada-KV-style & .363 & -.008 [-.016, -.0004] & .015 \\
 PyramidKV-style & .349 & -.023 [-.046, +.001] & .582 \\
 %%PERLAYER-ROWS-END%%
 \bottomrule
@@ -60,34 +60,35 @@ reconstructed scorer's mean F1 difference from the accumulator over 896 evaluati
 $+0.0017$: the seven-dataset TOST gives $p=0.0023$ at $\pm0.02$ and the 14-cell
 sensitivity analysis $p=0.0007$. The seven-dataset $t$ interval is $[-0.0064,0.0098]$;
 the 14-cell $t$-based and cell-bootstrap 90\% intervals are $[-0.0063,0.0097]$ and
-$[-0.0056,0.0087]$. Supplementary $\pm0.01$ tests ($p=0.047$ seven datasets, 0.045 14 cells) use a margin
-that was not set in advance, so we do not count them. Per architecture the
-difference is $+0.0052$ (Llama, $p=0.016$) and $-0.0018$ (Qwen, $p=0.026$). The
-Ada-KV-style comparator remains equivalent ($-0.0084$, $p=0.015$); the PyramidKV-style
-one does not ($-0.023$, $p=0.58$). Both allocation comparators only move a fixed total
+$[-0.0056,0.0087]$. Per architecture the
+difference is $+0.0052$ (Llama) and $-0.0018$ (Qwen), each inside the same $\pm0.02$
+margin over its seven datasets ($p_{\mathrm{TOST}}=0.016$ and $0.026$: equivalence
+tests, not tests of a gain or a loss). The Ada-KV-style comparator is also equivalent
+($-0.0084$, $p_{\mathrm{TOST}}=0.015$); for the PyramidKV-style one equivalence is not
+established ($-0.023$, $p_{\mathrm{TOST}}=0.58$), which does not show it is worse. Both allocation comparators only move a fixed total
 budget across layers (Ada-KV-style: by attention concentration; PyramidKV-style: a
 linear pyramid) and select within a layer as H2O-style does, so no finding covers original H2O, Ada-KV or
 PyramidKV, or equivalence between the reconstructed and Ada-KV-style policies; and this
 is equivalence between compressed policies, not absence of compression loss: both stay
 0.045--0.047 below full cache. The policies also differ in EMA window and mandatory
 blocks (Table~\ref{tab:protocol}): this compares two complete runtime realizations, not
-a scorer-only intervention, which is untested. Logged retained blocks per decode step
+a scorer-only intervention, which is untested. Logged selected-set sizes (the blocks
+chosen at the last decision, layer mean, per decode step)
 average 25.02 for the H2O-style, reconstructed and Ada-KV-style policies and 25.01 for
-the PyramidKV-style one (median 26, range 7--26): retention is matched in counts, not
-only in the nominal 0.2.
+the PyramidKV-style one (median 26, range 7--26): the policies are matched in selected
+blocks, not only in the nominal 0.2. Tokens decoded since the last decision stay
+unmasked and tail blocks are ragged, so equal per-step active-token counts are not
+claimed.
 
 \textbf{What the rerun repaired.} Archived Qwen float16 decoding emitted all-NaN logit
 rows, producing token~0 (``!''): a 56-prompt replay found this in 54 requests, against
 none in bfloat16/float32. In the rerun no Qwen
 full-cache output contains a run of ``!'' (0/448 versus 181/448) and 34/448 reach the
 48-token cap (versus 210/448). The archived F1 difference was $+0.00511$ under a
-single-reference scorer ($+0.0030$ after all-reference rescoring); the artifact keeps
-the original scores and the repair record.
+single-reference scorer ($+0.0030$ after all-reference rescoring).
 
-\textbf{Exp\#9: Archived budget and context checks.} Sweeping retention over
-$\{0.10,0.20,0.30,0.50\}$ yields no resolved per-budget quality gain; at 16K the larger
-Llama sample (448 prompts, 20\% retention) has mean F1 difference $-0.0006$,
-request-level 95\% interval $[-0.012,0.012]$, and a 160-prompt pilot that had suggested
-$+0.010$ is not sustained, so we claim no long-context gain. A synthetic needle
-probe is a negative control, not evidence about query-aware selection. Neither check
-proves curve equivalence or zero memory saving.
+\textbf{Exp\#9: Archived budget and context checks.} An archived retention sweep
+($0.10$ to $0.50$) resolves no per-budget quality gain, and at 16K a 448-prompt Llama
+sample has mean F1 difference $-0.0006$ (request-level 95\% interval $[-0.012,0.012]$)
+where a 160-prompt pilot had suggested $+0.010$: we claim no long-context gain, and
+neither check proves curve equivalence.

@@ -34,5 +34,22 @@
     "auc_cross_decision": 0.8902087530531217,
     "macro_recall_0.10": 0.6129992615691491,
     "macro_recall_0.20": 0.8378517631688397
+  },
+  "source_split_refit": {
+    "note": "The frozen coefficients above are the REQUEST-split refit (the paper's Table II). The evaluator's default split is source-disjoint; refit on its training rows the same model has these coefficients and metrics.",
+    "source": "experiments/results/icdm_v2_decomposition_source.json",
+    "weights": {
+      "s_within": 88.08036804199219,
+      "s_cross": 2.491945266723633,
+      "s_query": 0.0,
+      "s_pos": 0.0
+    },
+    "bias": -3.2125258445739746,
+    "evaluation_rows": "every held-out row (7,719,480 rows, 61,440 decisions, 64 requests, 32 source prompts)",
+    "auc_pooled": 0.8902314578320015,
+    "auc_same_decision": 0.9265960143658846,
+    "auc_cross_decision": 0.8902308624084228,
+    "macro_recall_0.10": 0.6102897533781324,
+    "macro_recall_0.20": 0.8352578876834248
   }
 }

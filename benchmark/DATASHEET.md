@@ -24,22 +24,49 @@ cross-decision pairs (same-decision pairs are 0.0016% of all pairs on the versio
 corpus); per-decision top-k recall at 10% and 20% retention, with the share of decisions
 whose k-th place is a tie and the recall under exact random tie-breaking; and, only for
 scorers declared probabilistic, ECE and Brier. Uncertainty is a bootstrap over source
-prompts. The default split holds out whole source prompts, the same ones for every model;
-`split='request'` reproduces the paper's pooled request split (a global permutation, not
-stratified by model: 30 Llama and 34 Qwen requests are held out).
+prompts of the pooled or decision-macro statistic itself.
+
+**Two splits, two questions.** The default split holds out whole source prompts, the
+same ones for every model, so no held-out text occurs in training. `split='request'`
+reproduces the paper's Table II: a global permutation of model-requests, not stratified
+by model (30 Llama and 34 Qwen requests are held out). Its 64 held-out requests cover 57
+source prompts, 50 of which also occur in training through the other model: it measures
+transfer to new model-requests, not to unseen text. Both held-out sets are listed in
+`benchmark/splits/paper_v2_splits.json`, and
+`experiments/results/icdm_v2_decomposition_source.json` repeats the paper's pair split
+on the default split (every entry within 0.004 of the request-split value).
 
 A **prediction table** (CSV, columns `model_id, source_id, request_id, layer, step,
-block_idx, label, score`) needs no traces or model weights. Every decision must hold
-exactly ceil(0.1 n) positives; the evaluator refuses a row sample because per-decision
-metrics are meaningless on a few rows per decision.
+block_idx, label, score`) needs no traces or model weights.
 
 ```bash
 python -m benchmark.run_leaderboard --table benchmark/example/prediction_table.csv --probabilistic
+python -m benchmark.run_leaderboard --table benchmark/example/prediction_table.csv \
+    --manifest benchmark/example/candidate_manifest.json
 ```
 
-`benchmark/example/` ships a **synthetic** table (5,748 rows, 192 decisions) and the
-results `evaluate_table` must reproduce (`tests/test_benchmark_v2.py`); it carries no
-empirical claim. `benchmark/reference_model_v2.json` holds the paper's three-parameter
+**What is checked, and what is not.**
+
+| Check | When | Reported as |
+|---|---|---|
+| Labels are exactly 0 or 1, finite | always; anything else is refused, not coerced | error |
+| One source prompt per request, no duplicate (decision, block) rows | always | error |
+| Every decision holds exactly ceil(0.1 n) positives | always (`--no-strict` reports instead of refusing) | `label_count_consistent` |
+| Every decision lists exactly its candidate blocks | only with a candidate manifest (`--manifest`) | `candidates.verified` |
+| The scorer was fit without the scored rows | never: a table cannot show it | `not_checked` |
+
+The label-count check catches a row sample, but it is **not** a completeness proof: drop
+one negative from a decision of 20 candidates with 2 positives and the remaining 19 rows
+still hold ceil(0.1 x 19) = 2 positives. A candidate manifest
+(`benchmark.protocol.candidate_manifest`, or `--write-manifest` on a table known to be
+complete) records each decision's candidate count and a digest of its block indices; with
+it the evaluator verifies the decision set, every count and every digest. Without one,
+`candidates.verified` is null and completeness is the caller's claim. This is an
+evaluator for a stated protocol, not a closed leaderboard.
+
+`benchmark/example/` ships a **synthetic** table (5,748 rows, 192 decisions), its
+candidate manifest and the results `evaluate_table` must reproduce
+(`tests/test_benchmark_v2.py`); it carries no empirical claim. `benchmark/reference_model_v2.json` holds the paper's three-parameter
 within+cross logistic refit as the baseline to compare against; `run_leaderboard --traces`
 refits it on the training rows of the evaluated split so it never sees a test prompt.
 
@@ -57,7 +84,11 @@ Report pooled AUC, threshold-based AP, pooled and per-decision top-decile
 precision/recall, and calibration (ECE/Brier). The three-parameter logistic scorer
 has pooled AUC 0.890 versus LightGBM's 0.896; within-decision top-decile recall is
 0.613 versus 0.615 and the raw within-layer signal's 0.659. The ordering changes
-with the metric and budget. Low ECE is not specific to a model family: unweighted
+with the metric and budget. Per-decision values use a stable row-order tie rule; for the
+age proxy, whose prompt blocks share one value, that rule decides the result (0.208
+against an expected 0.109 under random tie-breaking), so Table II prints the expectation
+(`experiments/results/icdm_v2_tie_sensitivity.json`). Every frozen constant of the fits,
+features and splits is in `docs/FROZEN_CONFIG.md`. Low ECE is not specific to a model family: unweighted
 and recalibrated tree controls are included.
 
 ## Separate downstream experiment

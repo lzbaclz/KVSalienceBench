@@ -1,25 +1,117 @@
-# Validation status — 2026-10-05
+# Validation status — 2026-10-06
 
 ## Final camera-ready candidate
 
 `paper_icdm/main.pdf` is **8 IEEE two-column US-letter pages including references**,
-with a **232-word abstract**, complete named authors, and Jiawei Guo's confirmed
-email `jwguo@buaa.edu.cn`. No funding acknowledgment was requested. The standard
+with a **230-word abstract**, 28 references, complete named authors, and Jiawei Guo's
+confirmed email `jwguo@buaa.edu.cn`. No funding acknowledgment was requested. The standard
 IEEEtran body font, margins and line spacing were retained. The final PDF SHA256 is:
 
 ```
-b48b7cebb20e3e0c41990f1090043f2527b015188505b6219196609c140db34d
+b63616e391df580bb81470bc998d08a03676f426ea87d6518f65c6325a3e9229
 ```
 
 This identifies the locally validated upload candidate, not a CPS upload receipt. It
-**supersedes the 2026-10-04 candidate** (`3d96b3504b95...`) and the 2026-09-29 one
-(`b7a80e8b62d3...`), both described below, and a first 2026-10-05 build
-(`f6e4033c2a45...`, the PDF of release `d2ai-camera-ready-r4`) that differs from it only
-in lacking the corresponding-author mark: upload this PDF, not those, and run PDF
+**supersedes the 2026-10-05 candidate** (`b48b7cebb20e...`, the PDF of release
+`d2ai-camera-ready-r5`), the 2026-10-04 one (`3d96b3504b95...`) and the 2026-09-29 one
+(`b7a80e8b62d3...`), all described below: upload this PDF, not those, and run PDF
 eXpress on this exact file. If the authors subsequently add a copyright line or DOI,
 rerun the sequence below and replace this hash with the exact PDF submitted to the
-workshop. The last column of page 8 ends about six text lines above the bottom margin,
-which is the room a first-page copyright notice would need.
+workshop. The last column of page 8 ends 58 pt (about five text lines) above the bottom
+margin, which is the room a first-page copyright notice would need.
+
+## 2026-10-06 round-2 review revision
+
+A second camera-ready review (22 items) and a 27-reference audit, both dated 2026-10-05,
+were checked item by item against the code, the result records and primary sources
+before anything changed; `docs/ROUND2_REVIEW_2026-10-05_RESPONSE.md` in the private
+working copy maps every item to its action. No GPU experiment was run and no existing
+result record was rewritten. Four CPU analyses were added, each writing a new record.
+
+**Three things were wrong in the previous candidate, not merely loosely worded.**
+
+- **The age proxy's per-decision value was a tie-rule artifact.** §II-C said that
+  recomputing every per-decision recall under exact random tie-breaking moved none by
+  more than 2e-5. That held for the three main scorers. For the age proxy, every prompt
+  block shares one creation step, so 99.9% of its rows tie and the stable rule kept the
+  lowest block indices: 0.208 by row order against an expectation of 0.109.
+  `experiments/analyze_tie_sensitivity.py` now covers every Table II row on both splits
+  (`experiments/results/icdm_v2_tie_sensitivity.json`). Table II prints `.109` with a
+  dagger and the row-order value in its note; no other printed cell depends on the rule.
+  The text says what the check is (the exact expectation of the decision-macro
+  statistic; score ties only; not a per-decision bound).
+- **Table III and Table IV use the same scorer.** The paragraph "Why this table's F1 is
+  half of Table IV's" gave all-reference scoring as one reason the tables differ.
+  `experiments/analyze_physical_scorer.py` rescored every stored generation of the 18
+  physical cells with Exp#8's function: no request changes
+  (`experiments/results/physical_kv/scorer_check.json`). The tables differ in cohort: two
+  of Exp#8's seven datasets, a different row sample, another prompt template and a
+  128-token generation cap. The paragraph also called Qasper and NarrativeQA "the two
+  hardest" sets, which Exp#8's own numbers contradict. It is rewritten and Table III's
+  caption names the scorer.
+- **Two interval bounds were printed as a signed zero** (`-.000` in Table IV, `-0.000` in
+  §IV-B). Both carry one more decimal now, and Table IV's full-cache row has the
+  seven-dataset interval its caption promised: +.047 [+.015, +.078]
+  (`experiments/analyze_full_cache_gap.py`,
+  `experiments/results/tost/expand_v2_full_cache_gap.json`).
+
+**The evaluation object is defined where it was only named.**
+
+- **Pooled-AUC split as an equation** (§II-C, Eq. 1) with the weight of same-decision
+  pairs. §V separates the arithmetic (that weight depends on decision sizes only: about
+  one over the 61,184 decisions) from the finding (what one fitted term does to the two
+  parts).
+- **What the request split tests.** Table II holds out 64 model-requests from 57 source
+  prompts, 50 of which also occur in training through the other model: transfer to new
+  model-requests, not to unseen text. The whole pair-split analysis was rerun on the
+  source-disjoint split (`analyze_decision_decomposition.py --split source`,
+  `experiments/results/icdm_v2_decomposition_source.json`): every entry of Table II's
+  lower block is reproduced within 0.004, with the same boundary swaps.
+- **Estimand of the recall gaps.** The printed intervals are now a source-cluster
+  bootstrap of the decision-macro statistic itself (+0.046 [0.042, 0.049] and +0.044
+  [0.041, 0.047]); the earlier ones were request-macro. Positivity within each of the 64
+  requests is kept as a directional supplement.
+- **Served oracle of Exp#7.** §VIII defines the oracle size, the kept-set size and the
+  capacity floor from the pinned evaluator, and says that subtracting a floor that is
+  identical for both policies on every request leaves the paired contrast unchanged by
+  algebra, not by a second experiment.
+- **Frozen constants.** `docs/FROZEN_CONFIG.md` lists every constant of the fits,
+  features, splits, intervals and runtime paths; `tests/test_frozen_config.py` checks it
+  against the code defaults, the records and the pinned simulator (including what the
+  masked loop keeps when its budget is below its mandatory set).
+
+**Wording.** Per-architecture p values are labelled as TOST p values at the same margin;
+"equivalence is not established" replaces "does not [remain equivalent]"; "always keeps"
+became "reserves subject to its budget cap"; the bridge uses "one label rule" and "the
+reference backend's feature realization"; logged retained blocks are called
+selected-set sizes and equal active-token counts are not claimed; the abstract says
+"collected with a 4K-token input cap" and is rebuilt around three contributions.
+
+**The public evaluator states what it verifies.** `benchmark/protocol.py` refuses labels
+that are not exactly 0 or 1 (a 2 used to count as a positive, a -1 or NaN as a negative);
+its positive-count check is reported as `label_count_consistent` and no longer called a
+completeness check, because dropping one negative from a decision of 20 candidates with
+2 positives passes it; an optional candidate manifest verifies every decision's
+candidate set; the output records split, horizon and held-out prompts and lists what was
+not checked. `benchmark/splits/paper_v2_splits.json` fixes both held-out sets.
+
+**Structure and page budget.** The first build with every addition was 9 pages. The
+version-1 intervals, the online-update, threshold (GuardKV) and scoring-cost results, the
+feedback-shift check, the conditional-information grids, the 14B numbers, the
+supplementary +-0.01 tests and the needle-probe sentence moved to
+`docs/HISTORICAL_DIAGNOSTICS.md`, where the tests still check each against the result
+records; §IV-D and the two subsection headings of §III went with them.
+
+**References.** The three fixes of the audit are applied (`Song, Chengru`; the Bayreuth
+DOI field without TeX escapes; no explanatory note on Expected Attention), and the
+LightGBM paper is cited at its first mention (record checked against the NeurIPS
+proceedings page; its BibTeX gives no pages, so none are printed). The bibliography has
+28 entries; [8]-[27] of the audited PDF are now [9]-[28]. The page range of
+AttentionPredictor [7] is still not confirmed from an official export.
+
+**Not done, deliberately.** A decision-aware training objective, a scorer-only masked-loop
+comparison, a layer-by-layer localization of the physical parity drift, more models or
+longer contexts: the review classes all of them as follow-up research.
 
 ## 2026-10-05 panel revision
 
@@ -209,16 +301,15 @@ every figure change is a regeneration from committed source.
 
 ## Executed checks
 
-- **278 tests passed, no skips** in the Python 3.11 pinned runtime with CUDA hidden
-  (231 after the 2026-09-29 revision, plus 27 decision-evaluation tests checked against
-  brute-force pair enumeration, 16 benchmark-protocol tests and 4 new paper-number pins).
-- The clean public export (re-cut 2026-10-05) independently passed **278 tests, no
-  skips**; its figure assets pass; and its LaTeX sources rebuilt to an 8-page PDF whose
-  text is identical to the shipped PDF's. It contains no raw JSONL input files, pretrained model
-  payloads, internal review directories or the 2026-09-29 draft sections.
-- `check_camera_ready.py` was re-run after the final clean rebuild of 2026-10-05 and
-  passes: 8 pages, 232-word abstract, **no overfull boxes**, no undefined references,
-  27 BibTeX entries and no BibTeX warnings. (An overfull box in Table II's new lower block was caught by this check
+- **298 tests passed, no skips** in the Python 3.11 pinned runtime with CUDA hidden
+  (278 after the 2026-10-05 revision, plus 9 benchmark-protocol tests, 5 frozen-config
+  tests and 6 new paper-number tests).
+- The clean public export (re-cut 2026-10-06, `-r6`) was validated independently; the
+  outcome is recorded in `RELEASE_AUDIT.md`. It contains no raw JSONL input files,
+  pretrained model payloads, internal review directories or the 2026-09-29 draft sections.
+- `check_camera_ready.py` was re-run after the final clean rebuild of 2026-10-06 and
+  passes: 8 pages, 230-word abstract, **no overfull boxes**, no undefined references,
+  28 BibTeX entries and no BibTeX warnings. (An overfull box in Table II's new lower block was caught by this check
   and fixed; inspect logs with a tool that does not honour `.gitignore`.)
 - All **65 bundled simulator Python source hashes** match all **70** v2 cell
   provenance records. The original MIT notice is retained.
@@ -226,18 +317,24 @@ every figure change is a regeneration from committed source.
   references, font embedding and encryption. No overfull boxes or Type 3 fonts.
 - `check_figure_assets.py` passes: exact draw.io source embedded in its exported
   PDF, complete figure inventory, vector artwork, embedded fonts and unclipped text.
-- All eight rendered paper pages were visually inspected after the 2026-10-05
+- All eight rendered paper pages were visually inspected after the 2026-10-06
   revision. The inspected render is of the final rebuild, the file whose hash is given
-  above, including approximately 9 pt figure labels.
+  above: the new equation, the note under Table II, Tables I, III and IV and the
+  28-entry reference list, with no stretched column on pages 1 and 4.
 - The English presentation is **13 slides**, with notes on all slides, exported
   through LibreOffice to PDF. All slides were visually inspected; no out-of-bounds
   shapes or substantial text-span collisions were found. It was last rebuilt on
   2026-10-05 against the regenerated Figure 2 --- `asset_manifest.md` records the
-  source-PDF hashes --- and slide 6 was re-inspected. The clean reviewer-change
-  summary is a separately rendered **one-page PDF**.
+  source-PDF hashes --- and slide 6 was re-inspected. The 2026-10-06 revision changes no
+  figure and no number or statement on a slide, so the deck was not rebuilt. The clean
+  reviewer-change summary is a separately rendered **one-page PDF**; two of its sentences
+  were aligned with the manuscript on 2026-10-06 and it was rebuilt.
 - `git diff --check` passes. **No existing experimental result JSON changed and no
   GPU experiment or latency measurement was run.** The 2026-09-29 revision adds one
   new CPU-only record, `experiments/results/icdm_v2_train_size.json`, and rewrites
+  none; the 2026-10-06 revision adds four (`icdm_v2_tie_sensitivity.json`,
+  `icdm_v2_decomposition_source.json` with two CSV views,
+  `tost/expand_v2_full_cache_gap.json`, `physical_kv/scorer_check.json`) and rewrites
   none. See `FIGURE_QA.md`, `ARTIFACT_POINTERS.md` and `RELEASE_AUDIT.md` for scope
   and evidence.
 

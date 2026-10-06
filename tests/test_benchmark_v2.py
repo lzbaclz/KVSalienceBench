@@ -2,9 +2,11 @@
 
 The evaluator itself is checked against brute force in ``test_decision_eval.py``; here
 the benchmark layer is checked: that the shipped example reproduces its recorded
-results, that incomplete or malformed tables are refused, that the trace loader and
-both splits behave as documented (and the request split IS the paper's), and that the
-version-1 interface is kept but marked legacy.
+results, that incomplete or malformed tables are refused, that the label-count check is
+not mistaken for a completeness proof (a candidate manifest is), that illegal labels are
+refused instead of coerced, that the trace loader and both splits behave as documented
+(and the request split IS the paper's), and that the version-1 interface is kept but
+marked legacy.
 """
 from __future__ import annotations
 
@@ -61,7 +63,12 @@ def test_example_table_reproduces_its_recorded_results(example):
 def test_example_is_synthetic_and_complete(example):
     assert set(example["source_id"].tolist()) == {f"synthetic/q{i:02d}" for i in range(8)}
     res = P.evaluate_table(example, n_boot=0)
-    assert res["complete_decisions"] is True and res["n_decisions"] == 192
+    assert res["label_count_consistent"] is True and res["n_decisions"] == 192
+    # without a manifest the evaluator claims nothing about candidate completeness
+    assert res["candidates"]["verified"] is None and "complete_decisions" not in res
+    shipped = P.read_manifest(EXAMPLE / "candidate_manifest.json")
+    assert shipped == P.candidate_manifest(example) and shipped["n_decisions"] == 192 and shipped["n_rows"] == 5748
+    assert P.evaluate_table(example, n_boot=0, manifest=shipped)["candidates"]["verified"] is True
     assert (ROOT / "benchmark/example/make_example_table.py").read_text().count("SYNTHETIC") >= 1
 
 
@@ -84,8 +91,83 @@ def test_incomplete_decisions_are_rejected_unless_asked(example):
     with pytest.raises(ValueError, match="complete decisions"):
         P.evaluate_table(sample, n_boot=0)
     res = P.evaluate_table(sample, n_boot=0, strict=False)
-    assert res["complete_decisions"] is False
-    assert P.evaluate_table(sample, n_boot=0, label_rate=None)["complete_decisions"] is None
+    assert res["label_count_consistent"] is False
+    assert P.evaluate_table(sample, n_boot=0, label_rate=None)["label_count_consistent"] is None
+
+
+def one_decision(n: int = 20, positives: int = 2) -> dict:
+    """A single decision of ``n`` candidates whose first ``positives`` blocks are positive."""
+    label = np.zeros(n, np.int8); label[:positives] = 1
+    return dict(model_id=np.array(["m"] * n), source_id=np.array(["s"] * n), request_id=np.zeros(n, np.int64),
+                layer=np.zeros(n, np.int64), step=np.zeros(n, np.int64), block_idx=np.arange(n, dtype=np.int64),
+                label=label, score=np.linspace(1.0, 0.0, n))
+
+
+def test_label_count_check_is_not_a_completeness_proof():
+    """Drop one NEGATIVE from a decision of 20 candidates with 2 positives: 19 rows still
+    hold ceil(0.1 * 19) = 2 positives, so the label-count check passes although a
+    candidate is missing. Only a candidate manifest catches it."""
+    full = one_decision(20, 2)
+    assert int(np.ceil(0.1 * 20)) == int(np.ceil(0.1 * 19)) == 2
+    manifest = P.candidate_manifest(full)
+    assert manifest["decisions"]["m|0|0|0"][0] == 20
+    assert P.evaluate_table(full, n_boot=0, manifest=manifest)["candidates"]["verified"] is True
+
+    keep = np.ones(20, bool); keep[7] = False                 # block 7 is a negative
+    cut = {k: v[keep] for k, v in full.items()}
+    res = P.evaluate_table(cut, n_boot=0)                      # strict, and it still passes
+    assert res["label_count_consistent"] is True and res["candidates"]["verified"] is None
+    with pytest.raises(ValueError, match="candidate check failed"):
+        P.evaluate_table(cut, n_boot=0, manifest=manifest)
+    report = P.evaluate_table(cut, n_boot=0, manifest=manifest, strict=False)["candidates"]
+    assert report["verified"] is False and report["decisions_with_wrong_candidate_count"] == 1
+
+    # same count, another block: caught by the digest
+    swapped = dict(full, block_idx=full["block_idx"].copy()); swapped["block_idx"][7] = 99
+    report = P.evaluate_table(swapped, n_boot=0, manifest=manifest, strict=False)["candidates"]
+    assert report["verified"] is False and report["decisions_with_wrong_candidate_ids"] == 1
+    # a whole decision missing, or one the manifest does not know
+    other = dict(full, step=np.ones(20, np.int64))
+    report = P.evaluate_table(other, n_boot=0, manifest=manifest, strict=False)["candidates"]
+    assert report["missing_decisions"] == 1 and report["unexpected_decisions"] == 1
+    with pytest.raises(ValueError, match="not a candidate manifest"):
+        P.evaluate_table(full, n_boot=0, manifest={"decisions": {}})
+
+
+@pytest.mark.parametrize("bad", [2, -1, 0.5, float("nan"), float("inf")])
+def test_illegal_labels_are_refused_not_coerced(bad):
+    """``label > 0`` used to score a 2 as a positive and a -1 or NaN as a negative."""
+    table = one_decision(20, 2)
+    table["label"] = table["label"].astype(np.float64)
+    table["label"][5] = bad
+    with pytest.raises(ValueError, match="labels must be exactly 0 or 1|non-finite labels"):
+        P.evaluate_table(table, n_boot=0, strict=False)
+
+
+def test_legal_label_encodings_are_accepted():
+    table = one_decision(20, 2)
+    want = P.evaluate_table(table, n_boot=0)["pooled"]["auc"]
+    for cast in (bool, np.float32, np.int64):
+        assert P.evaluate_table(dict(table, label=table["label"].astype(cast)), n_boot=0)["pooled"]["auc"] == want
+    with pytest.raises(ValueError, match="numeric"):
+        P.evaluate_table(dict(table, label=np.array(["yes"] * 20)), n_boot=0)
+    with pytest.raises(ValueError, match="equally long"):
+        P.evaluate_table(dict(table, label=table["label"][:-1]), n_boot=0)
+
+
+def test_manifest_roundtrip_and_runner(tmp_path, capsys, example):
+    for name in ("m.json", "m.json.gz"):
+        P.write_manifest(tmp_path / name, P.candidate_manifest(example))
+        assert P.read_manifest(tmp_path / name) == P.candidate_manifest(example)
+    (tmp_path / "x.json").write_text("{}")
+    with pytest.raises(ValueError, match="not a candidate manifest"):
+        P.read_manifest(tmp_path / "x.json")
+    table = str(EXAMPLE / "prediction_table.csv")
+    run_leaderboard.main(["--table", table, "--write-manifest", str(tmp_path / "w.json")])
+    assert P.read_manifest(tmp_path / "w.json") == P.read_manifest(EXAMPLE / "candidate_manifest.json")
+    capsys.readouterr()
+    run_leaderboard.main(["--table", table, "--n-boot", "0", "--manifest", str(tmp_path / "w.json")])
+    assert "candidate sets verified against the manifest" in capsys.readouterr().out
 
 
 def test_malformed_tables_are_refused(example):
@@ -200,7 +282,15 @@ def test_splits_reproduce_run_icdm_v2(corpus, kind):
 def test_evaluate_scores_a_function_on_the_held_out_part(corpus):
     res = P.evaluate(lambda F: F[:, 0], corpus, "source", n_boot=100)
     assert res["protocol"] == P.PROTOCOL_VERSION and res["split"] == "source"
-    assert res["complete_decisions"] is True
+    assert res["label_count_consistent"] is True
+    # the result says what was scored: split, horizon, held-out prompts and traces
+    cfg = res["config"]
+    assert cfg["split"] == "source" and cfg["horizon"] == P.HEADLINE_H and cfg["label_rate"] == P.TOP_R
+    assert cfg["retentions"] == list(P.RETENTIONS) and cfg["models"] == ["model-a", "model-b"]
+    _, te = P.split(corpus, "source")
+    held = sorted({corpus["source_names"][c] for c in corpus["request_source"][np.unique(corpus["request"][te])]})
+    assert cfg["held_out_source_prompts"] == held and cfg["held_out_requests"] == 2 * len(held)
+    assert len(cfg["traces"]) == 2 and any("fit without" in item for item in res["not_checked"])
     assert 0.5 < res["pooled"]["auc"] <= 1.0 and 0.0 <= res["per_decision"]["0.10"]["macro_recall"] <= 1.0
     with pytest.raises(ValueError, match="one score per row|scores for"):
         P.evaluate(lambda F: F[:5, 0], corpus)
@@ -233,6 +323,30 @@ def test_runner_scores_a_table(capsys):
     run_leaderboard.main(["--table", str(EXAMPLE / "prediction_table.csv"), "--n-boot", "50", "--probabilistic"])
     out = capsys.readouterr().out
     assert "prediction_table" in out and "AUC same-dec" in out and "ECE" in out
+    # the header says what could not be verified from a table alone
+    assert "candidate sets not verified (no manifest)" in out and "not recorded in a table" in out
+    assert "not a closed leaderboard" in " ".join(run_leaderboard.__doc__.split())
+    assert "not a closed leaderboard" in " ".join(P.__doc__.split())
+
+
+def test_split_manifest_is_the_recorded_split():
+    """benchmark/splits/paper_v2_splits.json is rebuilt from the tracked cohort files and
+    equals the held-out sets recorded by the paper's analysis."""
+    from benchmark import make_split_manifest as M
+    shipped = json.loads((ROOT / "benchmark/splits/paper_v2_splits.json").read_text())
+    assert shipped == M.build() and shipped["schema"] == M.SCHEMA
+    recorded = json.loads((ROOT / "experiments/results/icdm_v2.json").read_text())
+    for kind in ("source", "request"):
+        got = [r["request"] for r in shipped["splits"][kind]["held_out_requests"]]
+        assert got == sorted(recorded[f"pooled_{kind}_split"]["held_out_requests"])
+    src, req = shipped["splits"]["source"], shipped["splits"]["request"]
+    assert (src["n_held_out_requests"], src["n_held_out_source_prompts"],
+            src["held_out_source_prompts_also_in_training"]) == (64, 32, 0)
+    # the request split is transfer to new model-requests, not to unseen text
+    assert (req["n_held_out_requests"], req["n_held_out_source_prompts"],
+            req["source_prompts_with_every_model_held_out"],
+            req["held_out_source_prompts_also_in_training"]) == (64, 57, 7, 50)
+    assert req["held_out_requests_by_model"] == {"Llama-3.1-8B-Instruct": 30, "Qwen2.5-7B-Instruct": 34}
 
 
 # ------------------------------------------------------------------------- legacy

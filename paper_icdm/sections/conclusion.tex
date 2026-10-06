@@ -1,19 +1,18 @@
 \section{Conclusion}
 KV-saliency prediction and KV retention are related but distinct evaluation
 problems. On version-2 traces, the ranking advantage of learned scorers in pooled
-metrics reverses under per-decision top-decile budgets, less sharply at 20\%
-retention. Pooled AUC is almost entirely cross-decision pairs; the logistic
-scorer's binary cross-layer term raises it and lowers within-decision AUC and
-recall, promoting previous-layer-hot blocks that are positive less often than the
-blocks they displace. A separate pinned bfloat16 masked-loop rerun finds the
-reconstructed scorer mean-F1 equivalent to the H2O-style accumulator within a
-practical $\pm0.02$ margin over seven datasets, as two complete runtime policies,
-while both lose quality relative to full cache. The bridge puts reference-backend
-feature reconstruction within 0.003 AUC; its on-policy arm ranks only surviving
-blocks, so the archived
-served-oracle gap stays a historical anomaly for want of a label-only arm. The physical
-reference shows what storage a compact cache needs, not that it is equivalent: its
-extended replay exceeds the numerical tolerance. These findings concern the tested data and implementations, not the
-impossibility of better query-aware selection. To evaluate a retention scorer, fix
-the candidate set and budget, measure inside each decision, then check answer quality
-on the policy's own trajectory; the artifact's default protocol does the first two.
+metrics reverses under per-decision top-decile budgets on request- and source-disjoint
+splits, less sharply at 20\% retention. Pooled AUC is almost entirely cross-decision
+pairs; the logistic scorer's binary cross-layer term raises it and lowers
+within-decision AUC and recall, promoting previous-layer-hot blocks that are positive
+less often than the blocks they displace. A separate pinned bfloat16 masked-loop rerun
+finds the reconstructed scorer mean-F1 equivalent to the H2O-style accumulator within a
+practical $\pm0.02$ margin over seven datasets, as two complete runtime policies, both
+below full cache. The bridge puts reference-backend feature reconstruction within 0.003
+AUC and leaves the archived served-oracle gap unexplained; the physical reference shows
+what storage a compact cache needs, not that it is equivalent to masking. These
+findings concern the tested data and implementations, not the impossibility of better
+query-aware selection. To evaluate a retention scorer, fix the candidate set and
+budget, measure inside each decision, then check answer quality on the policy's own
+trajectory; the artifact's default protocol measures the first two and verifies
+candidate sets when given a manifest.

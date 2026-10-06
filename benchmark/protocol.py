@@ -25,10 +25,24 @@ every model, so text seen by one model in training never appears in another's te
 (``experiments/run_icdm_v2.py``): a global permutation of all requests, NOT stratified
 by model.
 
-Completeness. A per-decision metric is only meaningful on complete decisions; a row
-sample leaves a few rows per decision and makes top-``ceil(r n)`` meaningless.
-``evaluate_table`` therefore refuses tables whose decisions do not each hold exactly
-``ceil(label_rate * n)`` positives unless ``strict=False``.
+What the evaluator checks, and what it cannot. A per-decision metric is only meaningful
+on COMPLETE decisions: every candidate block of the decision must be a row.
+
+* Label-count check (always). ``evaluate_table`` refuses a table whose decisions do
+  not each hold exactly ``ceil(label_rate * n)`` positives (unless ``strict=False``)
+  and reports the outcome as ``label_count_consistent``. This catches a row sample.
+  It does NOT prove completeness: drop one negative from a decision of 20 candidates
+  with 2 positives and the remaining 19 rows still hold ``ceil(0.1 * 19) = 2``.
+* Candidate check (only with a manifest). ``candidate_manifest`` records, for every
+  decision of a complete table, the number of candidates and a digest of their block
+  indices. Pass it as ``manifest=`` and the evaluator verifies the decision set, every
+  candidate count and every digest, and reports ``candidates.verified``. Without a
+  manifest ``candidates.verified`` is ``None``: completeness is the caller's claim.
+* Labels must be exactly 0 or 1 (finite); anything else is refused, not coerced.
+* Never checked: how the scorer was trained. A prediction table cannot show that its
+  scorer never saw the scored rows; report the split you trained under
+  (``benchmark/splits/paper_v2_splits.json`` fixes both splits of the paper's corpus).
+  This is an evaluator for a stated protocol, not a closed leaderboard.
 
 Calibration (ECE, Brier) is reported only when the scorer declares
 ``probabilistic=True``: a fixed top-k budget needs the ordering, a thresholded
@@ -71,6 +85,7 @@ SEED = 0
 N_BOOT = 2000
 FEATURE_COLUMNS = list(FEATURE_NAMES)
 TABLE_COLUMNS = ("model_id", "source_id", "request_id", "layer", "step", "block_idx", "label", "score")
+MANIFEST_SCHEMA = "kvsaliencebench/candidate-manifest/1"
 
 
 # --------------------------------------------------------------------------- loading
@@ -240,14 +255,111 @@ def _codes(*cols):
     return np.unique(key, return_inverse=True)[1].reshape(-1).astype(np.int64)
 
 
+def _binary_labels(label) -> np.ndarray:
+    """Labels as int8, refusing anything that is not exactly 0 or 1.
+
+    ``label > 0`` would score a 2 as a positive and a -1 or a NaN as a negative, that
+    is, evaluate an object the caller did not describe."""
+    lab = np.asarray(label)
+    if lab.ndim != 1:
+        raise ValueError("label must be one-dimensional")
+    if lab.dtype == bool:
+        return lab.astype(np.int8)
+    try:
+        f = lab.astype(np.float64)
+    except (TypeError, ValueError):
+        raise ValueError("labels must be numeric 0/1") from None
+    if not np.isfinite(f).all():
+        raise ValueError("non-finite labels")
+    if not np.isin(f, (0.0, 1.0)).all():
+        bad = np.unique(f[~np.isin(f, (0.0, 1.0))])[:5].tolist()
+        raise ValueError(f"labels must be exactly 0 or 1; found {bad}")
+    return f.astype(np.int8)
+
+
+def _decision_inventory(table: dict) -> dict:
+    """{decision key: [candidate count, digest of the sorted block indices]}."""
+    model = np.asarray(table["model_id"]).astype(str)
+    req, layer, step = (np.asarray(table[c], np.int64) for c in ("request_id", "layer", "step"))
+    blk = np.asarray(table["block_idx"], np.int64)
+    dec = _codes(model, req, layer, step)
+    order = np.lexsort((blk, dec))
+    d_sorted, b_sorted = dec[order], blk[order].astype("<i8")
+    starts = np.r_[0, np.flatnonzero(d_sorted[1:] != d_sorted[:-1]) + 1, d_sorted.size]
+    inventory = {}
+    for a, b in zip(starts[:-1], starts[1:]):
+        i = order[a]
+        key = f"{model[i]}|{int(req[i])}|{int(layer[i])}|{int(step[i])}"
+        inventory[key] = [int(b - a), hashlib.sha256(b_sorted[a:b].tobytes()).hexdigest()[:16]]
+    return inventory
+
+
+def candidate_manifest(table: dict) -> dict:
+    """Candidate inventory of a table that is KNOWN to be complete (e.g. built from a
+    checksum-verified trace): per decision, the candidate count and a digest of the
+    block indices. ``evaluate_table(..., manifest=...)`` checks a later table against
+    it. The manifest holds no labels and no scores."""
+    for c in ("model_id", "request_id", "layer", "step", "block_idx"):
+        if c not in table:
+            raise ValueError(f"table lacks column {c!r}")
+    inventory = _decision_inventory(table)
+    return dict(schema=MANIFEST_SCHEMA, key="model_id|request_id|layer|step",
+                value="[candidate count, first 16 hex digits of sha256 over the sorted block indices as little-endian int64]",
+                n_decisions=len(inventory), n_rows=int(sum(v[0] for v in inventory.values())),
+                decisions=inventory)
+
+
+def write_manifest(path, manifest: dict):
+    path = Path(path)
+    opener = gzip.open if path.suffix == ".gz" else open
+    with opener(path, "wt") as fh:
+        json.dump(manifest, fh)
+
+
+def read_manifest(path) -> dict:
+    path = Path(path)
+    opener = gzip.open if path.suffix == ".gz" else open
+    with opener(path, "rt") as fh:
+        manifest = json.load(fh)
+    if manifest.get("schema") != MANIFEST_SCHEMA:
+        raise ValueError(f"{path}: not a candidate manifest ({MANIFEST_SCHEMA})")
+    return manifest
+
+
+def verify_candidates(table: dict, manifest: dict) -> dict:
+    """Compare a table's decisions with a candidate manifest: the decision set, every
+    candidate count and every block-index digest."""
+    if manifest.get("schema") != MANIFEST_SCHEMA:
+        raise ValueError(f"not a candidate manifest ({MANIFEST_SCHEMA})")
+    want, got = manifest["decisions"], _decision_inventory(table)
+    shared = want.keys() & got.keys()
+    size = sum(got[k][0] != want[k][0] for k in shared)
+    ids = sum(got[k][0] == want[k][0] and got[k][1] != want[k][1] for k in shared)
+    report = dict(manifest_decisions=len(want), missing_decisions=len(want.keys() - got.keys()),
+                  unexpected_decisions=len(got.keys() - want.keys()),
+                  decisions_with_wrong_candidate_count=int(size),
+                  decisions_with_wrong_candidate_ids=int(ids))
+    report["verified"] = not any(report[k] for k in (
+        "missing_decisions", "unexpected_decisions", "decisions_with_wrong_candidate_count",
+        "decisions_with_wrong_candidate_ids"))
+    return report
+
+
 def evaluate_table(table: dict, retentions=RETENTIONS, n_boot: int = N_BOOT, seed: int = SEED,
                    label_rate: float | None = TOP_R, probabilistic: bool = False,
-                   strict: bool = True) -> dict:
-    """Score a prediction table under protocol 2.0 (see the module docstring)."""
+                   strict: bool = True, manifest: dict | None = None) -> dict:
+    """Score a prediction table under protocol 2.0 (see the module docstring).
+
+    ``label_count_consistent`` reports the label-count check; it is not a completeness
+    proof. ``candidates.verified`` is ``True``/``False`` when a ``manifest`` is given
+    and ``None`` otherwise."""
     for c in TABLE_COLUMNS:
         if c not in table:
             raise ValueError(f"table lacks column {c!r}")
-    y = (np.asarray(table["label"]) > 0).astype(np.int8)
+    n_rows = {c: np.asarray(table[c]).shape for c in TABLE_COLUMNS}
+    if len(set(n_rows.values())) != 1 or len(next(iter(n_rows.values()))) != 1:
+        raise ValueError(f"columns must be one-dimensional and equally long: {n_rows}")
+    y = _binary_labels(table["label"])
     score = np.asarray(table["score"], np.float64)
     if not np.isfinite(score).all():
         raise ValueError("non-finite scores")
@@ -264,21 +376,35 @@ def evaluate_table(table: dict, retentions=RETENTIONS, n_boot: int = N_BOOT, see
         raise ValueError("a request lists more than one source_id")
     if np.unique(_codes(dec, table["block_idx"])).size != y.size:
         raise ValueError("duplicate (decision, block) rows")
-    complete = None
+    consistent = None
     if label_rate is not None:
         want = np.ceil(label_rate * data.group_size.astype(np.float64))
         bad = int((data.npos_g != want).sum())
-        complete = bad == 0
+        consistent = bad == 0
         if bad and strict:
             raise ValueError(
-                f"{bad} of {data.n_groups} decisions do not hold exactly ceil({label_rate} * n) positives: "
-                "per-decision metrics need complete decisions, not a row sample "
-                "(pass strict=False to score anyway, or label_rate=None for another label rate)")
+                f"label-count check failed: {bad} of {data.n_groups} decisions do not hold exactly "
+                f"ceil({label_rate} * n) positives. Per-decision metrics need complete decisions, not a "
+                "row sample (pass strict=False to score anyway, or label_rate=None for another label rate)")
+    candidates = dict(verified=None, note="no manifest given: that every decision lists all of its "
+                                          "candidate blocks is the caller's claim, not a checked fact")
+    if manifest is not None:
+        candidates = verify_candidates(table, manifest)
+        if not candidates["verified"] and strict:
+            raise ValueError(
+                "candidate check failed against the manifest: "
+                + ", ".join(f"{k}={v}" for k, v in candidates.items() if k not in ("verified", "manifest_decisions") and v)
+                + " (pass strict=False to score anyway)")
     rk = Ranked(data, score)
     dec_parts = pooled_decomposition(rk)
     out = dict(protocol=PROTOCOL_VERSION, n_rows=int(y.size), n_decisions=int(data.n_groups),
                n_requests=int(data.n_req), n_source_prompts=int(np.unique(src_codes).size),
-               positive_rate=float(y.mean()), complete_decisions=complete)
+               positive_rate=float(y.mean()), label_count_consistent=consistent, candidates=candidates,
+               config=dict(label_rate=label_rate, retentions=[float(r) for r in retentions],
+                           n_boot=int(n_boot), seed=int(seed), probabilistic=bool(probabilistic),
+                           strict=bool(strict), block_size=BLOCK_SIZE),
+               not_checked=["that the scorer was fit without the scored rows",
+                            "which split and horizon a prediction table was built from"])
     out["pooled"] = dict(auc=dec_parts["auc_pooled"], ap=average_precision(y.astype(np.float32), score),
                          p_at_k=precision_at_k(y.astype(np.float32), score, TOP_R))
     out["pairs"] = dict(auc_same_decision=dec_parts["auc_same"], auc_cross_decision=dec_parts["auc_cross"],
@@ -300,6 +426,7 @@ def evaluate_table(table: dict, retentions=RETENTIONS, n_boot: int = N_BOOT, see
         st = RequestStats.build(rk, pair_matrix(data, score), tuple(retentions))
         b = bootstrap_statistics(M, st)
         out["ci95"] = dict(unit="source_prompt", n_boot=int(n_boot),
+                           statistic="the pooled and decision-macro statistics recomputed on each draw of source prompts",
                            auc_pooled=percentile_ci(b["auc_pooled"]),
                            auc_same_decision=percentile_ci(b["auc_same"]),
                            auc_cross_decision=percentile_ci(b["auc_cross"]),
@@ -317,7 +444,16 @@ def evaluate(score_fn, corpus: dict, split_kind: str = "source", retentions=RETE
         raise ValueError(f"score_fn returned {s.shape[0]} scores for {te.shape[0]} rows")
     res = evaluate_table(corpus_table(corpus, te, s, readable=False), retentions, n_boot, seed, TOP_R,
                          probabilistic, strict)
+    held = np.unique(corpus["request"][te])
     res.update(split=split_kind, horizon=corpus["horizon"])
+    res["candidates"] = dict(verified=None, note="every held-out row of the trace corpus is scored; "
+                             "load_corpus(verify_hash=True) checks each trace against its manifest")
+    res["config"].update(split=split_kind, horizon=corpus["horizon"], test_fraction=TEST_FRAC,
+                         models=list(corpus["model_names"]), held_out_requests=int(held.size),
+                         held_out_source_prompts=sorted({corpus["source_names"][c]
+                                                         for c in corpus["request_source"][held]}),
+                         traces=[p["trace_sha256"] for p in corpus["provenance"]])
+    res["not_checked"] = ["that the scorer was fit without the held-out rows"]
     return res
 
 

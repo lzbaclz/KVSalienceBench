@@ -8,6 +8,11 @@ two architectures answer the same questions, so the two models are averaged with
 dataset (df 6). The 14 architecture-by-dataset cells treat the cells as independent and
 are reported in the text as the sensitivity analysis. Historical v1 columns remain in the
 artifact and are omitted to prioritize v2.
+
+The full-cache row carries the same seven-dataset interval, read from
+experiments/results/tost/expand_v2_full_cache_gap.json (analyze_full_cache_gap.py); it has
+no TOST p because the question there is the size of the loss, not equivalence. A bound
+that is not zero but would print as a signed zero (``-.000``) gets one more decimal.
 """
 import json
 import sys
@@ -19,7 +24,7 @@ ROWS = [("full cache", "full"), ("H2O-style", "h2o"), ("reconstructed", "xqp"),
 MARGIN = "0.02"
 
 
-def cols(analysis, metric):
+def cols(analysis, metric, gap):
     means = analysis["policy_means"]
     base = means["h2o"][metric]["mean"]
     out = {}
@@ -33,7 +38,10 @@ def cols(analysis, metric):
             c = analysis["contrasts"][key]["dataset_clusters"][MARGIN]
             out[pol] = (f1, f1 - base, c["p"], c["ci90_t"])
         else:
-            out[pol] = (f1, f1 - base, None, None)
+            g = gap["contrasts"][key]
+            if abs(g["grand_mean"] - (f1 - base)) > 1e-12:
+                raise ValueError(f"{key}: gap record disagrees with the policy means")
+            out[pol] = (f1, f1 - base, None, g["dataset_clusters"]["ci90_t"])
     return out
 
 
@@ -42,7 +50,8 @@ def fmt3(x):
 
 
 def fmt_signed(d):
-    return ("+" if d >= 0 else "-") + f"{abs(d):.3f}"[1:]
+    digits = 3 if d == 0 or round(abs(d), 3) > 0 else 4      # never print a nonzero bound as -.000
+    return ("+" if d >= 0 else "-") + f"{abs(d):.{digits}f}"[1:]
 
 
 def fmt_delta(d, ci):
@@ -62,8 +71,9 @@ def fmt_p(p):
     return f"{p:.4f}"[1:] if p >= 0.0001 else f"{p:.1e}"
 
 
-def main(v2="experiments/results/tost/expand_v2_sensitivity.json"):
-    b = cols(json.loads((ROOT / v2).read_text()), "f1_longbench_all_refs")
+def main(v2="experiments/results/tost/expand_v2_sensitivity.json",
+         gap="experiments/results/tost/expand_v2_full_cache_gap.json"):
+    b = cols(json.loads((ROOT / v2).read_text()), "f1_longbench_all_refs", json.loads((ROOT / gap).read_text()))
     for label, pol in ROWS:
         f1b, db, pb, cb = b[pol]
         print(f"{label} & {fmt3(f1b)} & {fmt_delta(db, cb)} & {fmt_p(pb)} \\\\")

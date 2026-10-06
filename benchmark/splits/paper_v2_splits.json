@@ -1,0 +1,693 @@
+{
+ "schema": "kvsaliencebench/split-manifest/1",
+ "protocol": "kvsaliencebench-2.0",
+ "seed": 0,
+ "test_fraction": 0.25,
+ "corpus": {
+  "models": [
+   "Llama-3.1-8B-Instruct",
+   "Qwen2.5-7B-Instruct"
+  ],
+  "cohort_files": [
+   "experiments/results/physical_kv/query-v2/query-v2.llama.bs32.jsonl.cohort.json",
+   "experiments/results/physical_kv/query-v2/query-v2.qwen.bs32.jsonl.cohort.json"
+  ],
+  "cohort_data_sha256": [
+   "2fdd0e2ed3f6ecb24ea124126640d564194d5c45e09d12fbef3da2e1b4c8e343",
+   "46ee183b690874f5e30e112a097bc4a691f0424e98447be9135ef3db184c10c0"
+  ],
+  "n_requests": 256,
+  "n_source_prompts": 128,
+  "request_index": "position in the model order above: model i owns requests 128*i .. 128*i+127, in its trace's prompt order (p0..p127)",
+  "source": "<LongBench dataset>/<LongBench row id>"
+ },
+ "note": "source: the evaluator's default, no held-out text in training. request: the paper's Table II, new model-requests whose source prompt usually occurs in training through the other model.",
+ "splits": {
+  "source": {
+   "n_held_out_requests": 64,
+   "n_training_requests": 192,
+   "held_out_requests_by_model": {
+    "Llama-3.1-8B-Instruct": 32,
+    "Qwen2.5-7B-Instruct": 32
+   },
+   "n_held_out_source_prompts": 32,
+   "source_prompts_with_every_model_held_out": 32,
+   "held_out_source_prompts_also_in_training": 0,
+   "held_out_requests": [
+    {
+     "request": 5,
+     "model": "Llama-3.1-8B-Instruct",
+     "source": "qasper/159a474e0a7155a2d0b984cbb5215cdc853d721605b90154"
+    },
+    {
+     "request": 8,
+     "model": "Llama-3.1-8B-Instruct",
+     "source": "qasper/ebd4ae480fe1596841b2132e96f40eac8437c800db8ef59e"
+    },
+    {
+     "request": 9,
+     "model": "Llama-3.1-8B-Instruct",
+     "source": "qasper/036bfbdbfff8294f59afd5860663bbb4349924c9853b2151"
+    },
+    {
+     "request": 10,
+     "model": "Llama-3.1-8B-Instruct",
+     "source": "qasper/65f7bdb541fd6f01fe866dcf694891f92533186085fcba20"
+    },
+    {
+     "request": 12,
+     "model": "Llama-3.1-8B-Instruct",
+     "source": "qasper/93004cdb0e6d24f5de0568ed952fd50655e42900dc9dbfdb"
+    },
+    {
+     "request": 14,
+     "model": "Llama-3.1-8B-Instruct",
+     "source": "qasper/f545e80cf01375e891406755e35019032cb4b7621338b707"
+    },
+    {
+     "request": 20,
+     "model": "Llama-3.1-8B-Instruct",
+     "source": "qasper/d230ce079b2e4ecf5d9a987fb750dcbc319a537bdcfcc3d4"
+    },
+    {
+     "request": 25,
+     "model": "Llama-3.1-8B-Instruct",
+     "source": "qasper/b805e336d2e8cce895100cfde3a536e632ddd5296ddece21"
+    },
+    {
+     "request": 30,
+     "model": "Llama-3.1-8B-Instruct",
+     "source": "qasper/a80067307d72e349f14a1f6765d914acf0b43764afe77ab7"
+    },
+    {
+     "request": 32,
+     "model": "Llama-3.1-8B-Instruct",
+     "source": "qasper/32e71ab83380bf828bc42ff6e76f4e8ae42d356a6988a79c"
+    },
+    {
+     "request": 35,
+     "model": "Llama-3.1-8B-Instruct",
+     "source": "qasper/06feabc1e5ca23dbfd79cbb2ea42b436c85bf6ac6a8d4b14"
+    },
+    {
+     "request": 36,
+     "model": "Llama-3.1-8B-Instruct",
+     "source": "qasper/8861331a4438449d0fd62132eff72f24413fab1daf990780"
+    },
+    {
+     "request": 38,
+     "model": "Llama-3.1-8B-Instruct",
+     "source": "qasper/f4aa62dcbb2bac20bc9ef1361ad811d6822f66df83f0930d"
+    },
+    {
+     "request": 40,
+     "model": "Llama-3.1-8B-Instruct",
+     "source": "qasper/c509e3bda123ac08967781ad78a55a157b876e9d0aa97adc"
+    },
+    {
+     "request": 47,
+     "model": "Llama-3.1-8B-Instruct",
+     "source": "qasper/7fc2e4d78ed71fd9cb767560f9f8f69124754bf212e2e3dc"
+    },
+    {
+     "request": 49,
+     "model": "Llama-3.1-8B-Instruct",
+     "source": "qasper/a8f155f6d0b86040e21fdb913b07c5fa675b82dbacc0674e"
+    },
+    {
+     "request": 56,
+     "model": "Llama-3.1-8B-Instruct",
+     "source": "qasper/757c3e92861be1ad45a06d157bb10fe162bd2163bc3baa6c"
+    },
+    {
+     "request": 58,
+     "model": "Llama-3.1-8B-Instruct",
+     "source": "qasper/3f3d64d45cd4761fa7a9da94fbc4c41b27f3a7b856117638"
+    },
+    {
+     "request": 60,
+     "model": "Llama-3.1-8B-Instruct",
+     "source": "qasper/b5481f9dfee2d9dd2154b3396a702c72f00b86508b001651"
+    },
+    {
+     "request": 64,
+     "model": "Llama-3.1-8B-Instruct",
+     "source": "narrativeqa/341d214a2c377691bf20e5a30b8f7979696bd19141ad9c9f"
+    },
+    {
+     "request": 69,
+     "model": "Llama-3.1-8B-Instruct",
+     "source": "narrativeqa/677af5490eddd9e1d2ecd66ab0d1e038d1f7e7c5e985accf"
+    },
+    {
+     "request": 78,
+     "model": "Llama-3.1-8B-Instruct",
+     "source": "narrativeqa/19ec182d75e69f6f85cc7a4fa8f9ca22b124800bc8736b1d"
+    },
+    {
+     "request": 79,
+     "model": "Llama-3.1-8B-Instruct",
+     "source": "narrativeqa/973ac7fc4eb400348ec30dae56ba4d177d0ade45a3529d3e"
+    },
+    {
+     "request": 83,
+     "model": "Llama-3.1-8B-Instruct",
+     "source": "narrativeqa/077293776804b7d32e78db5ef172d5c960716006e8b446da"
+    },
+    {
+     "request": 84,
+     "model": "Llama-3.1-8B-Instruct",
+     "source": "narrativeqa/90cd90dd2b5ecaa57b899f172cabca1baa2db41646acedd2"
+    },
+    {
+     "request": 94,
+     "model": "Llama-3.1-8B-Instruct",
+     "source": "narrativeqa/ac44a02780985754f0c439cdc0fa9b0ed3a9f80e76da0304"
+    },
+    {
+     "request": 97,
+     "model": "Llama-3.1-8B-Instruct",
+     "source": "narrativeqa/cb76250ae8598592d1baa7ca35e914646a3d5dcbf8220896"
+    },
+    {
+     "request": 103,
+     "model": "Llama-3.1-8B-Instruct",
+     "source": "narrativeqa/9b7e93c37eda3b907a9caa5eba250f8b25484613a10f8d95"
+    },
+    {
+     "request": 105,
+     "model": "Llama-3.1-8B-Instruct",
+     "source": "narrativeqa/a24cee35ff6ec6914bf94c1ef8b6cd4f9730a77d4caaa8b2"
+    },
+    {
+     "request": 112,
+     "model": "Llama-3.1-8B-Instruct",
+     "source": "narrativeqa/d41198bdebd7b9472ae77beecbe8b7e1b7a46dca92d2d8f2"
+    },
+    {
+     "request": 113,
+     "model": "Llama-3.1-8B-Instruct",
+     "source": "narrativeqa/3aeebc5be470ddd2eafefee76cf25d8e6b08cbd669adc9e4"
+    },
+    {
+     "request": 126,
+     "model": "Llama-3.1-8B-Instruct",
+     "source": "narrativeqa/52c910fb919a865d201b4d6a723f624290e2c663d282315a"
+    },
+    {
+     "request": 133,
+     "model": "Qwen2.5-7B-Instruct",
+     "source": "qasper/159a474e0a7155a2d0b984cbb5215cdc853d721605b90154"
+    },
+    {
+     "request": 136,
+     "model": "Qwen2.5-7B-Instruct",
+     "source": "qasper/ebd4ae480fe1596841b2132e96f40eac8437c800db8ef59e"
+    },
+    {
+     "request": 137,
+     "model": "Qwen2.5-7B-Instruct",
+     "source": "qasper/036bfbdbfff8294f59afd5860663bbb4349924c9853b2151"
+    },
+    {
+     "request": 138,
+     "model": "Qwen2.5-7B-Instruct",
+     "source": "qasper/65f7bdb541fd6f01fe866dcf694891f92533186085fcba20"
+    },
+    {
+     "request": 140,
+     "model": "Qwen2.5-7B-Instruct",
+     "source": "qasper/93004cdb0e6d24f5de0568ed952fd50655e42900dc9dbfdb"
+    },
+    {
+     "request": 142,
+     "model": "Qwen2.5-7B-Instruct",
+     "source": "qasper/f545e80cf01375e891406755e35019032cb4b7621338b707"
+    },
+    {
+     "request": 148,
+     "model": "Qwen2.5-7B-Instruct",
+     "source": "qasper/d230ce079b2e4ecf5d9a987fb750dcbc319a537bdcfcc3d4"
+    },
+    {
+     "request": 153,
+     "model": "Qwen2.5-7B-Instruct",
+     "source": "qasper/b805e336d2e8cce895100cfde3a536e632ddd5296ddece21"
+    },
+    {
+     "request": 158,
+     "model": "Qwen2.5-7B-Instruct",
+     "source": "qasper/a80067307d72e349f14a1f6765d914acf0b43764afe77ab7"
+    },
+    {
+     "request": 160,
+     "model": "Qwen2.5-7B-Instruct",
+     "source": "qasper/32e71ab83380bf828bc42ff6e76f4e8ae42d356a6988a79c"
+    },
+    {
+     "request": 163,
+     "model": "Qwen2.5-7B-Instruct",
+     "source": "qasper/06feabc1e5ca23dbfd79cbb2ea42b436c85bf6ac6a8d4b14"
+    },
+    {
+     "request": 164,
+     "model": "Qwen2.5-7B-Instruct",
+     "source": "qasper/8861331a4438449d0fd62132eff72f24413fab1daf990780"
+    },
+    {
+     "request": 166,
+     "model": "Qwen2.5-7B-Instruct",
+     "source": "qasper/f4aa62dcbb2bac20bc9ef1361ad811d6822f66df83f0930d"
+    },
+    {
+     "request": 168,
+     "model": "Qwen2.5-7B-Instruct",
+     "source": "qasper/c509e3bda123ac08967781ad78a55a157b876e9d0aa97adc"
+    },
+    {
+     "request": 175,
+     "model": "Qwen2.5-7B-Instruct",
+     "source": "qasper/7fc2e4d78ed71fd9cb767560f9f8f69124754bf212e2e3dc"
+    },
+    {
+     "request": 177,
+     "model": "Qwen2.5-7B-Instruct",
+     "source": "qasper/a8f155f6d0b86040e21fdb913b07c5fa675b82dbacc0674e"
+    },
+    {
+     "request": 184,
+     "model": "Qwen2.5-7B-Instruct",
+     "source": "qasper/757c3e92861be1ad45a06d157bb10fe162bd2163bc3baa6c"
+    },
+    {
+     "request": 186,
+     "model": "Qwen2.5-7B-Instruct",
+     "source": "qasper/3f3d64d45cd4761fa7a9da94fbc4c41b27f3a7b856117638"
+    },
+    {
+     "request": 188,
+     "model": "Qwen2.5-7B-Instruct",
+     "source": "qasper/b5481f9dfee2d9dd2154b3396a702c72f00b86508b001651"
+    },
+    {
+     "request": 192,
+     "model": "Qwen2.5-7B-Instruct",
+     "source": "narrativeqa/341d214a2c377691bf20e5a30b8f7979696bd19141ad9c9f"
+    },
+    {
+     "request": 197,
+     "model": "Qwen2.5-7B-Instruct",
+     "source": "narrativeqa/677af5490eddd9e1d2ecd66ab0d1e038d1f7e7c5e985accf"
+    },
+    {
+     "request": 206,
+     "model": "Qwen2.5-7B-Instruct",
+     "source": "narrativeqa/19ec182d75e69f6f85cc7a4fa8f9ca22b124800bc8736b1d"
+    },
+    {
+     "request": 207,
+     "model": "Qwen2.5-7B-Instruct",
+     "source": "narrativeqa/973ac7fc4eb400348ec30dae56ba4d177d0ade45a3529d3e"
+    },
+    {
+     "request": 211,
+     "model": "Qwen2.5-7B-Instruct",
+     "source": "narrativeqa/077293776804b7d32e78db5ef172d5c960716006e8b446da"
+    },
+    {
+     "request": 212,
+     "model": "Qwen2.5-7B-Instruct",
+     "source": "narrativeqa/90cd90dd2b5ecaa57b899f172cabca1baa2db41646acedd2"
+    },
+    {
+     "request": 222,
+     "model": "Qwen2.5-7B-Instruct",
+     "source": "narrativeqa/ac44a02780985754f0c439cdc0fa9b0ed3a9f80e76da0304"
+    },
+    {
+     "request": 225,
+     "model": "Qwen2.5-7B-Instruct",
+     "source": "narrativeqa/cb76250ae8598592d1baa7ca35e914646a3d5dcbf8220896"
+    },
+    {
+     "request": 231,
+     "model": "Qwen2.5-7B-Instruct",
+     "source": "narrativeqa/9b7e93c37eda3b907a9caa5eba250f8b25484613a10f8d95"
+    },
+    {
+     "request": 233,
+     "model": "Qwen2.5-7B-Instruct",
+     "source": "narrativeqa/a24cee35ff6ec6914bf94c1ef8b6cd4f9730a77d4caaa8b2"
+    },
+    {
+     "request": 240,
+     "model": "Qwen2.5-7B-Instruct",
+     "source": "narrativeqa/d41198bdebd7b9472ae77beecbe8b7e1b7a46dca92d2d8f2"
+    },
+    {
+     "request": 241,
+     "model": "Qwen2.5-7B-Instruct",
+     "source": "narrativeqa/3aeebc5be470ddd2eafefee76cf25d8e6b08cbd669adc9e4"
+    },
+    {
+     "request": 254,
+     "model": "Qwen2.5-7B-Instruct",
+     "source": "narrativeqa/52c910fb919a865d201b4d6a723f624290e2c663d282315a"
+    }
+   ]
+  },
+  "request": {
+   "n_held_out_requests": 64,
+   "n_training_requests": 192,
+   "held_out_requests_by_model": {
+    "Llama-3.1-8B-Instruct": 30,
+    "Qwen2.5-7B-Instruct": 34
+   },
+   "n_held_out_source_prompts": 57,
+   "source_prompts_with_every_model_held_out": 7,
+   "held_out_source_prompts_also_in_training": 50,
+   "held_out_requests": [
+    {
+     "request": 0,
+     "model": "Llama-3.1-8B-Instruct",
+     "source": "qasper/3ac3eef636db11635a21a61804cb28e92c546a5686dd1e12"
+    },
+    {
+     "request": 5,
+     "model": "Llama-3.1-8B-Instruct",
+     "source": "qasper/159a474e0a7155a2d0b984cbb5215cdc853d721605b90154"
+    },
+    {
+     "request": 6,
+     "model": "Llama-3.1-8B-Instruct",
+     "source": "qasper/680ef767fe2a990615d0bc1cb1bf5f7d23c8766209138826"
+    },
+    {
+     "request": 13,
+     "model": "Llama-3.1-8B-Instruct",
+     "source": "qasper/c9d48df129798d2aed0161fa805a289e5f75306af3e22336"
+    },
+    {
+     "request": 17,
+     "model": "Llama-3.1-8B-Instruct",
+     "source": "qasper/7e2663bb13493e18205f6aab469fee8b2a9df281a0ba0e2a"
+    },
+    {
+     "request": 25,
+     "model": "Llama-3.1-8B-Instruct",
+     "source": "qasper/b805e336d2e8cce895100cfde3a536e632ddd5296ddece21"
+    },
+    {
+     "request": 36,
+     "model": "Llama-3.1-8B-Instruct",
+     "source": "qasper/8861331a4438449d0fd62132eff72f24413fab1daf990780"
+    },
+    {
+     "request": 39,
+     "model": "Llama-3.1-8B-Instruct",
+     "source": "qasper/b69e327bf637183397c7d975df8e1c45fa1ad9866b71e6d1"
+    },
+    {
+     "request": 41,
+     "model": "Llama-3.1-8B-Instruct",
+     "source": "qasper/76f663a13234c9da9f1d78c72b52d73ab37da0977e0001d8"
+    },
+    {
+     "request": 52,
+     "model": "Llama-3.1-8B-Instruct",
+     "source": "qasper/bd9de91e4f20f4d0e8cbd1d442c97022e5410cc9a814aa0e"
+    },
+    {
+     "request": 54,
+     "model": "Llama-3.1-8B-Instruct",
+     "source": "qasper/715229da03cdd7077f0ea02c5b4f67489abe24d42e4ece22"
+    },
+    {
+     "request": 65,
+     "model": "Llama-3.1-8B-Instruct",
+     "source": "narrativeqa/68fc4dee839213b5259d41718909195c2f5274665bc18036"
+    },
+    {
+     "request": 68,
+     "model": "Llama-3.1-8B-Instruct",
+     "source": "narrativeqa/7e1df407b7018ef82e2ade488c601066798bbe67a39a6da4"
+    },
+    {
+     "request": 70,
+     "model": "Llama-3.1-8B-Instruct",
+     "source": "narrativeqa/af8f267654c2ca703d2044593d63c658c8716e66306dd65a"
+    },
+    {
+     "request": 71,
+     "model": "Llama-3.1-8B-Instruct",
+     "source": "narrativeqa/e39f9c371b47fb74a202d1f30bc46e806791d0ee81b1b2d4"
+    },
+    {
+     "request": 72,
+     "model": "Llama-3.1-8B-Instruct",
+     "source": "narrativeqa/60cacef36b194be88d2a8a4fa816324ffcb672f336197584"
+    },
+    {
+     "request": 74,
+     "model": "Llama-3.1-8B-Instruct",
+     "source": "narrativeqa/b91ede2d2d08ea6f5f3b894c932b70e141665dd59d334dc8"
+    },
+    {
+     "request": 75,
+     "model": "Llama-3.1-8B-Instruct",
+     "source": "narrativeqa/fd7551a90b78405f6b71079bb8565a2c9f60db1b7e4179c8"
+    },
+    {
+     "request": 83,
+     "model": "Llama-3.1-8B-Instruct",
+     "source": "narrativeqa/077293776804b7d32e78db5ef172d5c960716006e8b446da"
+    },
+    {
+     "request": 89,
+     "model": "Llama-3.1-8B-Instruct",
+     "source": "narrativeqa/141a3f0713e008f2b19cb78757c28d61c8f71427d4613c44"
+    },
+    {
+     "request": 91,
+     "model": "Llama-3.1-8B-Instruct",
+     "source": "narrativeqa/00e523b3da92cec012d5262c1d0c98507f6c4b67e3c8aaf4"
+    },
+    {
+     "request": 93,
+     "model": "Llama-3.1-8B-Instruct",
+     "source": "narrativeqa/7b71f8fab58b267e1a174412725a0d0df25f260d596d9c70"
+    },
+    {
+     "request": 94,
+     "model": "Llama-3.1-8B-Instruct",
+     "source": "narrativeqa/ac44a02780985754f0c439cdc0fa9b0ed3a9f80e76da0304"
+    },
+    {
+     "request": 100,
+     "model": "Llama-3.1-8B-Instruct",
+     "source": "narrativeqa/16cbcc8b763a701d2c65eb13cb180e3195868e65de706ea5"
+    },
+    {
+     "request": 102,
+     "model": "Llama-3.1-8B-Instruct",
+     "source": "narrativeqa/42a2c14632d52bae9db7d4ba4ee0e76a033d95762dc7b88b"
+    },
+    {
+     "request": 106,
+     "model": "Llama-3.1-8B-Instruct",
+     "source": "narrativeqa/6400c535cd592c9e7e30d15803baa5c7f98e2c06e7ea1da6"
+    },
+    {
+     "request": 111,
+     "model": "Llama-3.1-8B-Instruct",
+     "source": "narrativeqa/78e1602679a5ca1b22f32e665e8c31039b1a0c16a099efe5"
+    },
+    {
+     "request": 122,
+     "model": "Llama-3.1-8B-Instruct",
+     "source": "narrativeqa/2647b0dec2c7dcf97dede643e97d1e4235093b77165c692d"
+    },
+    {
+     "request": 124,
+     "model": "Llama-3.1-8B-Instruct",
+     "source": "narrativeqa/a8c929d6037b84d914b05d984865cbd3651b578544f0e3bf"
+    },
+    {
+     "request": 126,
+     "model": "Llama-3.1-8B-Instruct",
+     "source": "narrativeqa/52c910fb919a865d201b4d6a723f624290e2c663d282315a"
+    },
+    {
+     "request": 131,
+     "model": "Qwen2.5-7B-Instruct",
+     "source": "qasper/f27a64d129091a6c8973c001ff789b8f68955b8ff0ae70af"
+    },
+    {
+     "request": 138,
+     "model": "Qwen2.5-7B-Instruct",
+     "source": "qasper/65f7bdb541fd6f01fe866dcf694891f92533186085fcba20"
+    },
+    {
+     "request": 141,
+     "model": "Qwen2.5-7B-Instruct",
+     "source": "qasper/c9d48df129798d2aed0161fa805a289e5f75306af3e22336"
+    },
+    {
+     "request": 147,
+     "model": "Qwen2.5-7B-Instruct",
+     "source": "qasper/51cd01004f7bc29798a9671b991c5223ada1d40ccb8141e0"
+    },
+    {
+     "request": 148,
+     "model": "Qwen2.5-7B-Instruct",
+     "source": "qasper/d230ce079b2e4ecf5d9a987fb750dcbc319a537bdcfcc3d4"
+    },
+    {
+     "request": 149,
+     "model": "Qwen2.5-7B-Instruct",
+     "source": "qasper/f55efaaee938369fc4be8a430e531c164168be643b3cfe57"
+    },
+    {
+     "request": 152,
+     "model": "Qwen2.5-7B-Instruct",
+     "source": "qasper/04174ea6c9849bfa946452cdbc20fc0c4ff9d27596099dcc"
+    },
+    {
+     "request": 155,
+     "model": "Qwen2.5-7B-Instruct",
+     "source": "qasper/8f650cd8021e553a4106d292af9908f29595f88fc39385b2"
+    },
+    {
+     "request": 157,
+     "model": "Qwen2.5-7B-Instruct",
+     "source": "qasper/5f7af98db66df4388108e26cde4781423ca2580bb48de4fa"
+    },
+    {
+     "request": 159,
+     "model": "Qwen2.5-7B-Instruct",
+     "source": "qasper/894a0e08b526f2093c854d91c680190c898ae6acbc1ba131"
+    },
+    {
+     "request": 161,
+     "model": "Qwen2.5-7B-Instruct",
+     "source": "qasper/37f06d3a413beef1661730ae1049e7adccd6308032ae1fc5"
+    },
+    {
+     "request": 165,
+     "model": "Qwen2.5-7B-Instruct",
+     "source": "qasper/3bb91d7f22ae15ff9fc6475233052ad0981ad7e812f7eaa7"
+    },
+    {
+     "request": 172,
+     "model": "Qwen2.5-7B-Instruct",
+     "source": "qasper/c6464e3b2dbf1c8412496fdef56cafcccd0ccb9dd1937886"
+    },
+    {
+     "request": 177,
+     "model": "Qwen2.5-7B-Instruct",
+     "source": "qasper/a8f155f6d0b86040e21fdb913b07c5fa675b82dbacc0674e"
+    },
+    {
+     "request": 183,
+     "model": "Qwen2.5-7B-Instruct",
+     "source": "qasper/b96a5e2e8d4b32aff5401e97c66942bf33f6c3c62a43609d"
+    },
+    {
+     "request": 193,
+     "model": "Qwen2.5-7B-Instruct",
+     "source": "narrativeqa/68fc4dee839213b5259d41718909195c2f5274665bc18036"
+    },
+    {
+     "request": 200,
+     "model": "Qwen2.5-7B-Instruct",
+     "source": "narrativeqa/60cacef36b194be88d2a8a4fa816324ffcb672f336197584"
+    },
+    {
+     "request": 202,
+     "model": "Qwen2.5-7B-Instruct",
+     "source": "narrativeqa/b91ede2d2d08ea6f5f3b894c932b70e141665dd59d334dc8"
+    },
+    {
+     "request": 204,
+     "model": "Qwen2.5-7B-Instruct",
+     "source": "narrativeqa/627d4b1bf8c78ab08d4da01abc81be9e724d1e8bcb2d2e6b"
+    },
+    {
+     "request": 209,
+     "model": "Qwen2.5-7B-Instruct",
+     "source": "narrativeqa/deaf226b06424a0b0603f5aba885cb4420774c9df944bbf1"
+    },
+    {
+     "request": 210,
+     "model": "Qwen2.5-7B-Instruct",
+     "source": "narrativeqa/acc4bde34060bc451a73e0e1e0d0bc7e1ca93695bc8112a1"
+    },
+    {
+     "request": 212,
+     "model": "Qwen2.5-7B-Instruct",
+     "source": "narrativeqa/90cd90dd2b5ecaa57b899f172cabca1baa2db41646acedd2"
+    },
+    {
+     "request": 216,
+     "model": "Qwen2.5-7B-Instruct",
+     "source": "narrativeqa/d660c82758a6d8d265d8214e779593755f968c1f75acfb87"
+    },
+    {
+     "request": 220,
+     "model": "Qwen2.5-7B-Instruct",
+     "source": "narrativeqa/b7b3b83227d5bd105ada694c356855ffe9e2a5e09dd613ab"
+    },
+    {
+     "request": 227,
+     "model": "Qwen2.5-7B-Instruct",
+     "source": "narrativeqa/d844057a13c2cc7018e8328dfe10767938b3e28689e359ff"
+    },
+    {
+     "request": 228,
+     "model": "Qwen2.5-7B-Instruct",
+     "source": "narrativeqa/16cbcc8b763a701d2c65eb13cb180e3195868e65de706ea5"
+    },
+    {
+     "request": 229,
+     "model": "Qwen2.5-7B-Instruct",
+     "source": "narrativeqa/1309d6cce29b59587533ab35e031789c33f1186e988ebc91"
+    },
+    {
+     "request": 230,
+     "model": "Qwen2.5-7B-Instruct",
+     "source": "narrativeqa/42a2c14632d52bae9db7d4ba4ee0e76a033d95762dc7b88b"
+    },
+    {
+     "request": 241,
+     "model": "Qwen2.5-7B-Instruct",
+     "source": "narrativeqa/3aeebc5be470ddd2eafefee76cf25d8e6b08cbd669adc9e4"
+    },
+    {
+     "request": 243,
+     "model": "Qwen2.5-7B-Instruct",
+     "source": "narrativeqa/327947f2fade3b7bda5cfa6d24919d42d2afe66dc15d98d4"
+    },
+    {
+     "request": 245,
+     "model": "Qwen2.5-7B-Instruct",
+     "source": "narrativeqa/b4fc3cd3603720687018d2b4ec677a948aa3555ed8b218f9"
+    },
+    {
+     "request": 246,
+     "model": "Qwen2.5-7B-Instruct",
+     "source": "narrativeqa/1c4fffbc6acfb659de69246ce9d1e1a47a7e0df4f07c467e"
+    },
+    {
+     "request": 252,
+     "model": "Qwen2.5-7B-Instruct",
+     "source": "narrativeqa/a8c929d6037b84d914b05d984865cbd3651b578544f0e3bf"
+    },
+    {
+     "request": 253,
+     "model": "Qwen2.5-7B-Instruct",
+     "source": "narrativeqa/d4bc46084679d5f1301df1a824097be4c5c47203e0ca2682"
+    }
+   ]
+  }
+ }
+}

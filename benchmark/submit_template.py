@@ -23,7 +23,10 @@ SCORING
 The protocol scores both the pooled ranking and the per-decision budget a selector
 actually imposes, so a method can be better at one and worse at the other. Train on the
 training rows of the split you are evaluated on; the evaluator holds out whole source
-prompts by default. Calibration (ECE, Brier) is reported only if you set
+prompts by default, and ``benchmark/splits/paper_v2_splits.json`` lists the held-out
+requests of both splits for the paper's corpus. The evaluator cannot verify how a scorer
+was trained: state the split you trained under. Calibration (ECE, Brier) is reported only
+if you set
 
     PROBABILISTIC = True
 

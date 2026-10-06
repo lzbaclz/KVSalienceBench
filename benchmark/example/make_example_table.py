@@ -5,9 +5,11 @@ model weights. It is SYNTHETIC: a lognormal latent "future attention" per candid
 block, the label marks the top ``ceil(0.1 n)`` of each decision, and the score is a
 noisy copy of the latent, so every decision is complete exactly as the protocol
 requires. It exists to show the schema and to let a third party check the evaluator
-(``expected_results.json``); it carries no empirical claim.
+(``expected_results.json``); it carries no empirical claim. ``candidate_manifest.json``
+is the table's candidate inventory (count and block-index digest per decision), the
+file ``evaluate_table(..., manifest=...)`` verifies a table against.
 
-    python benchmark/example/make_example_table.py   # rewrites the two files
+    python benchmark/example/make_example_table.py   # rewrites the three files
 """
 from __future__ import annotations
 
@@ -53,9 +55,13 @@ def main():
     table = make_table()
     P.write_table(HERE / "prediction_table.csv", table)
     # evaluate what a reader will actually load back from the CSV
-    res = P.evaluate_table(P.read_table(HERE / "prediction_table.csv"), n_boot=200, seed=0, probabilistic=True)
+    back = P.read_table(HERE / "prediction_table.csv")
+    manifest = P.candidate_manifest(back)       # complete by construction: every generated block is a row
+    P.write_manifest(HERE / "candidate_manifest.json", manifest)
+    res = P.evaluate_table(back, n_boot=200, seed=0, probabilistic=True, manifest=manifest)
     (HERE / "expected_results.json").write_text(json.dumps(res, indent=2) + "\n")
-    print(f"wrote {HERE / 'prediction_table.csv'} ({len(table['label']):,} rows) and expected_results.json")
+    print(f"wrote {HERE / 'prediction_table.csv'} ({len(table['label']):,} rows), candidate_manifest.json "
+          f"({manifest['n_decisions']} decisions) and expected_results.json")
     print(json.dumps({k: res[k] for k in ("n_rows", "n_decisions", "n_requests", "n_source_prompts")}))
     print("pooled", {k: round(v, 4) for k, v in res["pooled"].items()}, "| same-decision AUC",
           round(res["pairs"]["auc_same_decision"], 4), "| recall@10%", round(res["per_decision"]["0.10"]["macro_recall"], 4))

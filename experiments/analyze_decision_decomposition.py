@@ -23,6 +23,13 @@ that it is exact for the pooled statistic. The fits, split, seed and held-out ro
 are those of ``run_icdm_v2.py``; the script reproduces Table II's pooled AUC and
 per-decision recall as its own gate and does not modify any existing result.
 
+``--split source`` repeats the whole analysis on the source-disjoint split (the same
+32 source prompts held out for both models, the benchmark's default split), gated
+against ``pooled_source_split`` of ``icdm_v2.json``; its record is
+``experiments/results/icdm_v2_decomposition_source.json``. The request split of the
+headline table holds out model-requests, so 50 of its 57 held-out source prompts
+also occur in training through the other model.
+
 Like every trace-dependent driver this needs the raw version-2 traces (not in the
 public artifact; their manifests are). The frozen output
 ``experiments/results/icdm_v2_decomposition.json`` ships with the artifact and is
@@ -117,6 +124,8 @@ def main(argv=None):
     ap.add_argument("--traces", required=True, help="comma-separated NAME=path.jsonl")
     ap.add_argument("--out", type=Path, required=True)
     ap.add_argument("--n-boot", type=int, default=10000)
+    ap.add_argument("--split", choices=("request", "source"), default="request",
+                    help="request: the headline split of Table II; source: the same source prompts held out for every model")
     ap.add_argument("--cache", type=Path, default=None, help="optional local npz cache of the parsed traces")
     ap.add_argument("--no-verify-hash", action="store_true")
     a = ap.parse_args(argv)
@@ -126,7 +135,7 @@ def main(argv=None):
 
     d = load_pooled(a.traces, a.cache, not a.no_verify_hash)
     print(f"[pool] {d['F'].shape[0]:,} rows, {d['n_requests']} requests", flush=True)
-    tr_idx, te_idx, test_reqs = request_split_v2(d, "request", seed=SEED)
+    tr_idx, te_idx, test_reqs = request_split_v2(d, a.split, seed=SEED)
     tr = subsample(tr_idx, TRAIN_N, SEED)
     Ftr, ytr = d["F"][tr], d["y"][tr].astype(np.float32)
     two = ClosedFormXQP.from_fit(Ftr * MASK2, ytr)
@@ -146,13 +155,15 @@ def main(argv=None):
     prompt_id = {}
     cluster_of_req = np.array([prompt_id.setdefault(d["source"][r], len(prompt_id)) for r in uniq_req])
     model_of_req = (uniq_req >= d["n_first"]).astype(int)
+    train_sources = {d["source"][r] for r in np.unique(d["rid"][tr_idx])}
+    shared_with_train = sum(s in train_sources for s in prompt_id)
     print(f"[data] held-out rows {len(te_idx):,}  decisions {data.n_groups:,}  requests {data.n_req} "
           f"(Llama {int((model_of_req == 0).sum())}, Qwen {int((model_of_req == 1).sum())})  "
           f"source prompts {len(prompt_id)}", flush=True)
 
     # ---- gate: Table II's published numbers must be reproduced -----------------
     published = {r["method"]: r for r in json.loads(
-        (ROOT / "experiments/results/icdm_v2.json").read_text())["pooled_request_split"]["table"]}
+        (ROOT / "experiments/results/icdm_v2.json").read_text())[f"pooled_{a.split}_split"]["table"]}
     te = subsample(te_idx, TEST_N, SEED)
     yte = d["y"][te].astype(np.float32)
     gate = {}
@@ -273,13 +284,14 @@ def main(argv=None):
     out = dict(
         schema="kvsaliencebench/exp1-decision-decomposition/1",
         generated_utc=time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-        config=dict(seed=SEED, headline_horizon="h4", train_rows=TRAIN_N, split="request",
+        config=dict(seed=SEED, headline_horizon="h4", train_rows=TRAIN_N, split=a.split,
                     evaluation_rows="every held-out row", bootstrap="source prompts",
                     n_boot=a.n_boot, k_fracs=list(K_FRACS), lambdas=list(LAMBDAS),
                     gbdt="LGBMClassifier(max_depth=3, n_estimators=150, class_weight=balanced)"),
         provenance=d["provenance"],
         data=dict(n_rows_heldout=int(len(te_idx)), n_decisions=int(data.n_groups),
                   n_requests_heldout=int(data.n_req), n_source_prompts_heldout=int(len(prompt_id)),
+                  n_heldout_source_prompts_also_in_training=int(shared_with_train),
                   n_positives=int(data.npos_g.sum()), positive_rate=float(data.npos_g.sum() / len(te_idx)),
                   decision_size=dict(min=int(sizes.min()), median=float(np.median(sizes)), max=int(sizes.max())),
                   heldout_requests_by_model=dict(llama=int((model_of_req == 0).sum()), qwen=int((model_of_req == 1).sum()))),

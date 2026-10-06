@@ -1,4 +1,4 @@
-# Clean artifact release audit — 2026-10-05
+# Clean artifact release audit — 2026-10-06
 
 ## Withdrawal notice for the 2026-09-26 release
 
@@ -33,6 +33,25 @@ documents differ; no result record and no analysis code changed. This is the rel
 manuscript describes: it contains `docs/HISTORICAL_DIAGNOSTICS.md` and the protocol-2.0
 benchmark entry that §I, §VIII, §IX and §XI name, which the 2026-09-26 public
 repository did not.
+
+**Re-cut of 2026-10-06.** The tarball `KVSalienceBench-d2ai-camera-ready-r6.tar.gz` and
+its export directory supersede `-r5`. The manuscript changed in substance, not only in
+wording (`VALIDATION_STATUS.md`, "2026-10-06 round-2 review revision"): one Table II cell
+and its note, the paragraph comparing Table III with Table IV, an equation, the
+served-oracle definition and the reference list (28 entries). The release adds four
+CPU-only records with their drivers (`icdm_v2_tie_sensitivity.json`,
+`icdm_v2_decomposition_source.json` with two CSV views,
+`tost/expand_v2_full_cache_gap.json`, `physical_kv/scorer_check.json`),
+`docs/FROZEN_CONFIG.md`, a candidate manifest for the benchmark example and
+`benchmark/splits/paper_v2_splits.json`; no existing record changed. The evaluator's
+output key `complete_decisions` is renamed `label_count_consistent`, labels other than
+0/1 are refused, and a candidate manifest can be verified: a caller that read the old key
+has to follow the rename. Validation of this export: 298 CPU tests pass in the extracted
+tree with no skips; its figure assets pass; its LaTeX sources rebuild to an 8-page PDF
+whose text is identical to the shipped PDF's; and the steps of the public CI workflow
+were replayed in it locally (pinned-simulator smoke run, byte-identical count-mapping
+audit, oracle-budget and physical-summary re-derivations, figure regeneration, paper
+build, both checkers).
 
 Target repository: <https://github.com/lzbaclz/KVSalienceBench>.
 The authors authorized a new public artifact repository. The old working repository

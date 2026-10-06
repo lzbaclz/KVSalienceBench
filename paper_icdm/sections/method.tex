@@ -4,10 +4,14 @@
 \subsection{A compact offline scorer}
 We fit a ridge-regularized logistic model by Newton--IRLS,
 $f(\mathbf x)=\sigma(\mathbf w^\top\mathbf x+b)$; on the within-layer and
-cross-layer features it has two coefficients and one intercept. A
+cross-layer features it has two coefficients and one intercept (ridge $10^{-3}$ on the
+coefficients only, unstandardized features, at most 40 iterations;
+\texttt{docs/FROZEN\_CONFIG.md} lists every frozen constant of the fits, features and
+splits). A
 log-loss fit without class reweighting has low measured ECE here and the
 class-balanced LightGBM does not, but an unweighted or recalibrated tree removes
-that difference (\S\ref{sec:exp}): calibration is separate from ranking here.
+that difference (\S\ref{sec:exp}): calibration, which only a thresholded selector
+needs, is separate from ranking here.
 
 \subsection{Offline predictor versus runtime reconstruction}
 \label{sec:realization}
@@ -17,16 +21,17 @@ its task F1 cannot inherit the offline predictor's AUC. Table~\ref{tab:protocol}
 distinguishes fixed offline features, policy-dependent runtime features and the
 irreversible physical reference.
 \textbf{Bridge experiment.} With the frozen archived two-view checkpoint, one label
-(top-$\lceil0.1n\rceil$ of block attention four steps ahead among the blocks present
-now and still present then) and the 128 frozen prompts of \S\ref{sec:deploy}, we
+rule (top-$\lceil0.1n\rceil$ of block attention four steps ahead among the blocks
+present now and still present then) and the 128 frozen prompts of \S\ref{sec:deploy}, we
 score (A) offline-style features re-derived from the full-cache attention stream under
 version-2 conventions, (B) the reference backend's runtime realization on the same
 rows, and (C) that realization along the on-policy trajectory at 20\% budget. In A and B the candidates are every block present; in C they are the blocks
 retained now \emph{and} at $t+h$, a survivor-conditioned arm whose $n$ and label
 denominator are taken among those survivors. Mean per-request AUC is
 0.902/0.899/0.989 on Llama-3.1-8B (bfloat16) and 0.894/0.892/0.989 on Qwen2.5-7B
-(float32): the feature realization costs $-0.003$ $[-0.004,-0.001]$ (84/128
-requests negative) and $-0.002$ $[-0.003,-0.000]$ (75/128), whereas the on-policy
+(float32): the reference backend's feature realization costs $-0.003$
+$[-0.004,-0.001]$ (84/128 requests negative) and $-0.002$ $[-0.003,-0.0004]$ (75/128),
+whereas the on-policy
 arm is higher by $+0.090$ and $+0.098$ (128/128 both). That is not evidence that
 retention makes prediction easier: C ranks only blocks the policy already kept, so
 an evicted block can never be missed, and the value neither isolates a feedback
@@ -47,9 +52,10 @@ irreversibly and fixes its budget from the prompt.
 
 \begin{table}[t]
 \centering
-\caption{Selector and label semantics. Blocks are 32 tokens; $n$ is the candidate
-count, $L$ the prompt length, $K$ the oracle size of Exp\#7. The loop's budget wins when
-it is below its mandatory set (7 blocks on one prompt per model).}
+\caption{Selector and label semantics. Blocks are 32 tokens; budgets count blocks,
+mandatory ones included; $n$ is the candidate count, $L$ the prompt length, $K$ the
+served-oracle size of Exp\#7. A loop budget below the mandatory set (7 blocks on one
+prompt per model) keeps recent blocks, then sinks.}
 \label{tab:protocol}
 \footnotesize
 \setlength{\tabcolsep}{2.5pt}
@@ -60,7 +66,7 @@ rule & v2 collector & masked loop & physical reference \\
 attention & head/token mean; ragged block over members & head-group/query mean; ragged block padded & head/query/token mean \\
 EMA & decay 0.9 from first decode value & H2O-style: last-32 sum; reconstructed: last-8 EMA, 0.9 & decay 0.9; last-64 prefill queries \\
 within view & $\bar a/(\max\bar a+10^{-9})$ & $\bar a/(\max\bar a+10^{-9})$ & $\bar a/\max\bar a$ \\
-cross view & previous-layer EMA top-$\lceil0.1n\rceil$; layer 0: own EMA & same rank rule; layer 0: own EMA & same rank rule; layer 0: zero \\
+cross view (0/1) & in top-$\lceil0.1n\rceil$ of previous-layer EMA; layer 0: of own EMA & same rule; layer 0: own EMA & same rule; layer 0: zero \\
 query / age & post-RoPE $q$; age from block creation & query 0.5; age since last top-$k$ & unused \\
 label & future top-$\lceil0.1n\rceil$, real lookahead & current unmasked top-$K$ (Exp\#7) & unused \\
 budget & --- & round$(0.2n)$, every 8 steps & $\lfloor0.2\lceil L/32\rceil\rfloor$, prompt-fixed \\
@@ -69,11 +75,3 @@ re-admission, new tokens & --- & allowed at each decision; new tokens unmasked, 
 \bottomrule
 \end{tabular}
 \end{table}
-
-\subsection{Thresholds and online updates}
-\label{sec:online}\label{sec:conformal}
-A score can drive a fixed-size top-$k$ set or a thresholded set
-$S_{\ell,t}=\{b:f(\mathbf x_{\ell,b,t})\ge\tau_\ell\}$. The former fixes logical
-retention, whereas the latter lets set size vary. We evaluate static and online
-variants separately. Threshold results are reported in \S\ref{sec:guardkv};
-its empirical in-distribution performance is not a hard per-request risk guarantee.

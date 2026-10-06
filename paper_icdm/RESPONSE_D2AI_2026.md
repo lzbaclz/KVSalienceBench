@@ -10,8 +10,8 @@ the revision; it does not claim new GPU experiments during the final editorial p
 conclusion scope answer-quality findings to the evaluated masked loop. Logical
 retention is distinguished from physical storage and serving efficiency. The
 separate physical-KV reference reports storage and parity checks; extended
-mask/physical tests exceed the preset numerical tolerance. Neither scoring cost
-nor simulator measurements support a production TPOT or throughput claim.
+mask/physical tests exceed the preset numerical tolerance. No simulator or
+allocator measurement supports a production per-token-latency or throughput claim.
 
 **2. Offline predictor versus runtime scorer.** §IV-B and Table I specify the
 different feature realizations, and Exp#8 explicitly identifies its policy as the
@@ -25,8 +25,8 @@ offline, masked-loop and physical-reference paths.
 mismatch and withdraws the “faithful Quest” interpretation. Version-2 phase-aligned
 token/head dot-max controls are retained and have small, opposite-signed changes
 in the two tested model configurations. They are neither Quest's page-bound
-algorithm nor evidence of intrinsic query redundancy. Exp#9 retains the synthetic
-needle experiment as a negative control.
+algorithm nor evidence of intrinsic query redundancy. The artifact keeps the synthetic needle experiment as a negative control
+(`docs/HISTORICAL_DIAGNOSTICS.md`).
 
 **4. External validity.** §IX separates the main two-model evidence from historical
 workload, 14B and 16K extensions. Findings do not generalize to MoE, base models,

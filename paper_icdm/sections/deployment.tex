@@ -6,10 +6,9 @@ is not physical eviction: equal outputs under physical eviction would need match
 histories, kept sets, position semantics, feature availability and re-admission rules,
 none of which the simulator establishes, so every closed-loop task-quality result is
 scoped to the masked loop (and a logical budget, \S\ref{sec:problem}, releases no device
-memory). (ii)~Nothing here is a serving result: scoring microseconds, kept-set sizes,
-local latencies and allocator peaks measure none of production per-token latency,
-GPU-memory release, contention or throughput, and the reference runner implements no
-paging, offload or batching.
+memory). (ii)~Nothing here is a serving result: kept-set sizes and allocator peaks
+measure none of production per-token latency, GPU-memory release, contention or
+throughput, and the reference runner implements no paging, offload or batching.
 
 \textbf{Exp\#6: Physical-KV implementation check.} An eager, single-request reference
 backend with original token positions, irreversible block eligibility and independent
@@ -35,15 +34,18 @@ teacher-forced replay of \S\ref{sec:limits} passes at 1024 tokens and four steps
 exceeds its tolerance over 40 evictions, so the table supports the storage
 observation, not serving equivalence.
 
-\textbf{Why this table's F1 is half of Table~\ref{tab:perlayer}'s.} This table uses
-only the two hardest LongBench QA sets where Exp\#8 averages seven, Exp\#8 scores
-against every reference (alone lifting the same 896 outputs from 0.355 to 0.419), and
-decoding and truncation differ: compare within a table only.
+\textbf{Different cohorts, same scorer.} Table~\ref{tab:physical} uses
+Table~\ref{tab:perlayer}'s scorer, the official LongBench F1 with the maximum over
+references (rescoring its stored generations with Exp\#8's code changes no request),
+but another cohort: two of Exp\#8's seven datasets (Qasper and NarrativeQA, full-cache
+F1 0.41 and 0.19 there against 0.419 over all seven), a different row sample, another
+prompt template and a 128- instead of 48-token generation cap. Compare within a table only.
 
 \begin{table}[t]
 \centering
-\caption{Exp\#6 (Physical-KV check) at 20\% block budget. Stored: mean unique K/V
-tensor storage (MiB) after the last step; live: mean retained payload (MiB).}
+\caption{Exp\#6 (Physical-KV check) at 20\% block budget. F1: official LongBench
+scorer, all references. Stored: mean unique K/V tensor storage (MiB) after the last
+step; live: mean retained payload (MiB).}
 \label{tab:physical}
 \footnotesize
 \setlength{\tabcolsep}{1.6pt}

@@ -1,8 +1,8 @@
 # Figure and layout audit — 2026-09-26
 
 The final manuscript uses the unmodified IEEEtran conference page, body font and
-spacing settings. It is 8 US-letter pages including references, with a 232-word
-single-paragraph abstract. All eight rendered pages were inspected at 108 dpi;
+spacing settings. It is 8 US-letter pages including references, with a 230-word
+single-paragraph abstract (2026-10-06 candidate). All eight rendered pages were inspected at 108 dpi;
 figure details were also viewed enlarged. Tables, equations, captions, author
 blocks and references are legible, without observed text collisions or clipping.
 
@@ -51,6 +51,14 @@ The D2AI change summary was rendered as `paper_icdm/response.pdf`: one page,
 embedded Times-compatible fonts and no overfull boxes. Its four points match the
 clean Markdown summary. The old Chinese deck and Python-drawn schematics are
 retained only as excluded internal history.
+
+**2026-10-06.** No figure changed. The text gained a numbered equation (§II-C), Table II
+moved its long caption into a note under the table (with a dagger on one cell), Table I's
+caption and one row changed, and Table IV's first row gained an interval. All eight pages
+of the final build were rendered at 110 dpi and inspected: the equation keeps its number
+on its line, the table notes and captions fit their columns, there are no overfull boxes,
+and the two columns that an intermediate build left with stretched paragraph gaps (page 1
+right, page 4 left) are filled. The last column of page 8 ends 58 pt above the margin.
 
 These are local layout and typography checks, not an IEEE PDF eXpress certificate.
 The final manuscript SHA256 is recorded in `VALIDATION_STATUS.md`.
