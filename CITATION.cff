@@ -1,0 +1,27 @@
+cff-version: 1.2.0
+message: "Cite this software when using the benchmark or its implementations."
+title: "Mining Attention Dynamics: Auditing KV-Saliency Prediction in LLMs"
+authors:
+  - family-names: Li
+    given-names: Ziqing
+  - family-names: Guo
+    given-names: Jiawei
+  - family-names: Tang
+    given-names: Kaicheng
+  - family-names: Chen
+    given-names: Jianxi
+type: software
+version: "0.1.0"
+repository-code: "https://github.com/lzbaclz/KVSalienceBench"
+url: "https://github.com/lzbaclz/KVSalienceBench"
+abstract: >
+  Code for auditing KV-cache saliency predictors, with pooled and per-decision
+  evaluation, attention-trace collection, a pinned masked-loop simulator,
+  physical-KV reference validation, and correctness tests. External models
+  and datasets are supplied separately.
+keywords:
+  - KV cache
+  - attention prediction
+  - empirical audit
+  - physical validation
+license: Apache-2.0

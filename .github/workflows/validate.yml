@@ -1,0 +1,44 @@
+name: Validate code
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  public-content:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - run: python3 scripts/check_public_tree.py
+  cpu-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      TOKENIZERS_PARALLELISM: 'false'
+      HF_HUB_OFFLINE: '1'
+      TRANSFORMERS_OFFLINE: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+      - name: Install pinned CPU runtime
+        run: |
+          python -m pip install torch==2.6.0 --index-url https://download.pytorch.org/whl/cpu
+          python -m pip install -e '.[test,validation]'
+      - name: Run tests and examples
+        run: |
+          python scripts/prepare_seer.py
+          export KVSALIENCE_SEER_ROOT="$PWD/build/seer-5a7fbee19045"
+          pytest -q
+          python experiments/seer_pinned/smoke_cpu.py
+          python -m benchmark.run_leaderboard --table benchmark/example/prediction_table.csv --manifest benchmark/example/candidate_manifest.json --probabilistic
+          bash -n scripts/collect_v2_traces.sh scripts/run_physical_kv_matrix.sh experiments/seer_pinned/run_sweep.sh
